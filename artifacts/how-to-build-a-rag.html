@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Build a RAG — Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --page-2: #121214;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.38);
+
+    --loaders: #4f9dff;
+    --connectors: #a78bfa;
+    --chunking: #34d399;
+    --embedding: #fbbf24;
+    --metadata: #fb7185;
+    --vectorstore: #22d3ee;
+    --retrieval: #fb923c;
+    --augmentation: #a3e635;
+    --generation: #f87171;
+    --evaluation: #e879f9;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.10), transparent 60%),
+      radial-gradient(900px 500px at 90% 20%, rgba(232,121,249,0.07), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  svg.lines{
+    position: absolute;
+    top:0; left:0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  svg.lines path{
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.8;
+  }
+  svg.lines path.dashed{
+    stroke-dasharray: 5 5;
+    stroke: rgba(255,205,120,0.55);
+  }
+
+  .roadmap-tag{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(79,157,255,0.12);
+    border: 1px solid rgba(79,157,255,0.35);
+    color: #8fb8ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .roadmap-tag svg{ width: 13px; height: 13px; }
+
+  /* ---------- title ---------- */
+  .title-block{
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .title-icon{
+    width: 46px; height: 46px;
+    color: var(--text-primary);
+    opacity: 0.92;
+  }
+  .title-block h1{
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.15;
+  }
+  .title-block p{
+    margin: 0;
+    max-width: 520px;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .spacer{ height: 34px; width: 2px; position: relative; z-index: 2;}
+  .spacer.tall{ height: 46px; }
+  .spacer.short{ height: 26px; }
+
+  /* ---------- generic nodes ---------- */
+  .pill-node{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .pill-node .icon-wrap{
+    width: 22px; height: 22px;
+    color: var(--text-primary);
+  }
+  .pill-node.accent{
+    border-color: color-mix(in srgb, var(--pill-accent) 55%, var(--border-strong));
+    background: color-mix(in srgb, var(--pill-accent) 10%, var(--surface));
+  }
+  .pill-node.accent .icon-wrap{ color: var(--pill-accent); }
+
+  .row{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    gap: 22px;
+    width: 100%;
+    justify-content:center;
+    align-items: stretch;
+  }
+
+  .merge-dot{
+    position: relative;
+    z-index: 2;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    box-shadow: 0 0 0 4px var(--page), 0 0 0 5px var(--border);
+  }
+
+  /* ---------- section cards ---------- */
+  .section-card{
+    position: relative;
+    z-index: 2;
+    flex: 1 1 0;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 16px 18px;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .section-card:hover{
+    transform: translateY(-3px);
+    background: var(--surface-hover);
+    border-color: var(--card-accent, var(--border-strong));
+    box-shadow: 0 10px 30px -12px var(--card-accent, transparent);
+  }
+
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap: 9px;
+    margin-bottom: 14px;
+  }
+  .section-head .icon-wrap{
+    width: 20px; height: 20px;
+    color: var(--card-accent);
+    flex: none;
+  }
+  .section-head span{
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .chip-row{
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 7px;
+    width: 66px;
+    text-align:center;
+  }
+  .chip .chip-icon{
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: color-mix(in srgb, var(--card-accent) 16%, transparent);
+    color: var(--card-accent);
+    transition: transform .15s ease, background .15s ease;
+  }
+  .chip .chip-icon svg{ width: 19px; height: 19px; }
+  .chip:hover .chip-icon{
+    transform: scale(1.08);
+    background: color-mix(in srgb, var(--card-accent) 28%, transparent);
+  }
+  .chip .chip-label{
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  /* full-width stage cards */
+  .stage-card{
+    width: 100%;
+  }
+  .stage-card .chip-row{
+    justify-content: center;
+    gap: 26px;
+  }
+
+  .step-badge{
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    background: var(--card-accent, var(--text-muted));
+    color: #05070c;
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 0 0 4px var(--page);
+  }
+
+  .loop-label{
+    position: absolute;
+    z-index: 2;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #ffd98a;
+    background: rgba(20,16,10,0.92);
+    border: 1px solid rgba(255,205,120,0.45);
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+
+  .footer-note{
+    position: relative;
+    z-index: 2;
+    margin-top: 44px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 720px){
+    .row{ flex-direction: column; align-items: stretch; }
+    .title-block h1{ font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas" id="canvas">
+  <svg class="lines" id="lines">
+    <defs>
+      <marker id="fbArrow" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 z" fill="rgba(255,205,120,0.7)"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <div class="roadmap-tag"></div>
+
+  <div class="title-block" id="title-block">
+    <div class="title-icon"></div>
+    <h1>How to Build a RAG</h1>
+    <p>A developer roadmap from raw documents to grounded, cited answers — the indexing pipeline that prepares your data, and the retrieval pipeline that answers with it.</p>
+  </div>
+
+  <div class="spacer tall"></div>
+
+  <div class="pill-node" id="n-rawdata">
+    <span class="icon-wrap"></span>
+    <span>Raw Data</span>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="row" id="row-sources">
+    <div class="section-card" id="n-loaders" style="--card-accent:var(--loaders)">
+      <span class="step-badge">1</span>
+      <div class="section-head"><span class="icon-wrap"></span><span>Document Loaders</span></div>
+      <div class="chip-row" id="chips-loaders"></div>
+    </div>
+    <div class="section-card" id="n-connectors" style="--card-accent:var(--connectors)">
+      <span class="step-badge">1</span>
+      <div class="section-head"><span class="icon-wrap"></span><span>Data Connectors</span></div>
+      <div class="chip-row" id="chips-connectors"></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="merge-dot" id="m1"></div>
+  <div class="spacer"></div>
+
+  <div class="row" id="row-prep">
+    <div class="section-card" id="n-chunking" style="--card-accent:var(--chunking)">
+      <span class="step-badge">2</span>
+      <div class="section-head"><span class="icon-wrap"></span><span>Chunking</span></div>
+      <div class="chip-row" id="chips-chunking"></div>
+    </div>
+    <div class="section-card" id="n-embedding" style="--card-accent:var(--embedding)">
+      <span class="step-badge">3</span>
+      <div class="section-head"><span class="icon-wrap"></span><span>Embedding</span></div>
+      <div class="chip-row" id="chips-embedding"></div>
+    </div>
+    <div class="section-card" id="n-metadata" style="--card-accent:var(--metadata)">
+      <span class="step-badge">3</span>
+      <div class="section-head"><span class="icon-wrap"></span><span>Metadata</span></div>
+      <div class="chip-row" id="chips-metadata"></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="merge-dot" id="m2"></div>
+  <div class="spacer"></div>
+
+  <div class="section-card stage-card" id="n-vectorstore" style="--card-accent:var(--vectorstore)">
+    <span class="step-badge">4</span>
+    <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Vector Store</span></div>
+    <div class="chip-row" id="chips-vectorstore"></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="pill-node accent" id="n-userquery" style="--pill-accent:var(--vectorstore)">
+    <span class="icon-wrap"></span>
+    <span>Meanwhile — User Query</span>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="merge-dot" id="m3"></div>
+  <div class="spacer"></div>
+
+  <div class="section-card stage-card" id="n-retrieval" style="--card-accent:var(--retrieval)">
+    <span class="step-badge">5</span>
+    <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Retrieval</span></div>
+    <div class="chip-row" id="chips-retrieval"></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card stage-card" id="n-augmentation" style="--card-accent:var(--augmentation)">
+    <span class="step-badge">6</span>
+    <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Augmentation</span></div>
+    <div class="chip-row" id="chips-augmentation"></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card stage-card" id="n-generation" style="--card-accent:var(--generation)">
+    <span class="step-badge">7</span>
+    <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Generation</span></div>
+    <div class="chip-row" id="chips-generation"></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="pill-node accent" id="n-response" style="--pill-accent:var(--generation)">
+    <span class="icon-wrap"></span>
+    <span>Grounded Response</span>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card stage-card" id="n-evaluation" style="--card-accent:var(--evaluation)">
+    <span class="step-badge">8</span>
+    <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Evaluation &amp; Guardrails</span></div>
+    <div class="chip-row" id="chips-evaluation"></div>
+  </div>
+
+  <div class="footer-note">Roadmap: Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Evaluate (and iterate)</div>
+</div>
+
+<script>
+const ICONS = {
+  filetext: '<path d="M7 3.5h6.5l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1z"/><path d="M13.5 3.5v4h4M9 12.2h6M9 15.5h6M9 8.7h1.6"/>',
+  archive: '<rect x="3.5" y="5" width="17" height="4" rx="1"/><path d="M4.5 9v9a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V9M10 13h4"/>',
+  window: '<rect x="3.2" y="4.5" width="17.6" height="15" rx="2"/><path d="M3.2 9h17.6"/><circle cx="6.1" cy="6.7" r=".6" fill="currentColor" stroke="none"/><circle cx="8.2" cy="6.7" r=".6" fill="currentColor" stroke="none"/>',
+  bars: '<path d="M6 19V13M12 19V7M18 19v-9"/>',
+  share: '<circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M8 7l8 4M8 17l8-4"/>',
+  hash: '<path d="M9 3.5v17M15 3.5v17M4 8.5h16M4 15.5h16"/>',
+  cloud: '<path d="M6.5 17.5a4 4 0 0 1-.3-8 5.5 5.5 0 0 1 10.6-1.8A4.2 4.2 0 0 1 20.5 17H6.5z"/>',
+  compass: '<circle cx="12" cy="12" r="8.5"/><path d="M8 8l3 3-3 5 5-3 3-5-5 3z" fill="currentColor" stroke="none"/>',
+  scissors: '<circle cx="7" cy="7.5" r="2.3"/><circle cx="7" cy="16.5" r="2.3"/><path d="M9 9l10.5 10.5M9 15L19.5 4.5M5 12h.6"/>',
+  gitbranch: '<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M6 8v6a4 4 0 0 0 4 4h2M18 8v2"/>',
+  brain: '<path d="M9 3.5c-2 0-3.5 1.5-3.5 3.4c-1.6.3-2.8 1.7-2.8 3.4c0 1 .4 1.9 1.1 2.5c-.4.6-.6 1.3-.6 2.1c0 2 1.6 3.6 3.6 3.6c.2 1.7 1.7 3 3.4 3c1 0 1.9-.4 2.5-1.1c.6.7 1.5 1.1 2.5 1.1c1.7 0 3.2-1.3 3.4-3c2 0 3.6-1.6 3.6-3.6c0-.8-.2-1.5-.6-2.1c.7-.6 1.1-1.5 1.1-2.5c0-1.7-1.2-3.1-2.8-3.4c0-1.9-1.5-3.4-3.5-3.4c-.9 0-1.7.3-2.3.9c-.6-.6-1.4-.9-2.3-.9z"/><path d="M12 3.5v17"/>',
+  overlap: '<rect x="4" y="7" width="12" height="12" rx="2.5"/><rect x="9" y="5" width="12" height="12" rx="2.5"/>',
+  spark: '<polygon points="13,3 6,14 11,14 10,21 18,10 13,10" fill="currentColor" stroke="none"/>',
+  star: '<path d="M12 3l1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8z" fill="currentColor" stroke="none"/>',
+  rocket: '<path d="M12 3c3 1 5 4.5 5 8.5c0 2-1 3.8-2 5l-.5-3-2.5-1-2.5 1-.5 3c-1-1.2-2-3-2-5C7 7.5 9 4 12 3z"/><circle cx="12" cy="10" r="1.6"/><path d="M9 16l-2 3M15 16l2 3"/>',
+  cpu: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><rect x="10" y="10" width="4" height="4"/><path d="M12 3.5v3M9 3.5v3M15 3.5v3M12 20.5v-3M9 20.5v-3M15 20.5v-3M3.5 12h3M3.5 9h3M3.5 15h3M20.5 12h-3M20.5 9h-3M20.5 15h-3"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.2v5l3.3 2"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M7.5 10.5V7.2a4.5 4.5 0 0 1 9 0v3.3"/>',
+  database: '<ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6"/><path d="M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/>',
+  hexagon: '<polygon points="12,3.5 19.5,8 19.5,16 12,20.5 4.5,16 4.5,8"/>',
+  server: '<rect x="4" y="4.5" width="16" height="6" rx="1.5"/><rect x="4" y="13.5" width="16" height="6" rx="1.5"/><circle cx="7.5" cy="7.5" r=".8" fill="currentColor" stroke="none"/><circle cx="7.5" cy="16.5" r=".8" fill="currentColor" stroke="none"/>',
+  user: '<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/>',
+  search: '<circle cx="10.3" cy="10.3" r="6.3"/><path d="M19.5 19.5l-4.4-4.4"/>',
+  layers: '<polygon points="12,4 21,9 12,14 3,9"/><polyline points="3,14 12,19 21,14"/>',
+  target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/>',
+  puzzle: '<path d="M9 4.5h4a1.5 1.5 0 0 1 0 3 1.5 1.5 0 0 0 0 3h3.5a1 1 0 0 1 1 1v3.5a1.5 1.5 0 0 1-3 0 1.5 1.5 0 0 0-3 0v3a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3.5a1.5 1.5 0 0 0-3 0 1.5 1.5 0 0 1 0-3H6a1.5 1.5 0 0 0 0-3 1.5 1.5 0 0 1 0-3h3z"/>',
+  wrench: '<path d="M15 6.5a4 4 0 0 1-5.2 5.2L5 16.5l2.5 2.5 4.8-4.8A4 4 0 0 1 17.5 9l-2.8 2.8-2-2z"/>',
+  link: '<path d="M8.5 13.5l7-7"/><path d="M8 12l-2.3 2.3a3.6 3.6 0 0 0 5.1 5.1L13 17.2"/><path d="M16 12l2.3-2.3a3.6 3.6 0 0 0-5.1-5.1L11 6.8"/>',
+  chat: '<path d="M4 12a8 8 0 1 1 3.3 6.5L4 20l1.2-3.6A7.9 7.9 0 0 1 4 12z"/>',
+  infinity: '<path d="M6.5 12c0-2.2 1.8-3.5 3.5-3.5c2.5 0 3.5 3.5 6 3.5c1.7 0 3.5-1.3 3.5-3.5M6.5 12c0 2.2 1.8 3.5 3.5 3.5c2.5 0 3.5-3.5 6-3.5c1.7 0 3.5 1.3 3.5 3.5"/>',
+  eye: '<path d="M3.5 12s3.5-6.5 8.5-6.5S20.5 12 20.5 12s-3.5 6.5-8.5 6.5S3.5 12 3.5 12z"/><circle cx="12" cy="12" r="2.6"/>',
+  trendup: '<path d="M4 16l5-5 3.5 3.5L20 7"/><path d="M14.5 7H20v5.5"/>',
+  map: '<path d="M9 4.5L4 6.5v13l5-2 6 2 5-2v-13l-5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>'
+};
+
+function icon(key){ return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[key]+'</svg>'; }
+
+document.querySelector('.roadmap-tag').innerHTML = icon('map') + '<span>Developer Roadmap</span>';
+document.getElementById('title-block').querySelector('.title-icon').innerHTML = icon('brain');
+document.getElementById('n-rawdata').querySelector('.icon-wrap').innerHTML = icon('filetext');
+document.getElementById('n-loaders').querySelector('.icon-wrap').innerHTML = icon('filetext');
+document.getElementById('n-connectors').querySelector('.icon-wrap').innerHTML = icon('share');
+document.getElementById('n-chunking').querySelector('.icon-wrap').innerHTML = icon('scissors');
+document.getElementById('n-embedding').querySelector('.icon-wrap').innerHTML = icon('cpu');
+document.getElementById('n-metadata').querySelector('.icon-wrap').innerHTML = icon('hash');
+document.getElementById('n-vectorstore').querySelector('.icon-wrap').innerHTML = icon('database');
+document.getElementById('n-userquery').querySelector('.icon-wrap').innerHTML = icon('user');
+document.getElementById('n-retrieval').querySelector('.icon-wrap').innerHTML = icon('search');
+document.getElementById('n-augmentation').querySelector('.icon-wrap').innerHTML = icon('puzzle');
+document.getElementById('n-generation').querySelector('.icon-wrap').innerHTML = icon('brain');
+document.getElementById('n-response').querySelector('.icon-wrap').innerHTML = icon('chat');
+document.getElementById('n-evaluation').querySelector('.icon-wrap').innerHTML = icon('trendup');
+
+function buildChips(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map(it => `
+    <div class="chip">
+      <div class="chip-icon">${icon(it.icon)}</div>
+      <div class="chip-label">${it.label}</div>
+    </div>
+  `).join('');
+}
+
+buildChips('chips-loaders', [
+  {icon:'filetext', label:'PDF'},
+  {icon:'archive', label:'DOCX'},
+  {icon:'window', label:'HTML'},
+  {icon:'bars', label:'CSV'},
+]);
+buildChips('chips-connectors', [
+  {icon:'filetext', label:'Notion'},
+  {icon:'hash', label:'Slack'},
+  {icon:'cloud', label:'Google Drive'},
+  {icon:'compass', label:'Web Scraper'},
+]);
+buildChips('chips-chunking', [
+  {icon:'bars', label:'Fixed-size'},
+  {icon:'gitbranch', label:'Recursive'},
+  {icon:'brain', label:'Semantic'},
+  {icon:'overlap', label:'Sliding Window'},
+]);
+buildChips('chips-embedding', [
+  {icon:'spark', label:'OpenAI'},
+  {icon:'star', label:'Cohere'},
+  {icon:'rocket', label:'Voyage'},
+  {icon:'cpu', label:'BGE'},
+]);
+buildChips('chips-metadata', [
+  {icon:'filetext', label:'Source'},
+  {icon:'hash', label:'Tags'},
+  {icon:'clock', label:'Timestamps'},
+  {icon:'lock', label:'Access Control'},
+]);
+buildChips('chips-vectorstore', [
+  {icon:'database', label:'Pinecone'},
+  {icon:'hexagon', label:'Qdrant'},
+  {icon:'share', label:'Weaviate'},
+  {icon:'server', label:'pgvector'},
+]);
+buildChips('chips-retrieval', [
+  {icon:'search', label:'Similarity Search'},
+  {icon:'layers', label:'Hybrid Search'},
+  {icon:'target', label:'Re-ranking'},
+  {icon:'puzzle', label:'MMR'},
+]);
+buildChips('chips-augmentation', [
+  {icon:'filetext', label:'Prompt Template'},
+  {icon:'wrench', label:'System Prompt'},
+  {icon:'window', label:'Context Window'},
+  {icon:'link', label:'Citations'},
+]);
+buildChips('chips-generation', [
+  {icon:'chat', label:'Claude'},
+  {icon:'spark', label:'GPT'},
+  {icon:'star', label:'Gemini'},
+  {icon:'infinity', label:'Llama'},
+]);
+buildChips('chips-evaluation', [
+  {icon:'target', label:'Faithfulness'},
+  {icon:'search', label:'Relevance'},
+  {icon:'bars', label:'RAGAS'},
+  {icon:'eye', label:'TruLens'},
+]);
+
+/* ---------------- connector lines ---------------- */
+const canvas = document.getElementById('canvas');
+const svg = document.getElementById('lines');
+
+function pointOf(el, anchor){
+  const r = el.getBoundingClientRect();
+  const c = canvas.getBoundingClientRect();
+  const x = r.left - c.left;
+  const y = r.top - c.top;
+  if(anchor === 'top') return {x: x + r.width/2, y: y};
+  if(anchor === 'bottom') return {x: x + r.width/2, y: y + r.height};
+  if(anchor === 'left') return {x: x, y: y + r.height/2};
+  if(anchor === 'right') return {x: x + r.width, y: y + r.height/2};
+  return {x: x + r.width/2, y: y + r.height/2};
+}
+
+function elbowPath(p1, p2){
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  if(Math.abs(dx) < 1.5){
+    return `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`;
+  }
+  const r = Math.max(2, Math.min(10, Math.abs(dy)/2 - 1));
+  const midY = p1.y + dy * 0.5;
+  const sign = dx > 0 ? 1 : -1;
+  const rx = Math.min(r, Math.abs(dx)/2);
+  return `M ${p1.x} ${p1.y}
+          L ${p1.x} ${midY - r}
+          Q ${p1.x} ${midY} ${p1.x + sign*rx} ${midY}
+          L ${p2.x - sign*rx} ${midY}
+          Q ${p2.x} ${midY} ${p2.x} ${midY + r}
+          L ${p2.x} ${p2.y}`;
+}
+
+function loopBackPath(p1, p2, bulge){
+  return `M ${p1.x} ${p1.y} C ${p1.x+bulge} ${p1.y}, ${p2.x+bulge} ${p2.y}, ${p2.x} ${p2.y}`;
+}
+
+const CONNECTIONS = [
+  ['title-block','n-rawdata','bottom','top', false, 'elbow'],
+  ['n-rawdata','n-loaders','bottom','top', false, 'elbow'],
+  ['n-rawdata','n-connectors','bottom','top', false, 'elbow'],
+  ['n-loaders','m1','bottom','center', false, 'elbow'],
+  ['n-connectors','m1','bottom','center', false, 'elbow'],
+  ['m1','n-chunking','center','top', false, 'elbow'],
+  ['m1','n-embedding','center','top', false, 'elbow'],
+  ['m1','n-metadata','center','top', false, 'elbow'],
+  ['n-chunking','m2','bottom','center', false, 'elbow'],
+  ['n-embedding','m2','bottom','center', false, 'elbow'],
+  ['n-metadata','m2','bottom','center', false, 'elbow'],
+  ['m2','n-vectorstore','center','top', false, 'elbow'],
+  ['n-vectorstore','m3','bottom','center', false, 'elbow'],
+  ['n-userquery','m3','bottom','center', false, 'elbow'],
+  ['m3','n-retrieval','center','top', false, 'elbow'],
+  ['n-retrieval','n-augmentation','bottom','top', false, 'elbow'],
+  ['n-augmentation','n-generation','bottom','top', false, 'elbow'],
+  ['n-generation','n-response','bottom','top', false, 'elbow'],
+  ['n-response','n-evaluation','bottom','top', false, 'elbow'],
+  ['n-evaluation','n-chunking','left','left', true, 'loopback'],
+];
+
+function draw(){
+  svg.querySelectorAll('path').forEach(p => p.remove());
+  document.querySelectorAll('.loop-label').forEach(n => n.remove());
+
+  const rect = canvas.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+  svg.style.height = rect.height + 'px';
+
+  CONNECTIONS.forEach(([fromId, toId, fromAnchor, toAnchor, dashed, type]) => {
+    const fromEl = document.getElementById(fromId);
+    const toEl = document.getElementById(toId);
+    if(!fromEl || !toEl) return;
+    const p1 = pointOf(fromEl, fromAnchor);
+    const p2 = pointOf(toEl, toAnchor);
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    if(type === 'loopback'){
+      const bulge = -22;
+      path.setAttribute('d', loopBackPath(p1, p2, bulge));
+      path.setAttribute('marker-end','url(#fbArrow)');
+      const label = document.createElement('div');
+      label.className = 'loop-label';
+      label.textContent = '↻ iterate';
+      label.style.left = (p1.x + bulge) + 'px';
+      label.style.top = ((p1.y + p2.y)/2) + 'px';
+      label.style.transform = 'translate(-50%,-50%) rotate(-90deg)';
+      canvas.appendChild(label);
+    } else {
+      path.setAttribute('d', elbowPath(p1,p2));
+    }
+    if(dashed) path.setAttribute('class','dashed');
+    svg.appendChild(path);
+  });
+}
+
+function redraw(){ requestAnimationFrame(draw); }
+
+window.addEventListener('load', redraw);
+window.addEventListener('resize', redraw);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(redraw); }
+setTimeout(redraw, 60);
+setTimeout(redraw, 300);
+</script>
+</body>
+</html>
