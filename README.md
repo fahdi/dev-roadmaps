@@ -12,6 +12,7 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [How to Build a RAG](artifacts/how-to-build-a-rag.html) | Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Evaluate (and iterate) |
 | [RAG vs LoRA vs Full Fine-Tuning](artifacts/rag-vs-lora-vs-fine-tuning.html) | Context, adapters, or every weight — pick by the gap: knowledge → RAG, behavior → train |
 | [Design Your Agent's Control Plane](artifacts/agent-control-plane.html) | CLAUDE.md → Rules → Skills → Agents → Hooks — context tells, skills teach, agents delegate, hooks enforce |
+| [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft |
 
 ## Structure
 
