@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern App Architecture — Artifact Gallery</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.065);
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --accent: #5b9dff;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(91,157,255,0.10), transparent 60%),
+      radial-gradient(900px 500px at 90% 20%, rgba(177,139,250,0.08), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 24px 80px;
+  }
+  header{ text-align:center; margin-bottom: 48px; }
+  header h1{
+    margin: 0 0 12px;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+  header p{
+    margin: 0 auto;
+    max-width: 560px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .card{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .card:hover{
+    transform: translateY(-3px);
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+  }
+  .card .tag{
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card h2{
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .card p{
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .card .view{
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  footer{
+    margin-top: 56px;
+    text-align:center;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer a{ color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Modern App Architecture</h1>
+      <p>A growing collection of application &amp; system architecture diagrams, recreated as clean, self-contained, interactive HTML artifacts.</p>
+    </header>
+
+    <div class="grid">
+      <a class="card" href="artifacts/ai-application-architecture.html">
+        <span class="tag">Diagram</span>
+        <h2>AI Application Architecture</h2>
+        <p>Frontend → Agent Orchestration → Knowledge / Models / Tools → Data Layer → Observability → Deployment.</p>
+        <span class="view">View artifact →</span>
+      </a>
+    </div>
+
+    <footer>
+      Built and maintained with Claude · <a href="https://github.com/fahdi/modern-app-architecture">source on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>
