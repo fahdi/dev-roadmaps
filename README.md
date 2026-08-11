@@ -15,6 +15,7 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft |
 | [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — and the four failure modes of long context |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database — with the two cache shortcuts |
+| [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Golden dataset → four evaluators → offline baseline → CI/CD gate → guardrails → online evals — failures become test cases |
 
 ## Structure
 
