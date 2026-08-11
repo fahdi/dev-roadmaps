@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Evaluate an LLM App — Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.38);
+
+    --golden: #fbbf24;
+    --methods: #5b9dff;
+    --offline: #34d2e0;
+    --cicd: #b18bfa;
+    --guard: #fb7185;
+    --online: #4ade80;
+    --monitor: #fb923c;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(251,191,36,0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 30%, rgba(91,157,255,0.07), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  svg.lines{
+    position: absolute;
+    top:0; left:0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  svg.lines path{
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.8;
+  }
+  svg.lines path.loop{
+    stroke-dasharray: 5 5;
+    stroke: rgba(251,191,36,0.55);
+  }
+
+  .roadmap-tag{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .roadmap-tag svg{ width: 13px; height: 13px; }
+
+  .title-block{
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .title-icon{ width: 46px; height: 46px; color: var(--text-primary); opacity: 0.92; }
+  .title-icon svg{ width:100%; height:100%; }
+  .title-block h1{
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.15;
+  }
+  .title-block p{
+    margin: 0;
+    max-width: 540px;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .spacer{ height: 34px; width: 2px; position: relative; z-index: 2;}
+  .spacer.tall{ height: 46px; }
+  .spacer.short{ height: 26px; }
+
+  .section-card{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 760px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 16px 18px;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .section-card:hover{
+    transform: translateY(-3px);
+    background: var(--surface-hover);
+    border-color: var(--card-accent, var(--border-strong));
+    box-shadow: 0 10px 30px -12px var(--card-accent, transparent);
+  }
+  .step-badge{
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    background: var(--card-accent, var(--text-muted));
+    color: #05070c;
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 0 0 4px var(--page);
+  }
+  .section-head{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 9px;
+    margin-bottom: 6px;
+  }
+  .section-head .icon-wrap{
+    width: 20px; height: 20px;
+    color: var(--card-accent);
+    flex: none;
+    display:flex;
+  }
+  .section-head .icon-wrap svg{ width:100%; height:100%; }
+  .section-head span.t{
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .section-sub{
+    text-align:center;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin: 0 0 14px;
+    line-height: 1.5;
+  }
+  .chip-row{
+    display:flex;
+    gap: 26px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 7px;
+    width: 92px;
+    text-align:center;
+  }
+  .chip .chip-icon{
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: color-mix(in srgb, var(--card-accent) 16%, transparent);
+    color: var(--card-accent);
+    transition: transform .15s ease, background .15s ease;
+  }
+  .chip .chip-icon svg{ width: 19px; height: 19px; }
+  .chip:hover .chip-icon{
+    transform: scale(1.08);
+    background: color-mix(in srgb, var(--card-accent) 28%, transparent);
+  }
+  .chip .chip-label{
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  /* evaluator mini-grid */
+  .method-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .method{
+    border: 1px solid color-mix(in srgb, var(--card-accent) 30%, transparent);
+    background: color-mix(in srgb, var(--card-accent) 6%, transparent);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .method .m-name{
+    display:flex;
+    align-items:center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--card-accent);
+    margin-bottom: 5px;
+  }
+  .method .m-name svg{ width: 14px; height: 14px; }
+  .method .m-desc{
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .loop-label{
+    position: absolute;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffd98a;
+    background: rgba(24,20,10,0.92);
+    border: 1px solid rgba(251,191,36,0.45);
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+    transform: translate(-50%,-50%) rotate(-90deg);
+  }
+
+  .verdict-card{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 760px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 16px 20px 18px;
+    text-align: center;
+  }
+  .verdict-card .punch{
+    font-size: 12.5px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .verdict-card .punch strong{ color: #ffd98a; }
+
+  .footer-note{
+    position: relative;
+    z-index: 2;
+    margin-top: 40px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 720px){
+    .title-block h1{ font-size: 24px; }
+    .method-grid{ grid-template-columns: 1fr; }
+    .loop-label{ display:none; }
+    svg.lines path.loop{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas" id="canvas">
+  <svg class="lines" id="lines"></svg>
+
+  <div class="roadmap-tag" id="tag"></div>
+
+  <div class="title-block" id="title-block">
+    <div class="title-icon" id="title-icon"></div>
+    <h1>How to Evaluate an LLM App</h1>
+    <p>"It looks good to me" is not an eval. The pipeline that replaces vibes: a golden dataset, four kinds of evaluators, and a loop where every failure becomes a test case.</p>
+  </div>
+
+  <div class="spacer tall"></div>
+
+  <div class="section-card" id="n-golden" style="--card-accent:var(--golden)">
+    <span class="step-badge">1</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="star"></span><span class="t">Golden Dataset</span></div>
+    <p class="section-sub">The foundation — a curated set where quality beats size.</p>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-icon" data-icon="check"></div><div class="chip-label">Normal Cases</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="zigzag"></div><div class="chip-label">Edge Cases</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="swords"></div><div class="chip-label">Adversarial Inputs</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="flame"></div><div class="chip-label">Real Prod Failures</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card" id="n-methods" style="--card-accent:var(--methods)">
+    <span class="step-badge">2</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="scale"></span><span class="t">The Four Evaluators</span></div>
+    <p class="section-sub">Pick per check — cheap &amp; deterministic first, expensive &amp; human last.</p>
+    <div class="method-grid">
+      <div class="method">
+        <div class="m-name"><span data-icon="code"></span>Code-based Checks</div>
+        <div class="m-desc">Deterministic logic: schema compliance, exact matches, latency limits, tool-argument validation. Fast, reproducible, limited to the verifiable.</div>
+      </div>
+      <div class="method">
+        <div class="m-name"><span data-icon="target"></span>Ground Truth</div>
+        <div class="m-desc">Compare against trusted reference answers — great for classification &amp; extraction where a known correct state exists.</div>
+      </div>
+      <div class="method">
+        <div class="m-name"><span data-icon="gavel"></span>LLM-as-Judge</div>
+        <div class="m-desc">A model scores outputs against a written rubric — correctness, groundedness, tone. Calibrate the judge against human labels before trusting it.</div>
+      </div>
+      <div class="method">
+        <div class="m-name"><span data-icon="user"></span>Human Review</div>
+        <div class="m-desc">Experts on ambiguous, high-risk cases — and the calibration source for everything automated. Expensive, so spend it where it matters.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card" id="n-offline" style="--card-accent:var(--offline)">
+    <span class="step-badge">3</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="flask"></span><span class="t">Offline Evals</span></div>
+    <p class="section-sub">Pre-release, on the golden set — define coverage, calibrate judges, set the baseline.</p>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-icon" data-icon="map"></div><div class="chip-label">Task Coverage</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="sliders"></div><div class="chip-label">Judge Calibration</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="bars"></div><div class="chip-label">Baseline Scores</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card" id="n-cicd" style="--card-accent:var(--cicd)">
+    <span class="step-badge">4</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="gitbranch"></span><span class="t">CI/CD Gate</span></div>
+    <p class="section-sub">Every prompt, model, or retrieval change runs the same evals as an experiment.</p>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-icon" data-icon="refresh"></div><div class="chip-label">Regression Suite</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="split"></div><div class="chip-label">A/B Experiments</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="check"></div><div class="chip-label">Release Criteria</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card" id="n-guard" style="--card-accent:var(--guard)">
+    <span class="step-badge">5</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="shield"></span><span class="t">Guardrails</span></div>
+    <p class="section-sub">Inline and blocking — the only evals that stop a bad response before the user sees it.</p>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-icon" data-icon="filter"></div><div class="chip-label">Input Filtering</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="lock"></div><div class="chip-label">PII / Policy Blocks</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="alert"></div><div class="chip-label">Output Screening</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="section-card" id="n-online" style="--card-accent:var(--online)">
+    <span class="step-badge">6</span>
+    <div class="section-head"><span class="icon-wrap" data-icon="pulse"></span><span class="t">Online Evals &amp; Monitoring</span></div>
+    <p class="section-sub">Async, on sampled production traffic — real usage finds what your dataset missed.</p>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-icon" data-icon="shuffle"></div><div class="chip-label">Sampled Traffic</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="eye"></div><div class="chip-label">Drift Detection</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="thumbs"></div><div class="chip-label">User Feedback</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="flame"></div><div class="chip-label">Failure Capture</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="verdict-card" id="n-verdict">
+    <div class="punch">
+      Don't ask <strong>"does it look good?"</strong> — ask <strong>"what's the score on the cases that used to fail?"</strong><br>
+      Vibes don't scale. Every production failure that reaches step 6 gets promoted into the golden dataset at step 1 — that loop is the whole system.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: golden dataset → four evaluators → offline baseline → CI/CD gate → guardrails inline → online evals → failures feed back.<br>
+    Terminology follows Arize's LLM evaluation guide (offline/online evals, LLM-as-judge calibration, golden datasets, guardrails vs async evals).
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  star: '<path d="M12 3l1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8z" fill="currentColor" stroke="none"/>',
+  check: '<circle cx="12" cy="12" r="8.5"/><path d="M8 12.3l2.8 2.8 5.2-5.6"/>',
+  zigzag: '<path d="M4 16l4-8 4 8 4-8 4 8"/>',
+  swords: '<path d="M4 4l10.5 10.5M4 4h4M4 4v4M20 4L9.5 14.5M20 4h-4M20 4v4M7 17l-3 3M17 17l3 3M6.5 14l3.5 3.5M17.5 14L14 17.5"/>',
+  flame: '<path d="M12 3.5s5.5 4.5 5.5 9.5a5.5 5.5 0 0 1-11 0c0-2 1-4 2.5-5.5c0 1.5.8 2.5 2 3c-.3-2.5.3-5 1-7z"/>',
+  scale: '<path d="M12 4v16M7 20h10M12 6.5L6 9l2.8 5.5a3.2 3.2 0 0 1-5.6 0L6 9M12 6.5L18 9l2.8 5.5a3.2 3.2 0 0 1-5.6 0L18 9"/>',
+  code: '<path d="M8.5 8l-4.5 4 4.5 4M15.5 8l4.5 4-4.5 4"/>',
+  target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/>',
+  gavel: '<path d="M13 6.5l4.5 4.5M10 9.5L14.5 5M8.5 11l4.5 4.5M15 8l4 4M4 20l6.5-6.5M3.5 20.5h5"/>',
+  user: '<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/>',
+  flask: '<path d="M10 3.5h4M10.8 3.5v5L5.5 18a2 2 0 0 0 1.8 2.9h9.4a2 2 0 0 0 1.8-2.9l-5.3-9.5v-5"/><path d="M7.5 14.5h9"/>',
+  map: '<path d="M9 4.5L4 6.5v13l5-2 6 2 5-2v-13l-5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>',
+  sliders: '<path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="8" cy="17" r="1.8"/>',
+  bars: '<path d="M6 19V13M12 19V7M18 19v-9"/>',
+  gitbranch: '<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M6 8v6a4 4 0 0 0 4 4h2M18 8v2"/>',
+  refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/>',
+  split: '<path d="M12 4v6M12 10l-5.5 4.5M12 10l5.5 4.5"/><circle cx="12" cy="4" r="1.6" fill="currentColor" stroke="none"/><circle cx="6.5" cy="16" r="2"/><circle cx="17.5" cy="16" r="2"/>',
+  shield: '<path d="M12 3.5l7 2.8v5.2c0 4.6-3 7.6-7 9-4-1.4-7-4.4-7-9V6.3z"/><path d="M9 11.8l2.2 2.2 4-4.2"/>',
+  filter: '<path d="M4 5h16l-6.2 7.2v5.3L10.2 19v-6.8z"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M7.5 10.5V7.2a4.5 4.5 0 0 1 9 0v3.3"/>',
+  alert: '<path d="M12 4L2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/>',
+  pulse: '<path d="M3.5 12h4l2-6 4 12 2-6h5"/>',
+  shuffle: '<path d="M4 7h3.5c4 0 5 10 9 10H20M4 17h3.5c1.5 0 2.5-1.4 3.4-3M20 7h-3.5c-1.5 0-2.5 1.4-3.4 3M17 4l3 3-3 3M17 14l3 3-3 3"/>',
+  eye: '<path d="M3.5 12s3.5-6.5 8.5-6.5S20.5 12 20.5 12s-3.5 6.5-8.5 6.5S3.5 12 3.5 12z"/><circle cx="12" cy="12" r="2.6"/>',
+  thumbs: '<path d="M7 10.5v9.5M7 20H4.5a1 1 0 0 1-1-1v-7.5a1 1 0 0 1 1-1H7M7 10.5l3.5-6.5a2 2 0 0 1 2 2v3h6a1.6 1.6 0 0 1 1.6 1.9l-1.3 7a1.6 1.6 0 0 1-1.6 1.3H7"/>'
+};
+function icon(key){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[key]||'')+'</svg>'; }
+
+document.getElementById('tag').innerHTML = icon('map') + '<span>Developer Roadmap</span>';
+document.getElementById('title-icon').innerHTML = icon('scale');
+document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
+
+const canvas = document.getElementById('canvas');
+const svg = document.getElementById('lines');
+
+function pointOf(el, anchor){
+  const r = el.getBoundingClientRect();
+  const c = canvas.getBoundingClientRect();
+  const x = r.left - c.left, y = r.top - c.top;
+  if(anchor === 'top') return {x: x + r.width/2, y: y};
+  if(anchor === 'bottom') return {x: x + r.width/2, y: y + r.height};
+  if(anchor === 'left') return {x: x, y: y + r.height/2};
+  return {x: x + r.width/2, y: y + r.height/2};
+}
+
+const CHAIN = [
+  ['title-block','n-golden'],
+  ['n-golden','n-methods'],
+  ['n-methods','n-offline'],
+  ['n-offline','n-cicd'],
+  ['n-cicd','n-guard'],
+  ['n-guard','n-online'],
+  ['n-online','n-verdict'],
+];
+
+function draw(){
+  svg.querySelectorAll('path').forEach(p => p.remove());
+  document.querySelectorAll('.loop-label').forEach(n => n.remove());
+
+  const rect = canvas.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+  svg.style.height = rect.height + 'px';
+
+  CHAIN.forEach(([a,b]) => {
+    const ea = document.getElementById(a), eb = document.getElementById(b);
+    if(!ea || !eb) return;
+    const p1 = pointOf(ea,'bottom'), p2 = pointOf(eb,'top');
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`);
+    svg.appendChild(path);
+  });
+
+  // feedback loop: online failures -> golden dataset (left side)
+  const from = document.getElementById('n-online');
+  const to = document.getElementById('n-golden');
+  if(from && to){
+    const p1 = pointOf(from,'left'), p2 = pointOf(to,'left');
+    const bulge = -60;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('class','loop');
+    path.setAttribute('d', `M ${p1.x} ${p1.y} C ${p1.x+bulge} ${p1.y}, ${p2.x+bulge} ${p2.y}, ${p2.x} ${p2.y}`);
+    svg.appendChild(path);
+
+    const lab = document.createElement('div');
+    lab.className = 'loop-label';
+    lab.textContent = '↻ failures become test cases';
+    lab.style.left = (Math.min(p1.x,p2.x) + bulge*0.78) + 'px';
+    lab.style.top = ((p1.y + p2.y)/2) + 'px';
+    canvas.appendChild(lab);
+  }
+}
+function redraw(){ requestAnimationFrame(draw); }
+window.addEventListener('load', redraw);
+window.addEventListener('resize', redraw);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(redraw); }
+setTimeout(redraw, 60);
+setTimeout(redraw, 300);
+</script>
+</body>
+</html>
