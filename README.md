@@ -23,3 +23,7 @@ artifacts/*.html        one self-contained HTML roadmap per file
 1. Drop a new self-contained `.html` file into `artifacts/`.
 2. Add a card for it to `index.html` and a row to the table above.
 3. Commit and push — GitHub Pages redeploys automatically.
+
+---
+
+Built by [Fahad Murtaza](https://github.com/fahdi) with Claude.
