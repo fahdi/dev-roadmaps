@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern App Architecture — Artifact Gallery</title>
+<title>Developer Roadmaps</title>
 <style>
   :root{
     color-scheme: dark;
@@ -34,6 +34,21 @@
     padding: 64px 24px 80px;
   }
   header{ text-align:center; margin-bottom: 48px; }
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
   header h1{
     margin: 0 0 12px;
     font-size: 32px;
@@ -42,7 +57,7 @@
   }
   header p{
     margin: 0 auto;
-    max-width: 560px;
+    max-width: 580px;
     color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.6;
@@ -69,7 +84,7 @@
     background: var(--surface-hover);
     border-color: var(--border-strong);
   }
-  .card .tag{
+  .card .tag-inline{
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.6px;
@@ -105,21 +120,28 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Modern App Architecture</h1>
-      <p>A growing collection of application &amp; system architecture diagrams, recreated as clean, self-contained, interactive HTML artifacts.</p>
+      <span class="tag">Developer Roadmaps</span>
+      <h1>Developer Roadmaps</h1>
+      <p>Visual, step-by-step roadmaps for building modern AI &amp; application systems — in the spirit of the roadmap-style guides developers already love, recreated as clean, self-contained, interactive HTML artifacts.</p>
     </header>
 
     <div class="grid">
       <a class="card" href="artifacts/ai-application-architecture.html">
-        <span class="tag">Diagram</span>
+        <span class="tag-inline">Roadmap</span>
         <h2>AI Application Architecture</h2>
         <p>Frontend → Agent Orchestration → Knowledge / Models / Tools → Data Layer → Observability → Deployment.</p>
-        <span class="view">View artifact →</span>
+        <span class="view">View roadmap →</span>
+      </a>
+      <a class="card" href="artifacts/how-to-build-a-rag.html">
+        <span class="tag-inline">Roadmap</span>
+        <h2>How to Build a RAG</h2>
+        <p>Load → Chunk → Embed &amp; Tag → Index → Retrieve → Augment → Generate → Evaluate (and iterate).</p>
+        <span class="view">View roadmap →</span>
       </a>
     </div>
 
     <footer>
-      Built and maintained with Claude · <a href="https://github.com/fahdi/modern-app-architecture">source on GitHub</a>
+      Built and maintained with Claude · <a href="https://github.com/fahdi/dev-roadmaps">source on GitHub</a>
     </footer>
   </div>
 </body>
