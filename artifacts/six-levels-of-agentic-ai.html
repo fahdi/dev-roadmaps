@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6 Levels of Agentic AI — Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --l1: #9aa7b8;
+    --l2: #b18bfa;
+    --l3: #fbbf24;
+    --l4: #4ade80;
+    --l5: #34d2e0;
+    --l6: #fb923c;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(177,139,250,0.08), transparent 60%),
+      radial-gradient(900px 500px at 90% 40%, rgba(251,146,60,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .roadmap-tag{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .roadmap-tag svg{ width: 13px; height: 13px; }
+
+  .title-block{
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .title-icon{ width: 46px; height: 46px; color: var(--text-primary); opacity: 0.92; }
+  .title-icon svg{ width:100%; height:100%; }
+  .title-block h1{
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+  .title-block p{
+    margin: 0;
+    max-width: 520px;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  /* ---------- level cards ---------- */
+  .level-card{
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 20px;
+    align-items: center;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .level-card:hover{
+    transform: translateY(-2px);
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: 0 10px 26px -14px var(--accent);
+  }
+  .level-info{
+    border-right: 1px solid var(--border);
+    padding-right: 18px;
+  }
+  .level-info h2{
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.3;
+  }
+  .level-info h2 .star{ color: #ffd98a; margin-left: 3px; }
+  .level-info p{
+    margin: 0;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .flow-wrap{ overflow-x: auto; }
+  .flow{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    min-height: 74px;
+    width: max-content;
+    margin: 0 auto;
+    padding: 12px 6px;
+  }
+  .flow svg.arrows{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .n{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    align-items:center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--text-primary);
+  }
+  .n svg{ width: 14px; height: 14px; flex:none; }
+  .n.accent{
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--border-strong));
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+  }
+  .n.dim{
+    opacity: 0.45;
+  }
+  .n .sub{
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .stack{
+    position: relative;
+    z-index: 2;
+    display:flex;
+    flex-direction: column;
+    gap: 9px;
+    align-items: stretch;
+  }
+
+  .group{
+    position: relative;
+    z-index: 2;
+    border: 1.5px dashed color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: 13px;
+    padding: 16px 14px 12px;
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .group .group-label{
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--page);
+    padding: 0 8px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 80%, var(--text-secondary));
+    white-space: nowrap;
+  }
+  .group.grid2{
+    display:grid;
+    grid-template-columns: auto auto;
+    gap: 22px 34px;
+  }
+
+  .footer-note{
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 16px;
+    max-width: 640px;
+    line-height: 1.6;
+  }
+  .footer-note strong{ color: var(--text-secondary); }
+
+  @media (max-width: 720px){
+    .level-card{ grid-template-columns: 1fr; }
+    .level-info{ border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 12px; }
+    .title-block h1{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag" id="tag"></div>
+
+  <div class="title-block">
+    <div class="title-icon" id="title-icon"></div>
+    <h1>6 Levels of Agentic AI</h1>
+    <p>From one prompt to loop engineering. Levels 1–5 are capabilities — level 6 is the craft of wiring them into a controlled loop.</p>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l1)">
+    <div class="level-info">
+      <h2>1) Basic Responder</h2>
+      <p>Prompt in, answer out — no tools, no memory.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f1">
+      <div class="n" id="f1-user" data-icon="user">User</div>
+      <div class="n accent" id="f1-llm" data-icon="brain">LLM</div>
+      <div class="n" id="f1-ans" data-icon="chat">Answer</div>
+    </div></div>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l2)">
+    <div class="level-info">
+      <h2>2) Router Pattern</h2>
+      <p>Router picks the model: strong for hard, cheap for easy.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f2">
+      <div class="n" id="f2-user" data-icon="user">User</div>
+      <div class="n accent" id="f2-router" data-icon="gitbranch">Router</div>
+      <div class="stack">
+        <div class="n" id="f2-strong" data-icon="brain">Strong model</div>
+        <div class="n dim" id="f2-small" data-icon="cpu">Small model</div>
+      </div>
+      <div class="n" id="f2-ans" data-icon="chat">Answer</div>
+    </div></div>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l3)">
+    <div class="level-info">
+      <h2>3) Tool Calling</h2>
+      <p>Calls real tools via MCP, then answers with facts.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f3">
+      <div class="n" id="f3-user" data-icon="user">User</div>
+      <div class="n accent" id="f3-llm" data-icon="brain">LLM</div>
+      <div class="group" id="f3-tools">
+        <span class="group-label">via MCP</span>
+        <div class="n" data-icon="search">Web search</div>
+        <div class="n" data-icon="calendar">Booking API</div>
+        <div class="n" data-icon="database">Database</div>
+      </div>
+      <div class="n" id="f3-ans" data-icon="chat">Answer</div>
+    </div></div>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l4)">
+    <div class="level-info">
+      <h2>4) Multi-agent</h2>
+      <p>Manager delegates to specialists, then merges their work.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f4">
+      <div class="n" id="f4-user" data-icon="user">User</div>
+      <div class="n accent" id="f4-mgr" data-icon="users">Manager</div>
+      <div class="stack">
+        <div class="n" id="f4-res" data-icon="search">Research</div>
+        <div class="n" id="f4-write" data-icon="pen">Write</div>
+        <div class="n" id="f4-rev" data-icon="eye">Review</div>
+      </div>
+      <div class="n" id="f4-ans" data-icon="chat">Answer</div>
+    </div></div>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l5)">
+    <div class="level-info">
+      <h2>5) Autonomous</h2>
+      <p>Generates, self-checks, and loops until the answer is valid.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f5" style="padding-top:34px">
+      <div class="n" id="f5-user" data-icon="user">User</div>
+      <div class="n accent" id="f5-gen" data-icon="spark">Generator</div>
+      <div class="n accent" id="f5-val" data-icon="shield">Validator</div>
+      <div class="n" id="f5-final" data-icon="chat">Final</div>
+    </div></div>
+  </div>
+
+  <div class="level-card" style="--accent:var(--l6)">
+    <div class="level-info">
+      <h2>6) Loop Engineering<span class="star">★</span></h2>
+      <p>Glue LLM, tools &amp; agents into one looping workflow.</p>
+    </div>
+    <div class="flow-wrap"><div class="flow" id="f6">
+      <div class="n" id="f6-user" data-icon="user">User</div>
+      <div class="group grid2" id="f6-loop">
+        <span class="group-label">orchestration · the loop</span>
+        <div class="n" id="f6-plan" data-icon="map">Plan</div>
+        <div class="n accent" id="f6-llm" data-icon="brain">LLM</div>
+        <div class="n" id="f6-reflect" data-icon="refresh">Reflect</div>
+        <div class="n" id="f6-tools" data-icon="wrench">Tools</div>
+      </div>
+      <div class="n" id="f6-ans" data-icon="chat">Answer</div>
+    </div></div>
+  </div>
+
+  <div class="footer-note">
+    <strong>Levels 1–5 are capabilities. Level 6 is the craft:</strong> wiring those capabilities into a controlled loop — plan, call the model, use tools, reflect — that knows when to keep going and when to stop. That's the difference between a demo and a system.
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  user: '<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/>',
+  users: '<circle cx="9" cy="9" r="2.6"/><circle cx="16.2" cy="10.2" r="2.1"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M14.3 19c0-2.2 1.6-4 4-4s4.2 1.8 4.2 4"/>',
+  brain: '<path d="M9 3.5c-2 0-3.5 1.5-3.5 3.4c-1.6.3-2.8 1.7-2.8 3.4c0 1 .4 1.9 1.1 2.5c-.4.6-.6 1.3-.6 2.1c0 2 1.6 3.6 3.6 3.6c.2 1.7 1.7 3 3.4 3c1 0 1.9-.4 2.5-1.1c.6.7 1.5 1.1 2.5 1.1c1.7 0 3.2-1.3 3.4-3c2 0 3.6-1.6 3.6-3.6c0-.8-.2-1.5-.6-2.1c.7-.6 1.1-1.5 1.1-2.5c0-1.7-1.2-3.1-2.8-3.4c0-1.9-1.5-3.4-3.5-3.4c-.9 0-1.7.3-2.3.9c-.6-.6-1.4-.9-2.3-.9z"/><path d="M12 3.5v17"/>',
+  chat: '<path d="M4 12a8 8 0 1 1 3.3 6.5L4 20l1.2-3.6A7.9 7.9 0 0 1 4 12z"/>',
+  gitbranch: '<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M6 8v6a4 4 0 0 0 4 4h2M18 8v2"/>',
+  cpu: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><rect x="10" y="10" width="4" height="4"/><path d="M12 3.5v3M9 3.5v3M15 3.5v3M12 20.5v-3M9 20.5v-3M15 20.5v-3M3.5 12h3M3.5 9h3M3.5 15h3M20.5 12h-3M20.5 9h-3M20.5 15h-3"/>',
+  search: '<circle cx="10.3" cy="10.3" r="6.3"/><path d="M19.5 19.5l-4.4-4.4"/>',
+  calendar: '<rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3.5v4M16 3.5v4"/>',
+  database: '<ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6"/><path d="M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/>',
+  pen: '<path d="M4 20l1.2-4.2L16.4 4.6a1.8 1.8 0 0 1 2.6 0l.4.4a1.8 1.8 0 0 1 0 2.6L8.2 18.8z"/><path d="M14.5 6.5l3 3"/>',
+  eye: '<path d="M3.5 12s3.5-6.5 8.5-6.5S20.5 12 20.5 12s-3.5 6.5-8.5 6.5S3.5 12 3.5 12z"/><circle cx="12" cy="12" r="2.6"/>',
+  spark: '<polygon points="13,3 6,14 11,14 10,21 18,10 13,10" fill="currentColor" stroke="none"/>',
+  shield: '<path d="M12 3.5l7 2.8v5.2c0 4.6-3 7.6-7 9-4-1.4-7-4.4-7-9V6.3z"/><path d="M9 11.8l2.2 2.2 4-4.2"/>',
+  map: '<path d="M9 4.5L4 6.5v13l5-2 6 2 5-2v-13l-5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>',
+  refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/>',
+  wrench: '<path d="M15 6.5a4 4 0 0 1-5.2 5.2L5 16.5l2.5 2.5 4.8-4.8A4 4 0 0 1 17.5 9l-2.8 2.8-2-2z"/>',
+  ladder: '<path d="M4 20L14 4M10 20L20 4M6.7 15.7l6.6 0M9.4 11.4l6.6 0M12.1 7.1l6.6 0" transform="translate(0 0)"/>'
+};
+function icon(key){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[key]||'')+'</svg>'; }
+
+document.getElementById('tag').innerHTML = icon('map') + '<span>Developer Roadmap</span>';
+document.getElementById('title-icon').innerHTML = icon('ladder');
+document.querySelectorAll('.n[data-icon]').forEach(el => {
+  el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon));
+});
+
+/* ------- arrow engine: draws arrows inside each .flow ------- */
+function pt(flowRect, el, anchor){
+  const r = el.getBoundingClientRect();
+  const x = r.left - flowRect.left, y = r.top - flowRect.top;
+  switch(anchor){
+    case 'right': return {x: x + r.width, y: y + r.height/2};
+    case 'left': return {x: x, y: y + r.height/2};
+    case 'top': return {x: x + r.width/2, y: y};
+    case 'bottom': return {x: x + r.width/2, y: y + r.height};
+  }
+}
+
+function drawFlow(flowId, arrows){
+  const flow = document.getElementById(flowId);
+  if(!flow) return;
+  let svg = flow.querySelector('svg.arrows');
+  if(svg) svg.remove();
+  svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','arrows');
+  const fr = flow.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${fr.width} ${fr.height}`);
+  flow.prepend(svg);
+
+  const accent = getComputedStyle(flow.closest('.level-card')).getPropertyValue('--accent').trim();
+  const mid = 'm'+flowId;
+  svg.innerHTML = `<defs><marker id="${mid}" markerWidth="7" markerHeight="7" refX="5" refY="2.6" orient="auto"><path d="M0,0 L5.2,2.6 L0,5.2 z" fill="${accent}"/></marker></defs>`;
+
+  arrows.forEach(a => {
+    const fromEl = document.getElementById(a.from);
+    const toEl = document.getElementById(a.to);
+    if(!fromEl || !toEl) return;
+    const p1 = pt(fr, fromEl, a.fromA || 'right');
+    const p2 = pt(fr, toEl, a.toA || 'left');
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    let d, labelPos;
+    if(a.arc){
+      const lift = a.arc;
+      d = `M ${p1.x} ${p1.y} C ${p1.x} ${p1.y - lift}, ${p2.x} ${p2.y - lift}, ${p2.x} ${p2.y}`;
+      labelPos = {x:(p1.x+p2.x)/2, y: Math.min(p1.y,p2.y) - lift*0.72};
+    } else if(Math.abs(p1.y - p2.y) < 2){
+      d = `M ${p1.x+3} ${p1.y} L ${p2.x-4} ${p2.y}`;
+      labelPos = {x:(p1.x+p2.x)/2, y: p1.y - 7};
+    } else {
+      const mx = (p1.x + p2.x)/2;
+      d = `M ${p1.x+3} ${p1.y} C ${mx} ${p1.y}, ${mx} ${p2.y}, ${p2.x-4} ${p2.y}`;
+      labelPos = {x: mx, y: (p1.y+p2.y)/2 - 6};
+    }
+    path.setAttribute('d', d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke', accent);
+    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('stroke-opacity', a.dim ? '0.35' : '0.8');
+    if(a.dashed) path.setAttribute('stroke-dasharray','4 4');
+    if(!a.noHead) path.setAttribute('marker-end',`url(#${mid})`);
+    svg.appendChild(path);
+
+    if(a.label){
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x', labelPos.x + (a.labelDx||0));
+      t.setAttribute('y', labelPos.y + (a.labelDy||0));
+      t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-size','9');
+      t.setAttribute('font-weight','600');
+      t.setAttribute('fill', a.dim ? 'rgba(255,255,255,0.35)' : accent);
+      t.textContent = a.label;
+      svg.appendChild(t);
+    }
+  });
+}
+
+function drawAll(){
+  drawFlow('f1', [
+    {from:'f1-user', to:'f1-llm', label:'prompt'},
+    {from:'f1-llm', to:'f1-ans', label:'answer'},
+  ]);
+  drawFlow('f2', [
+    {from:'f2-user', to:'f2-router'},
+    {from:'f2-router', to:'f2-strong', label:'✓ needs reasoning', labelDx:-14, labelDy:-10},
+    {from:'f2-router', to:'f2-small', label:'✗ simple → skipped', dim:true, dashed:true, labelDx:-16, labelDy:34},
+    {from:'f2-strong', to:'f2-ans'},
+  ]);
+  drawFlow('f3', [
+    {from:'f3-user', to:'f3-llm'},
+    {from:'f3-llm', to:'f3-tools'},
+    {from:'f3-tools', to:'f3-ans', label:'answer'},
+  ]);
+  drawFlow('f4', [
+    {from:'f4-user', to:'f4-mgr'},
+    {from:'f4-mgr', to:'f4-res'},
+    {from:'f4-mgr', to:'f4-write'},
+    {from:'f4-mgr', to:'f4-rev'},
+    {from:'f4-res', to:'f4-ans'},
+    {from:'f4-write', to:'f4-ans', label:'merge'},
+    {from:'f4-rev', to:'f4-ans'},
+  ]);
+  drawFlow('f5', [
+    {from:'f5-user', to:'f5-gen'},
+    {from:'f5-gen', to:'f5-val', label:'check'},
+    {from:'f5-val', to:'f5-gen', fromA:'top', toA:'top', arc:26, label:'retry', dashed:true},
+    {from:'f5-val', to:'f5-final', label:'valid ✓'},
+  ]);
+  drawFlow('f6', [
+    {from:'f6-user', to:'f6-loop'},
+    {from:'f6-plan', to:'f6-llm'},
+    {from:'f6-llm', to:'f6-tools', fromA:'bottom', toA:'top'},
+    {from:'f6-tools', to:'f6-reflect', fromA:'left', toA:'right'},
+    {from:'f6-reflect', to:'f6-plan', fromA:'top', toA:'bottom', label:'loop'},
+    {from:'f6-loop', to:'f6-ans', label:'answer'},
+  ]);
+}
+function redraw(){ requestAnimationFrame(drawAll); }
+window.addEventListener('load', redraw);
+window.addEventListener('resize', redraw);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(redraw); }
+setTimeout(redraw, 60);
+setTimeout(redraw, 300);
+</script>
+</body>
+</html>
