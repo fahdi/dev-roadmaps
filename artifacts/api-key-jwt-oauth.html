@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Key vs JWT vs OAuth 2.0 &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --key: #4ade80;
+    --jwt: #4f9dff;
+    --oauth: #b18bfa;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 34%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 80%, rgba(177,139,250,0.07), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1040px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 26px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 610px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .cols{ width:100%; display:grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+
+  .col{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-top: 3px solid var(--accent);
+    border-radius: 14px;
+    padding: 17px 17px 18px;
+    display:flex; flex-direction:column; gap: 12px;
+    transition: background .18s ease;
+  }
+  .col:hover{ background: var(--surface-hover); }
+
+  .col h2{ margin:0; font-size: 17px; font-weight: 800; letter-spacing:0.3px; color: var(--accent); }
+  .col .dir{
+    display:inline-block;
+    font-size: 10px; font-weight: 800; letter-spacing:0.5px;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    border-radius: 999px; padding: 4px 10px;
+    align-self:flex-start;
+  }
+  .col .ctx{ font-size: 10.5px; color: var(--text-muted); margin-top: -6px; }
+
+  .sec{ display:flex; flex-direction:column; gap: 5px; }
+  .sec .sk{
+    font-size: 9.5px; font-weight: 800; letter-spacing:0.7px;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 78%, var(--text-secondary));
+  }
+  .sec .sv{ font-size: 11.5px; color: var(--text-secondary); line-height:1.5; }
+  .sec ul{ margin: 0; padding-left: 15px; display:flex; flex-direction:column; gap: 3px; }
+  .sec li{ font-size: 11px; color: var(--text-secondary); line-height:1.45; }
+
+  .together{
+    width:100%; margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px 20px;
+  }
+  .together h3{
+    margin: 0 0 4px; text-align:center;
+    font-size: 12px; font-weight: 800;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .together .lead{ margin: 0 0 15px; text-align:center; font-size: 11.5px; color: var(--text-muted); }
+  .steps{ display:grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .step{
+    border: 1px solid color-mix(in srgb, var(--sc) 30%, transparent);
+    background: color-mix(in srgb, var(--sc) 6%, transparent);
+    border-radius: 11px; padding: 12px 13px 13px;
+  }
+  .step .sn{ font-size: 9.5px; font-weight: 800; letter-spacing:0.6px; color: var(--sc); }
+  .step .st{ display:block; font-size: 12px; font-weight: 800; color: var(--text-primary); margin: 3px 0 5px; }
+  .step .sd{ display:block; font-size: 10.5px; color: var(--text-secondary); line-height:1.45; }
+
+  .verdict{
+    width: 100%; margin-top: 20px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 780px){
+    .cols{ grid-template-columns: 1fr; }
+    .steps{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>API Key vs JWT vs OAuth 2.0</h1>
+    <p>Three different problems, three different tools. They get compared as if you choose one, but a single product usually runs all three at once for different hops.</p>
+  </div>
+
+  <div class="cols">
+
+    <div class="col" style="--accent:var(--key)">
+      <h2>API Key</h2>
+      <span class="dir">Application to application</span>
+      <span class="ctx">No user context at all</span>
+      <div class="sec">
+        <span class="sk">Use when</span>
+        <span class="sv">One service needs to call another and there is no human in the request.</span>
+      </div>
+      <div class="sec">
+        <span class="sk">Typical uses</span>
+        <ul>
+          <li>Calling a model provider's API</li>
+          <li>Backend calling a third-party service</li>
+          <li>Scheduled jobs and cron tasks</li>
+          <li>Internal service to service calls</li>
+        </ul>
+      </div>
+      <div class="sec">
+        <span class="sk">Watch for</span>
+        <span class="sv">A leaked key is full access with no user to trace it back to. Rotate them and keep them out of client code.</span>
+      </div>
+    </div>
+
+    <div class="col" style="--accent:var(--jwt)">
+      <h2>JWT</h2>
+      <span class="dir">User to your application</span>
+      <span class="ctx">The user is already authenticated</span>
+      <div class="sec">
+        <span class="sk">Use when</span>
+        <span class="sv">A user has logged in and your app needs to identify and authorise them on every request.</span>
+      </div>
+      <div class="sec">
+        <span class="sk">Typical uses</span>
+        <ul>
+          <li>Logged-in web and mobile sessions</li>
+          <li>Per-user access in a dashboard</li>
+          <li>Role and permission checks</li>
+          <li>Internal admin portals</li>
+        </ul>
+      </div>
+      <div class="sec">
+        <span class="sk">Watch for</span>
+        <span class="sv">Self-contained means it stays valid until it expires. Revoking early needs a deny list or short lifetimes plus refresh.</span>
+      </div>
+    </div>
+
+    <div class="col" style="--accent:var(--oauth)">
+      <h2>OAuth 2.0</h2>
+      <span class="dir">User to third party</span>
+      <span class="ctx">Delegated access, on their behalf</span>
+      <div class="sec">
+        <span class="sk">Use when</span>
+        <span class="sv">Your app needs permission to reach another service as the user, without ever seeing their password.</span>
+      </div>
+      <div class="sec">
+        <span class="sk">Typical uses</span>
+        <ul>
+          <li>Sign in with an existing provider</li>
+          <li>Connecting a workspace or mailbox</li>
+          <li>An agent reading a user's documents</li>
+          <li>Enterprise single sign-on</li>
+        </ul>
+      </div>
+      <div class="sec">
+        <span class="sk">Watch for</span>
+        <span class="sv">Scopes are the whole security model. Ask for the narrowest set, because users see exactly what you requested.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="together">
+    <h3>A single product uses all three</h3>
+    <p class="lead">Different hops, different mechanisms, one request path</p>
+    <div class="steps">
+      <div class="step" style="--sc:var(--oauth)">
+        <span class="sn">Step 1</span>
+        <span class="st">The user signs in</span>
+        <span class="sd">OAuth lets them authenticate with a provider they already trust, so you never handle their password.</span>
+      </div>
+      <div class="step" style="--sc:var(--jwt)">
+        <span class="sn">Step 2</span>
+        <span class="st">Your app issues a session</span>
+        <span class="sd">A JWT identifies that user on every subsequent request without a database lookup each time.</span>
+      </div>
+      <div class="step" style="--sc:var(--key)">
+        <span class="sn">Step 3</span>
+        <span class="st">Your backend calls out</span>
+        <span class="sd">An API key authenticates your service to model providers and other third-party APIs.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">Ask who is calling whom, and on whose behalf.</div>
+    <div class="sub">
+      No user in the request means an API key. A user talking to your own app means a JWT. Your app acting on a user's behalf somewhere else means OAuth.<br>
+      Almost every mismatched auth choice comes from skipping that question.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: identify the two parties and whether a human is involved, then pick the mechanism that models that relationship.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a>, where this happens at the gateway, and <a href="api-function-calling-mcp.html" style="color:#8fb8ff">API vs Function Calling vs MCP</a> for what an agent is authenticating into.
+  </div>
+</div>
+
+</body>
+</html>
