@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Full AI Stack &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --llm: #b18bfa;
+    --embed: #4f9dff;
+    --vector: #fb923c;
+    --extract: #4ade80;
+    --access: #fb7185;
+    --frame: #fbbf24;
+    --evalc: #34d2e0;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(177,139,250,0.09), transparent 60%),
+      radial-gradient(900px 500px at 88% 35%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 75%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    position: relative;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+    display:flex; flex-direction:column; align-items:center; gap: 0;
+  }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 30px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 580px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .layers{ width: 100%; display:flex; flex-direction:column; gap: 14px; }
+
+  .layer{
+    display:grid;
+    grid-template-columns: 190px 1fr;
+    gap: 18px;
+    align-items: stretch;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    transition: background .18s ease, border-color .18s ease;
+  }
+  .layer:hover{ background: var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+  .layer-label{
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    display:flex; flex-direction:column; justify-content:center; gap: 4px;
+  }
+  .layer-label .num{
+    font-size: 9.5px; font-weight: 800; letter-spacing:0.7px;
+    color: var(--accent); opacity: 0.85;
+  }
+  .layer-label .name{
+    font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
+    color: var(--text-primary); line-height: 1.2;
+  }
+  .layer-label .job{
+    font-size: 10.5px; color: var(--text-muted); line-height:1.4;
+  }
+
+  .layer-body{ display:flex; flex-direction:column; justify-content:center; gap: 9px; }
+  .tools{ display:flex; flex-wrap: wrap; gap: 7px; }
+  .tool{
+    font-size: 11px; font-weight: 600;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-radius: 999px;
+    padding: 4px 11px;
+  }
+  .layer-note{
+    font-size: 10.5px; color: var(--text-muted); line-height:1.45;
+  }
+  .layer-note b{ color: var(--text-secondary); font-weight: 600; }
+
+  .verdict{
+    width: 100%;
+    margin-top: 26px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    text-align:center;
+  }
+  .verdict .punch{ font-size: 14.5px; font-weight: 800; color: #ffd98a; letter-spacing:0.3px; }
+  .verdict .sub{ margin-top: 9px; font-size: 12.5px; color: var(--text-primary); line-height:1.65; }
+
+  .footer-note{
+    margin-top: 30px;
+    font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 760px){
+    .layer{ grid-template-columns: 1fr; gap: 12px; }
+    .layer-label{ border-left: none; border-top: 2px solid var(--accent); padding: 10px 0 0; }
+    .title-block h1{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>The Full AI Stack</h1>
+    <p>An LLM is one layer. Production AI needs the other six around it, and most of the work that makes a system feel good happens outside the model.</p>
+  </div>
+
+  <div class="layers">
+
+    <div class="layer" style="--accent:var(--llm)">
+      <div class="layer-label">
+        <span class="num">01</span>
+        <span class="name">LLMs</span>
+        <span class="job">The reasoning layer</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">Claude</span><span class="tool">OpenAI</span><span class="tool">Gemini</span>
+          <span class="tool">Llama</span><span class="tool">Qwen</span><span class="tool">DeepSeek</span>
+          <span class="tool">Mistral</span><span class="tool">Gemma</span><span class="tool">Cohere</span>
+          <span class="tool">Phi</span>
+        </div>
+        <div class="layer-note">The layer teams spend the most time arguing about and the least time differentiating on. <b>Swapping model is the cheapest change you can make, which is why it is rarely the fix.</b></div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--embed)">
+      <div class="layer-label">
+        <span class="num">02</span>
+        <span class="name">Embedding Models</span>
+        <span class="job">Text into vectors of meaning</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">OpenAI</span><span class="tool">Cohere</span><span class="tool">Voyage AI</span>
+          <span class="tool">Google</span><span class="tool">Nomic</span><span class="tool">SBERT</span>
+        </div>
+        <div class="layer-note">Pick once and commit. <b>Changing embedding model means re-embedding everything</b>, because vectors from two different models are not comparable.</div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--vector)">
+      <div class="layer-label">
+        <span class="num">03</span>
+        <span class="name">Vector Database</span>
+        <span class="job">Store and search those vectors</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">Pinecone</span><span class="tool">Milvus</span><span class="tool">Weaviate</span>
+          <span class="tool">Qdrant</span><span class="tool">pgvector</span><span class="tool">Chroma</span>
+          <span class="tool">OpenSearch</span><span class="tool">Cassandra</span>
+        </div>
+        <div class="layer-note">If you already run Postgres, start there. <b>A separate vector service is a second system to operate</b>, and most projects never reach the scale that justifies one.</div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--extract)">
+      <div class="layer-label">
+        <span class="num">04</span>
+        <span class="name">Data Extraction</span>
+        <span class="job">Get clean text out of messy sources</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">Firecrawl</span><span class="tool">Crawl4AI</span><span class="tool">Docling</span>
+          <span class="tool">LlamaParse</span><span class="tool">ExtractThinker</span><span class="tool">MegaParser</span>
+          <span class="tool">ScrapeGraphAI</span>
+        </div>
+        <div class="layer-note">The least glamorous layer and the one that decides your quality ceiling. <b>A bad PDF parse cannot be recovered by a better model further down.</b></div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--access)">
+      <div class="layer-label">
+        <span class="num">05</span>
+        <span class="name">LLM Access</span>
+        <span class="job">Where inference actually runs</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">Hugging Face</span><span class="tool">Groq</span><span class="tool">Together AI</span>
+          <span class="tool">Ollama</span>
+        </div>
+        <div class="layer-note">Hosted, self-hosted or local. <b>This is where latency, cost and data residency get decided</b>, not in the model choice above it.</div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--frame)">
+      <div class="layer-label">
+        <span class="num">06</span>
+        <span class="name">Frameworks</span>
+        <span class="job">Glue the layers into a pipeline</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">LangChain</span><span class="tool">LlamaIndex</span><span class="tool">Haystack</span>
+          <span class="tool">txtai</span>
+        </div>
+        <div class="layer-note">Useful for getting moving, and worth knowing what each abstraction hides. <b>Learn the layer before the wrapper</b>, or debugging becomes guesswork.</div>
+      </div>
+    </div>
+
+    <div class="layer" style="--accent:var(--evalc)">
+      <div class="layer-label">
+        <span class="num">07</span>
+        <span class="name">Evaluation</span>
+        <span class="job">Prove the thing works</span>
+      </div>
+      <div class="layer-body">
+        <div class="tools">
+          <span class="tool">Giskard</span><span class="tool">Ragas</span><span class="tool">TruLens</span>
+        </div>
+        <div class="layer-note">Usually added last, which is exactly backwards. <b>Without this layer every other choice above is a guess</b> you have no way to check.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <div class="punch">A newer model helps. Better architecture helps more.</div>
+    <div class="sub">
+      Useful AI is built from the stack around the model, not the model alone.<br>
+      When output quality disappoints, the fix is far more often in extraction, retrieval or evaluation than in the LLM.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: models reason, embeddings encode, vector stores retrieve, extraction feeds them, access decides where it runs, frameworks connect it, evaluation proves it.<br>
+    Pairs with <a href="ai-application-architecture.html" style="color:#8fb8ff">AI Application Architecture</a> for how a request flows through these layers, and <a href="how-to-build-a-rag.html" style="color:#8fb8ff">How to Build a RAG</a> for the retrieval path in detail.
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agentic Loop &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --gather: #4f9dff;
+    --act: #fb923c;
+    --verify: #4ade80;
+    --human: #b18bfa;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(251,146,60,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 35%, rgba(79,157,255,0.07), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    max-width: 1000px; margin: 0 auto;
+    padding: 56px 28px 72px;
+    display:flex; flex-direction:column; align-items:center; gap: 0;
+  }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 30px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 580px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .phases{ width:100%; display:grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .phase{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-top: 3px solid var(--accent);
+    border-radius: 16px;
+    padding: 18px 18px 20px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .phase:hover{ background: var(--surface-hover); transform: translateY(-2px); }
+  .phase .p-num{ font-size: 10px; font-weight: 800; letter-spacing:0.7px; color: var(--accent); opacity:0.85; }
+  .phase h2{ margin: 3px 0 10px; font-size: 15px; font-weight: 800; letter-spacing:0.3px; color: var(--text-primary); }
+  .phase ul{ margin: 0; padding: 0; list-style: none; display:flex; flex-direction:column; gap: 7px; }
+  .phase li{
+    font-size: 11.5px; color: var(--text-secondary); line-height:1.45;
+    padding-left: 14px; position: relative;
+  }
+  .phase li::before{
+    content:""; position:absolute; left:0; top:6px;
+    width:5px; height:5px; border-radius:50%;
+    background: var(--accent); opacity:0.8;
+  }
+
+  .cycle-note{
+    width:100%; margin-top: 16px;
+    display:flex; align-items:center; justify-content:center; gap: 14px;
+    flex-wrap: wrap;
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .cycle-note .pill{
+    border: 1px dashed rgba(255,255,255,0.22);
+    border-radius: 999px; padding: 7px 15px;
+    font-weight: 600; color: var(--text-primary); font-size: 11.5px;
+  }
+  .cycle-note .loopback{ color: var(--act); font-weight: 700; }
+  .cycle-note .done{ color: var(--verify); font-weight: 700; }
+
+  .band{
+    width: 100%; margin-top: 26px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px 20px;
+  }
+  .band h3{
+    margin: 0 0 4px; text-align:center;
+    font-size: 12px; font-weight: 800;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .band .lead{ margin: 0 0 14px; text-align:center; font-size: 11.5px; color: var(--text-muted); }
+  .chips{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; }
+  .chip{
+    font-size: 11.5px; font-weight: 600; color: var(--text-primary);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 999px; padding: 6px 14px;
+  }
+
+  .roles{
+    width:100%; margin-top: 22px;
+    display:grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+  }
+  .role{
+    text-align:center;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 15px 14px 16px;
+  }
+  .role .r-name{ display:block; font-size: 12px; font-weight: 800; letter-spacing:0.7px; text-transform: uppercase; color: var(--rc); }
+  .role .r-verb{ display:block; font-size: 15px; font-weight: 800; color: var(--text-primary); margin: 5px 0 5px; }
+  .role .r-desc{ display:block; font-size: 11px; color: var(--text-secondary); line-height:1.45; }
+
+  .verdict{
+    width: 100%; margin-top: 26px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px;
+    text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 30px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 660px;
+  }
+
+  @media (max-width: 760px){
+    .phases{ grid-template-columns: 1fr; }
+    .roles{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>The Agentic Loop</h1>
+    <p>A coding agent does not answer once and stop. Your prompt starts the work, tools keep it moving, and the loop runs until the task is genuinely done or you step in.</p>
+  </div>
+
+  <div class="phases">
+    <div class="phase" style="--accent:var(--gather)">
+      <div class="p-num">01</div>
+      <h2>Gather Context</h2>
+      <ul>
+        <li>Search files for what is relevant</li>
+        <li>Read the code that matters</li>
+        <li>Understand the current state before changing it</li>
+      </ul>
+    </div>
+    <div class="phase" style="--accent:var(--act)">
+      <div class="p-num">02</div>
+      <h2>Take Action</h2>
+      <ul>
+        <li>Edit files</li>
+        <li>Run commands</li>
+        <li>Use tools to make the change real</li>
+      </ul>
+    </div>
+    <div class="phase" style="--accent:var(--verify)">
+      <div class="p-num">03</div>
+      <h2>Verify Results</h2>
+      <ul>
+        <li>Run the tests</li>
+        <li>Inspect the actual output</li>
+        <li>Check that the fix is a fix</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cycle-note">
+    <span class="pill">Verified and correct <span class="done">&rarr; task complete</span></span>
+    <span class="pill">Something is off <span class="loopback">&rarr; back to gather context</span></span>
+  </div>
+
+  <div class="band" style="--accent:var(--act)">
+    <h3>Tools power every phase</h3>
+    <p class="lead">The loop is only as capable as what it can reach</p>
+    <div class="chips">
+      <span class="chip">Files</span>
+      <span class="chip">Search</span>
+      <span class="chip">Shell</span>
+      <span class="chip">Web</span>
+      <span class="chip">Code intelligence</span>
+    </div>
+  </div>
+
+  <div class="band" style="--accent:var(--human)">
+    <h3>You stay in the loop</h3>
+    <p class="lead">Not a fire-and-forget button. The best results come from steering mid-run</p>
+    <div class="chips">
+      <span class="chip">Interrupt</span>
+      <span class="chip">Steer</span>
+      <span class="chip">Add context</span>
+    </div>
+  </div>
+
+  <div class="roles">
+    <div class="role" style="--rc:var(--gather)">
+      <span class="r-name">Model</span>
+      <span class="r-verb">Reasons</span>
+      <span class="r-desc">Decides what to do next given what it currently knows</span>
+    </div>
+    <div class="role" style="--rc:var(--act)">
+      <span class="r-name">Tools</span>
+      <span class="r-verb">Act</span>
+      <span class="r-desc">Reach outside the context window and change real state</span>
+    </div>
+    <div class="role" style="--rc:var(--verify)">
+      <span class="r-name">Harness</span>
+      <span class="r-verb">Orchestrates</span>
+      <span class="r-desc">Runs the loop, holds the context, decides when to stop</span>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">New information informs the next decision.</div>
+    <div class="sub">
+      That single property is what separates a loop from a long answer.<br>
+      An agent that acts without verifying is guessing at scale, and an agent that verifies without looping back just reports the problem instead of fixing it.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: gather context, take action, verify, then either finish or go round again with what you learned.<br>
+    Pairs with <a href="six-levels-of-agentic-ai.html" style="color:#8fb8ff">6 Levels of Agentic AI</a>, where this loop is level 6, and <a href="agent-control-plane.html" style="color:#8fb8ff">Design Your Agent's Control Plane</a> for shaping how the agent behaves inside it.
+  </div>
+</div>
+
+</body>
+</html>

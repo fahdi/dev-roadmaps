@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Map &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --core: #4ade80;
+    --scale: #4f9dff;
+    --ai: #fbbf24;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 30%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 10% 78%, rgba(251,191,36,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    max-width: 1060px; margin: 0 auto;
+    padding: 56px 28px 72px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 26px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 600px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .legend{ display:flex; gap: 18px; flex-wrap:wrap; justify-content:center; margin-bottom: 24px; }
+  .legend span{ font-size: 11px; color: var(--text-muted); display:flex; align-items:center; gap:6px; }
+  .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  .group{ width:100%; margin-bottom: 22px; }
+  .group > h2{
+    margin: 0 0 12px;
+    font-size: 11.5px; font-weight: 800;
+    letter-spacing: 0.9px; text-transform: uppercase;
+    color: var(--accent);
+    text-align:center;
+  }
+
+  .grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .item{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 16px 15px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .item:hover{ background: var(--surface-hover); transform: translateY(-2px); }
+  .item .head{ display:flex; align-items:baseline; gap:9px; margin-bottom: 7px; }
+  .item .num{ font-size: 10px; font-weight: 800; color: var(--accent); opacity:0.85; letter-spacing:0.5px; }
+  .item .name{ font-size: 14px; font-weight: 800; color: var(--text-primary); letter-spacing:0.2px; }
+  .item .nail{ margin: 0; font-size: 11.5px; color: var(--text-secondary); line-height:1.5; }
+  .item .cue{
+    display:inline-block; margin-top: 8px;
+    font-size: 10px; font-style: italic;
+    color: color-mix(in srgb, var(--accent) 72%, var(--text-secondary));
+  }
+
+  .verdict{
+    width: 100%; margin-top: 12px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px;
+    text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 760px){
+    .grid{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>System Design Map</h1>
+    <p>Twelve designs worth knowing cold, and the one thing each is really testing. Most of them are the same handful of ideas wearing different clothes, which is why memorising answers works far worse than recognising the pattern.</p>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#4ade80"></i> Core primitives</span>
+    <span><i style="background:#4f9dff"></i> Scale and delivery</span>
+    <span><i style="background:#fbbf24"></i> AI systems</span>
+  </div>
+
+  <div class="group" style="--accent:var(--core)">
+    <h2>Core primitives</h2>
+    <div class="grid">
+      <div class="item">
+        <div class="head"><span class="num">01</span><span class="name">URL Shortener</span></div>
+        <p class="nail">Short IDs mapped to long URLs, with the hot links cached. The real question is ID generation without collisions.</p>
+        <span class="cue">base62, 301 vs 302</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">02</span><span class="name">Rate Limiter</span></div>
+        <p class="nail">Token bucket per user, and the hard part is staying fair across many servers rather than per instance.</p>
+        <span class="cue">Redis counters, 100 per minute</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">03</span><span class="name">Key-Value Store</span></div>
+        <p class="nail">Consistent hashing to place keys, replication plus quorum to survive nodes disappearing.</p>
+        <span class="cue">Dynamo-style, R + W &gt; N</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">04</span><span class="name">Distributed Cache</span></div>
+        <p class="nail">Eviction and invalidation, and above all avoiding the stampede when a hot key expires at once.</p>
+        <span class="cue">LRU, TTL, single-flight</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--scale)">
+    <h2>Scale and delivery</h2>
+    <div class="grid">
+      <div class="item">
+        <div class="head"><span class="num">05</span><span class="name">Chat / Messaging</span></div>
+        <p class="nail">Persistent connections plus ordering. Delivery guarantees are the interesting part, not the socket.</p>
+        <span class="cue">WebSockets, sequence numbers</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">06</span><span class="name">News Feed</span></div>
+        <p class="nail">Fan-out on write or on read, and the celebrity problem that breaks whichever one you picked.</p>
+        <span class="cue">push vs pull, hybrid</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">07</span><span class="name">Video Streaming</span></div>
+        <p class="nail">Transcode once into many renditions, serve from a CDN, adapt bitrate to the viewer's connection.</p>
+        <span class="cue">HLS, DASH, edge caching</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">08</span><span class="name">Ride-Share Matching</span></div>
+        <p class="nail">Geospatial indexing so you can find nearby drivers fast, then match without double-booking.</p>
+        <span class="cue">geohash, quadtree</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--ai)">
+    <h2>AI systems</h2>
+    <div class="grid">
+      <div class="item">
+        <div class="head"><span class="num">09</span><span class="name">AI Chat + RAG</span></div>
+        <p class="nail">Retrieve first, then answer. Route by task, stream tokens back, and cite what you used.</p>
+        <span class="cue">retrieve, route, stream, cite</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">10</span><span class="name">LLM Inference</span></div>
+        <p class="nail">Dynamic batching to keep GPUs busy, KV cache to avoid recomputation, and cost per request as a first-class metric.</p>
+        <span class="cue">batching, KV cache, GPU scheduling</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">11</span><span class="name">Enterprise RAG</span></div>
+        <p class="nail">Ingestion plus hybrid search, reranking, and access control that survives the retrieval step.</p>
+        <span class="cue">hybrid search, rerank, permissions</span>
+      </div>
+      <div class="item">
+        <div class="head"><span class="num">12</span><span class="name">Agentic AI</span></div>
+        <p class="nail">Tool calls inside a loop, with memory, retries, approvals and a way to stop.</p>
+        <span class="cue">loop, memory, approvals, safety</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">Twelve designs, far fewer actual ideas.</div>
+    <div class="sub">
+      Caching, partitioning, replication, queueing and fan-out show up in nearly all of them.<br>
+      Learn to spot which of those a question is really about and the unfamiliar prompts stop being unfamiliar.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: get the core primitives solid, then the delivery patterns built on them, then the AI systems that reuse both.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for the path every one of these sits on.
+  </div>
+</div>
+
+</body>
+</html>
