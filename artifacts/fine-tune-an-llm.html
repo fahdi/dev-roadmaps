@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fine-Tune an LLM, End to End &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.28);
+
+    --data: #4ade80;
+    --engine: #34d2e0;
+    --choose: #b18bfa;
+    --loop: #fbbf24;
+    --eval: #fb7185;
+    --ship: #4f9dff;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 30%, rgba(177,139,250,0.07), transparent 55%),
+      radial-gradient(900px 500px at 10% 75%, rgba(251,113,133,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 0;
+  }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin-top: 18px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing: 0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 560px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .connector{ width: 2px; height: 30px; background: var(--line); }
+
+  .stage{
+    width: 100%;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px 22px;
+    transition: border-color .18s ease, background .18s ease;
+  }
+  .stage:hover{ background: var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+  .stage .badge{
+    position:absolute; top:-11px; left:20px;
+    width: 23px; height: 23px; border-radius: 50%;
+    background: var(--accent); color: #06070a;
+    font-size: 11px; font-weight: 800;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 0 4px var(--page);
+  }
+  .stage h2{
+    margin: 0 0 3px;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--accent);
+    text-align:center;
+  }
+  .stage .sub{
+    margin: 0 0 16px;
+    text-align:center;
+    font-size: 11.5px; color: var(--text-muted);
+    letter-spacing: 0.3px;
+  }
+
+  .trio{ display:grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .box{
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    border-radius: 12px;
+    padding: 13px 14px 14px;
+    text-align:center;
+  }
+  .box .b-name{ display:block; font-size: 12.5px; font-weight: 800; color: var(--text-primary); letter-spacing: 0.3px; }
+  .box .b-desc{ display:block; font-size: 10.5px; color: var(--text-secondary); margin-top: 4px; line-height:1.4; }
+
+  .chain{ display:flex; align-items:center; justify-content:center; flex-wrap: wrap; gap: 6px; }
+  .step{
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-primary);
+  }
+  .arrow{ color: color-mix(in srgb, var(--accent) 70%, var(--text-muted)); font-weight: 700; font-size: 13px; }
+
+  .split{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .opt{
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    border-radius: 12px;
+    padding: 14px 16px 15px;
+  }
+  .opt.picked{
+    border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+  }
+  .opt .o-name{ display:block; font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: 0.4px; }
+  .opt .o-desc{ display:block; font-size: 11px; color: var(--text-secondary); margin-top: 5px; line-height:1.45; }
+  .opt .o-tag{
+    display:inline-block; margin-top: 9px;
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--accent); opacity: 0.9;
+  }
+
+  .note{
+    margin: 16px 0 0;
+    text-align:center;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 28%, transparent);
+    padding-top: 14px;
+  }
+  .note b{ color: var(--text-primary); }
+
+  .gate{
+    width: 100%;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 16px 20px 18px;
+    text-align:center;
+  }
+  .gate h3{
+    margin: 0 0 8px;
+    font-size: 12.5px; font-weight: 800;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: #ffd98a;
+  }
+  .gate p{ margin: 0; font-size: 12px; color: var(--text-secondary); line-height:1.55; }
+  .gate .branch{ display:flex; justify-content:center; gap: 26px; margin-top: 12px; flex-wrap: wrap; }
+  .gate .branch span{ font-size: 11.5px; font-weight: 700; }
+  .gate .no{ color: #fb7185; }
+  .gate .yes{ color: #4ade80; }
+
+  .verdict{
+    width: 100%;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px;
+    text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; letter-spacing: 0.4px; }
+  .verdict .sub2{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 34px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align:center;
+    line-height: 1.6;
+    max-width: 660px;
+  }
+
+  @media (max-width: 720px){
+    .trio{ grid-template-columns: 1fr; }
+    .split{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Fine-Tune an LLM, End to End</h1>
+    <p>Fine-tuning does not teach your model new facts. It teaches new behaviour. Examples set the behaviour, loss updates the weights, and gates decide whether any of it ships.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--data)">
+    <span class="badge">1</span>
+    <h2>Curated Training Examples</h2>
+    <p class="sub">Quality decides the ceiling. Everything downstream just amplifies what you put here.</p>
+    <div class="trio">
+      <div class="box">
+        <span class="b-name">Conversations</span>
+        <span class="b-desc">Support and expert exchanges in the shape you actually want back</span>
+      </div>
+      <div class="box">
+        <span class="b-name">Behaviour</span>
+        <span class="b-desc">Style and tool use, demonstrated rather than described</span>
+      </div>
+      <div class="box">
+        <span class="b-name">Safety</span>
+        <span class="b-desc">Refusals and edge cases, so the model learns where the walls are</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--engine)">
+    <span class="badge">2</span>
+    <h2>Data and Training Engine</h2>
+    <p class="sub">Turn raw examples into batches the trainer can consume</p>
+    <div class="chain">
+      <span class="step">Clean</span><span class="arrow">&rarr;</span>
+      <span class="step">Template</span><span class="arrow">&rarr;</span>
+      <span class="step">Tokenize</span><span class="arrow">&rarr;</span>
+      <span class="step">Split</span>
+    </div>
+    <p class="note">Only the train split reaches the optimizer. <b>Validation and test exist to gate the release, never to train on.</b> The moment a gate set leaks into training, your scores stop meaning anything.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--choose)">
+    <span class="badge">3</span>
+    <h2>Choose What to Update</h2>
+    <p class="sub">The single decision that sets your cost, your risk and your rollback story</p>
+    <div class="split">
+      <div class="opt">
+        <span class="o-name">Full Fine-Tune</span>
+        <span class="o-desc">Update every weight. Maximum control, and a whole new model to store, serve and roll back.</span>
+        <span class="o-tag">Update all weights</span>
+      </div>
+      <div class="opt picked">
+        <span class="o-name">LoRA / QLoRA</span>
+        <span class="o-desc">Freeze the base, train small adapters beside it. Cheaper, quicker to iterate, and the base stays reusable.</span>
+        <span class="o-tag">Freeze base, train adapters</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--loop)">
+    <span class="badge">4</span>
+    <h2>Supervised Fine-Tuning Loop</h2>
+    <p class="sub">The part that actually moves the weights, repeated every batch</p>
+    <div class="chain">
+      <span class="step">Train batch</span><span class="arrow">&rarr;</span>
+      <span class="step">Frozen base + adapters</span><span class="arrow">&rarr;</span>
+      <span class="step">Forward pass</span><span class="arrow">&rarr;</span>
+      <span class="step">Token loss</span>
+    </div>
+    <div style="height:10px"></div>
+    <div class="chain">
+      <span class="arrow">&crarr;</span>
+      <span class="step">Backprop</span><span class="arrow">&rarr;</span>
+      <span class="step">Optimizer step</span>
+      <span class="arrow">&rarr;</span>
+      <span class="step">Next epoch</span>
+    </div>
+    <p class="note">Loss trending down is a sign that training is working, <b>not</b> a sign that the model is good. Falling loss on the train split with flat quality on the gate sets means you are memorising, not teaching.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--eval)">
+    <span class="badge">5</span>
+    <h2>Evaluate Before Deploy</h2>
+    <p class="sub">Three checks, run on the splits the optimizer never saw</p>
+    <div class="trio">
+      <div class="box">
+        <span class="b-name">Quality</span>
+        <span class="b-desc">Does it do the task, in the format you asked for</span>
+      </div>
+      <div class="box">
+        <span class="b-name">Safety</span>
+        <span class="b-desc">Check for regressions, since new behaviour can quietly undo old refusals</span>
+      </div>
+      <div class="box">
+        <span class="b-name">Registry</span>
+        <span class="b-desc">Base plus adapter recorded together, so a result maps to an exact artifact</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="gate">
+    <h3>Passes the gates?</h3>
+    <p>This is a fork, not a formality. A failed gate sends you back to the data, because that is nearly always where the problem started.</p>
+    <div class="branch">
+      <span class="no">No &rarr; fix the data and retrain</span>
+      <span class="yes">Yes &rarr; ship it carefully</span>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="stage" style="--accent:var(--ship)">
+    <span class="badge">6</span>
+    <h2>Version, Canary, Monitor</h2>
+    <p class="sub">Shipping a model is a rollout, not a file copy</p>
+    <div class="chain">
+      <span class="step">Version base + adapter</span><span class="arrow">&rarr;</span>
+      <span class="step">Canary on small traffic</span><span class="arrow">&rarr;</span>
+      <span class="step">Monitor with rollback ready</span>
+    </div>
+    <p class="note">Pick the abort metric before the canary starts. Deciding what "worse" means while traffic is already flowing is how a bad model stays live.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="verdict">
+    <div class="punch">Teach behaviour. Keep facts fresh.</div>
+    <div class="sub2">
+      Fine-tune the things that are stable: tone, format, tool use, refusals.<br>
+      Retrieve the things that change: prices, policies, documents, anything with a date on it.<br>
+      A model fine-tuned on facts is out of date the moment those facts move.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: curate examples, build the training data, choose full or adapter, run the loop, gate on unseen splits, then version, canary and monitor.<br>
+    Pairs with <a href="rag-vs-lora-vs-fine-tuning.html" style="color:#8fb8ff">RAG vs LoRA vs Full Fine-Tuning</a>, which covers picking the strategy, where this covers running it.
+  </div>
+</div>
+
+</body>
+</html>
