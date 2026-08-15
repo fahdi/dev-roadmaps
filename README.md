@@ -22,6 +22,8 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — the four memory stores, and the four failure modes of long context |
 | [SQL: 24 Nodes to Production](artifacts/sql-roadmap.html) | Fundamentals → joins → window functions → EXPLAIN, indexes and transactions. Window functions are the jump |
 | [Kafka in 12 Concepts](artifacts/kafka-concepts.html) | Producer → topic → partition → broker → consumer, plus offsets, replication, retention, schemas and Connect. The partition is the whole idea |
+| [12 System Design Patterns](artifacts/system-design-patterns.html) | Timeout, retry, circuit breaker, rate limiter, bulkhead, pub/sub, caching, event sourcing, CQRS, saga, strangler fig. Every one is about failure |
+| [API Key vs JWT vs OAuth 2.0](artifacts/api-key-jwt-oauth.html) | App to app, user to app, user to third party. One product usually runs all three for different hops |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database — the two cache shortcuts, and what changes when the service is a model |
 | [LLMOps: Build, Prove, Ship, Operate](artifacts/llmops-concepts.html) | Datasets → prompt versions → pinning → eval sets → judge → gate → canary → shadow → rollback → tracing → cost → feedback. Twelve feeds one |
