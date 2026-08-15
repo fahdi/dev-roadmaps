@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kafka in 12 Concepts &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --write: #4ade80;
+    --read: #4f9dff;
+    --cluster: #fbbf24;
+    --operate: #b18bfa;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 34%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 80%, rgba(251,191,36,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1060px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 12px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 620px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .flowline{
+    display:flex; align-items:center; justify-content:center; gap: 9px;
+    flex-wrap: wrap; margin: 8px 0 26px;
+    font-size: 11.5px; font-weight: 700;
+  }
+  .flowline .n{
+    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+    background: color-mix(in srgb, var(--c) 9%, transparent);
+    color: var(--c);
+    border-radius: 999px; padding: 5px 13px;
+  }
+  .flowline .a{ color: var(--text-muted); }
+
+  .group{ width:100%; margin-bottom: 22px; }
+  .group > h2{
+    margin: 0 0 4px; text-align:center;
+    font-size: 11.5px; font-weight: 800;
+    letter-spacing: 0.9px; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .group > .lead{ margin: 0 0 13px; text-align:center; font-size: 11.5px; color: var(--text-muted); }
+
+  .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .item{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 15px 15px;
+    display:flex; flex-direction:column; gap: 7px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .item:hover{ background: var(--surface-hover); transform: translateY(-2px); }
+  .item .top{ display:flex; align-items:baseline; gap: 8px; }
+  .item .num{ font-size: 10px; font-weight: 800; color: var(--accent); opacity:0.85; }
+  .item .name{ font-size: 13.5px; font-weight: 800; color: var(--text-primary); letter-spacing:0.2px; }
+  .item .what{ margin:0; font-size: 11.5px; color: var(--text-secondary); line-height:1.5; }
+  .item .gotcha{
+    margin-top: auto;
+    font-size: 10.5px;
+    color: color-mix(in srgb, var(--accent) 72%, var(--text-secondary));
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    padding-top: 8px;
+    line-height: 1.45;
+  }
+
+  .verdict{
+    width: 100%; margin-top: 8px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 690px;
+  }
+
+  @media (max-width: 820px){ .grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } .title-block h1{ font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Kafka in 12 Concepts</h1>
+    <p>Nobody fails a Kafka interview on the definition of a topic. They fail on ordering, on what a consumer group actually guarantees, and on what happens when a consumer dies mid-batch. These twelve, in the order they make sense.</p>
+  </div>
+
+  <div class="flowline">
+    <span class="n" style="--c:var(--write)">Producer</span><span class="a">&rarr;</span>
+    <span class="n" style="--c:var(--write)">Topic</span><span class="a">&rarr;</span>
+    <span class="n" style="--c:var(--write)">Partition</span><span class="a">&rarr;</span>
+    <span class="n" style="--c:var(--cluster)">Broker</span><span class="a">&rarr;</span>
+    <span class="n" style="--c:var(--read)">Consumer</span>
+  </div>
+
+  <div class="group" style="--accent:var(--write)">
+    <h2>The write path</h2>
+    <p class="lead">Getting events in, and deciding how they are laid out</p>
+    <div class="grid">
+      <div class="item">
+        <div class="top"><span class="num">01</span><span class="name">Producer</span></div>
+        <p class="what">Sends events continuously into topics. Apps, databases and devices all publish the same way.</p>
+        <span class="gotcha">The key you choose decides the partition, and therefore the ordering.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">02</span><span class="name">Topic</span></div>
+        <p class="what">A named stream that groups related events. The unit you subscribe to.</p>
+        <span class="gotcha">A log you append to, not a queue you drain. Reading does not remove anything.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">03</span><span class="name">Partition</span></div>
+        <p class="what">Splits a topic so it can be processed in parallel while staying ordered inside each split.</p>
+        <span class="gotcha">Order is guaranteed per partition, never across a topic. This is the one people miss.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--read)">
+    <h2>The read path</h2>
+    <p class="lead">Getting events out, and remembering how far you got</p>
+    <div class="grid">
+      <div class="item">
+        <div class="top"><span class="num">04</span><span class="name">Consumer</span></div>
+        <p class="what">Reads and processes events from topics at its own pace.</p>
+        <span class="gotcha">A slow consumer does not slow the producer. It just falls further behind.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">05</span><span class="name">Consumer Group</span></div>
+        <p class="what">Several consumers sharing the work, with partitions divided between them.</p>
+        <span class="gotcha">More consumers than partitions means the extras sit idle. Partitions cap your parallelism.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">06</span><span class="name">Offset</span></div>
+        <p class="what">Tracks each message's position in a partition, so a consumer knows where to resume.</p>
+        <span class="gotcha">When you commit the offset decides whether a crash replays work or loses it.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--cluster)">
+    <h2>The cluster</h2>
+    <p class="lead">Where the data physically lives, and how it survives a failure</p>
+    <div class="grid">
+      <div class="item">
+        <div class="top"><span class="num">07</span><span class="name">Broker</span></div>
+        <p class="what">A server that stores partitions and serves reads and writes for them.</p>
+        <span class="gotcha">Each partition has one leader broker. Writes go there, not to any broker.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">08</span><span class="name">Cluster</span></div>
+        <p class="what">Many brokers together, giving scale and somewhere to fail over to.</p>
+        <span class="gotcha">Adding brokers does not rebalance existing partitions on its own.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">09</span><span class="name">Replication</span></div>
+        <p class="what">Copies each partition across brokers so a machine loss is not a data loss.</p>
+        <span class="gotcha">Acknowledgement settings decide whether "sent" means written to one replica or several.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--operate)">
+    <h2>Operating it</h2>
+    <p class="lead">The parts that decide whether this stays workable at month six</p>
+    <div class="grid">
+      <div class="item">
+        <div class="top"><span class="num">10</span><span class="name">Retention</span></div>
+        <p class="what">Messages are kept for a time or size limit, then dropped regardless of who read them.</p>
+        <span class="gotcha">A consumer down longer than the retention window loses those events permanently.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">11</span><span class="name">Schema Registry</span></div>
+        <p class="what">Manages the event formats passing between apps, and what counts as a compatible change.</p>
+        <span class="gotcha">Producers and consumers deploy separately, so schemas must stay compatible in both directions.</span>
+      </div>
+      <div class="item">
+        <div class="top"><span class="num">12</span><span class="name">Kafka Connect</span></div>
+        <p class="what">Moves data between Kafka and outside systems without you writing the plumbing.</p>
+        <span class="gotcha">Most "we need a custom pipeline" cases are a connector plus configuration.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">The partition is the whole idea.</div>
+    <div class="sub">
+      Ordering, parallelism, consumer-group sizing and rebalancing all fall out of how a topic is partitioned.<br>
+      Get the partition key right and most of the rest follows. Get it wrong and no amount of tuning downstream will save you.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: publish into partitioned topics, consume in groups while tracking offsets, replicate across a cluster, then manage retention, schemas and connectors.<br>
+    Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a>, where this underpins the messaging, feed and event-driven designs.
+  </div>
+</div>
+
+</body>
+</html>
