@@ -9,6 +9,7 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | Roadmap | Description |
 |---|---|
 | [AI Application Architecture](artifacts/ai-application-architecture.html) | Frontend → Agent Orchestration → Knowledge / Models / Tools → Data Layer → Observability & Evals → Deployment, plus the twelve-layer build order |
+| [The Full AI Stack](artifacts/the-full-ai-stack.html) | LLMs → Embeddings → Vector DB → Extraction → Access → Frameworks → Evaluation. A newer model helps, better architecture helps more |
 | [How to Build a RAG](artifacts/how-to-build-a-rag.html) | Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate, plus the five moves every RAG buzzword belongs to |
 | [RAG vs LoRA vs Full Fine-Tuning](artifacts/rag-vs-lora-vs-fine-tuning.html) | Context, adapters, or every weight — pick by the gap: knowledge → RAG, behavior → train |
 | [Fine-Tune an LLM, End to End](artifacts/fine-tune-an-llm.html) | Curate examples → training data → full or adapter → SFT loop → gate on unseen splits → version, canary, monitor. Teach behaviour, retrieve facts |
