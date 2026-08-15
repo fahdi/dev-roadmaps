@@ -22,6 +22,7 @@
     --skills: #fbbf24;
     --agents: #5b9dff;
     --hooks: #fb923c;
+    --plugin: #c084fc;
   }
 
   *{ box-sizing: border-box; }
@@ -139,7 +140,55 @@
   .tree .t-skills{ color: var(--skills); }
   .tree .t-agents{ color: var(--agents); }
   .tree .t-hooks{ color: var(--hooks); }
+  .tree .t-plugin{ color: var(--plugin); }
   .tree .t-file{ color: var(--text-secondary); }
+  .tree .t-note{ color: var(--text-muted); font-style: italic; }
+
+  .tree-col{
+    display:flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  /* ---------- context budget ---------- */
+  .budget-card{
+    background: color-mix(in srgb, var(--claudemd) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--claudemd) 30%, transparent);
+    border-radius: 14px;
+    padding: 14px 16px 15px;
+  }
+  .budget-head{
+    display:flex;
+    align-items:center;
+    gap: 9px;
+    margin-bottom: 6px;
+  }
+  .budget-head .icon-wrap{
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: color-mix(in srgb, var(--claudemd) 16%, transparent);
+    color: var(--claudemd);
+    flex: none;
+  }
+  .budget-head .icon-wrap svg{ width: 15px; height: 15px; }
+  .budget-head h3{
+    margin: 0;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--claudemd);
+  }
+  .budget-card p{
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
 
   /* ---------- layer cards ---------- */
   .layers{
@@ -296,13 +345,23 @@
   </div>
 
   <div class="main">
+    <div class="tree-col">
     <div class="tree" id="tree"><span class="t-root">my-app/</span>
 <span class="t-branch">├──</span> <span class="t-anchor t-claudemd" id="a-claudemd">CLAUDE.md</span>
+<span class="t-branch">├──</span> <span class="t-file">CLAUDE.local.md</span>       <span class="t-note">— personal overrides (git-ignored)</span>
+<span class="t-branch">├──</span> <span class="t-file">.mcp.json</span>             <span class="t-note">— MCP server integrations</span>
+<span class="t-branch">├──</span> <span class="t-root">.claude-plugin/</span>
+<span class="t-branch">│   └──</span> <span class="t-anchor t-plugin" id="a-plugin">plugin.json</span>
 <span class="t-branch">└──</span> <span class="t-root">.claude/</span>
+<span class="t-branch">    ├──</span> <span class="t-file">settings.json</span>         <span class="t-note">— shared team settings</span>
+<span class="t-branch">    ├──</span> <span class="t-file">settings.local.json</span>   <span class="t-note">— your personal settings</span>
 <span class="t-branch">    ├──</span> <span class="t-anchor t-rules" id="a-rules">rules/</span>
 <span class="t-branch">    │   ├──</span> <span class="t-file">frontend.md</span>
 <span class="t-branch">    │   ├──</span> <span class="t-file">api.md</span>
 <span class="t-branch">    │   └──</span> <span class="t-file">database.md</span>
+<span class="t-branch">    ├──</span> <span class="t-file">commands/</span>             <span class="t-note">— custom /slash workflows</span>
+<span class="t-branch">    │   ├──</span> <span class="t-file">review.md</span>
+<span class="t-branch">    │   └──</span> <span class="t-file">fix-issue.md</span>
 <span class="t-branch">    ├──</span> <span class="t-anchor t-skills" id="a-skills">skills/</span>
 <span class="t-branch">    │   ├──</span> <span class="t-file">deploy/SKILL.md</span>
 <span class="t-branch">    │   ├──</span> <span class="t-file">launch-copy/SKILL.md</span>
@@ -312,7 +371,14 @@
 <span class="t-branch">    │   ├──</span> <span class="t-file">code-reviewer.md</span>
 <span class="t-branch">    │   ├──</span> <span class="t-file">security-auditor.md</span>
 <span class="t-branch">    │   └──</span> <span class="t-file">growth-researcher.md</span>
-<span class="t-branch">    └──</span> <span class="t-anchor t-hooks" id="a-hooks">settings.json</span></div>
+<span class="t-branch">    └──</span> <span class="t-anchor t-hooks" id="a-hooks">hooks/</span>
+<span class="t-branch">        └──</span> <span class="t-file">validate-bash.sh</span></div>
+
+      <div class="budget-card">
+        <div class="budget-head"><span class="icon-wrap" data-icon="grid"></span><h3>Context Budget</h3></div>
+        <p>Keep CLAUDE.md short. Rules and skills load only when relevant.</p>
+      </div>
+    </div>
 
     <div class="layers">
       <div class="layer-card" id="c-claudemd" style="--accent:var(--claudemd)">
@@ -341,8 +407,14 @@
 
       <div class="layer-card" id="c-hooks" style="--accent:var(--hooks)">
         <div class="layer-head"><span class="icon-wrap" data-icon="shield"></span><span class="num">05</span><h2>Hooks</h2><span class="mode">Deterministic control</span></div>
-        <p class="desc">Format after edits, block secrets, run tests, validate completion — enforced every time, not suggested.</p>
+        <p class="desc">Format after edits, block secrets, run tests, log actions — enforced every time, not suggested.</p>
         <div class="example"><b>Wired through</b> settings.json</div>
+      </div>
+
+      <div class="layer-card" id="c-plugin" style="--accent:var(--plugin)">
+        <div class="layer-head"><span class="icon-wrap" data-icon="package"></span><span class="num">06</span><h2>Plugin</h2><span class="mode">One crate you install</span></div>
+        <p class="desc">Not a sixth kind of instruction — the way you ship the other five. Skills, hooks, agents and MCP servers bundled together, so the whole team gets the same control plane.</p>
+        <div class="example"><b>Manifest:</b> .claude-plugin/plugin.json</div>
       </div>
     </div>
   </div>
@@ -362,7 +434,7 @@
     </div>
   </div>
 
-  <div class="footer-note">Roadmap: keep CLAUDE.md short · scope rules · package repeatable work as skills · delegate noisy work to agents · enforce with hooks</div>
+  <div class="footer-note">Roadmap: keep CLAUDE.md short · scope rules · package repeatable work as skills · delegate noisy work to agents · enforce with hooks · ship the set as a plugin</div>
 </div>
 
 <script>
@@ -373,7 +445,9 @@ const ICONS = {
   user: '<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/>',
   shield: '<path d="M12 3.5l7 2.8v5.2c0 4.6-3 7.6-7 9-4-1.4-7-4.4-7-9V6.3z"/><path d="M9 11.8l2.2 2.2 4-4.2"/>',
   sliders: '<path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="1.8" fill="var(--page)"/><circle cx="15" cy="12" r="1.8" fill="var(--page)"/><circle cx="8" cy="17" r="1.8" fill="var(--page)"/>',
-  map: '<path d="M9 4.5L4 6.5v13l5-2 6 2 5-2v-13l-5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>'
+  map: '<path d="M9 4.5L4 6.5v13l5-2 6 2 5-2v-13l-5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>',
+  package: '<path d="M12 3.2l8 4.2v9.2l-8 4.2-8-4.2V7.4z"/><path d="M4 7.4l8 4.2 8-4.2M12 11.6v8.4M8 5.3l8 4.2"/>',
+  grid: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16"/>'
 };
 function icon(key){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[key]+'</svg>'; }
 
@@ -391,6 +465,7 @@ const LINKS = [
   ['a-skills','c-skills','--skills'],
   ['a-agents','c-agents','--agents'],
   ['a-hooks','c-hooks','--hooks'],
+  ['a-plugin','c-plugin','--plugin'],
 ];
 
 function draw(){

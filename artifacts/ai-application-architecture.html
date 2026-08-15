@@ -244,10 +244,76 @@
   }
   .context-card .icon-wrap{ width: 17px; height: 17px; }
 
+  /* ---------- 12-layer build order ---------- */
+  .stack-card{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 44px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px 22px;
+  }
+  .stack-card > h3{
+    margin: 0 0 3px;
+    text-align:center;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .stack-card > .lead{
+    margin: 0 0 18px;
+    text-align:center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .stack-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .layer{
+    background: color-mix(in srgb, var(--ly) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ly) 26%, transparent);
+    border-radius: 12px;
+    padding: 11px 12px 12px;
+  }
+  .layer .ly-num{
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--ly);
+    opacity: 0.9;
+  }
+  .layer .ly-name{
+    display:block;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 2px 0 4px;
+  }
+  .layer .ly-desc{
+    display:block;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .stack-note{
+    margin: 16px 0 0;
+    text-align:center;
+    font-size: 11.5px;
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+
   .footer-note{
     position: relative;
     z-index: 2;
-    margin-top: 44px;
+    margin-top: 28px;
     font-size: 11.5px;
     color: var(--text-muted);
     text-align: center;
@@ -256,6 +322,7 @@
   @media (max-width: 720px){
     .row{ flex-direction: column; align-items: stretch; }
     .title-block h1{ font-size: 24px; }
+    .stack-grid{ grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -334,6 +401,66 @@
   <div class="section-card stage-card" id="n-deploy" style="--card-accent:var(--deployment)">
     <div class="section-head" style="justify-content:center"><span class="icon-wrap"></span><span>Deployment</span></div>
     <div class="chip-row" id="chips-deploy"></div>
+  </div>
+
+  <div class="stack-card">
+    <h3>The Same Stack, as a Build Order</h3>
+    <p class="lead">The map above is what the system looks like. This is the order you build it in — twelve layers to ship a reliable RAG or agent product. Most teams start at layer 9 and work outwards, which is why the first version demos well and then falls over.</p>
+
+    <div class="stack-grid">
+      <div class="layer" style="--ly:#4ade80">
+        <span class="ly-num">01</span><span class="ly-name">User Job</span>
+        <span class="ly-desc">Start from task + risk. Define success first.</span>
+      </div>
+      <div class="layer" style="--ly:#4ade80">
+        <span class="ly-num">02</span><span class="ly-name">Data Sources</span>
+        <span class="ly-desc">Docs, tickets, DBs. Respect permissions.</span>
+      </div>
+      <div class="layer" style="--ly:#4ade80">
+        <span class="ly-num">03</span><span class="ly-name">Ingestion</span>
+        <span class="ly-desc">Parse, chunk, clean. Version every run.</span>
+      </div>
+      <div class="layer" style="--ly:#4ade80">
+        <span class="ly-num">04</span><span class="ly-name">Embeddings</span>
+        <span class="ly-desc">Turn text to vectors. Match model + metric.</span>
+      </div>
+
+      <div class="layer" style="--ly:#5b9dff">
+        <span class="ly-num">05</span><span class="ly-name">Vector DB</span>
+        <span class="ly-desc">Pinecone, Qdrant, Weaviate, pgvector. Milvus at scale.</span>
+      </div>
+      <div class="layer" style="--ly:#5b9dff">
+        <span class="ly-num">06</span><span class="ly-name">Hybrid Search</span>
+        <span class="ly-desc">Vector + keyword. Fixes exact-name misses.</span>
+      </div>
+      <div class="layer" style="--ly:#5b9dff">
+        <span class="ly-num">07</span><span class="ly-name">Reranking</span>
+        <span class="ly-desc">Reorder top chunks. Trade latency for fit.</span>
+      </div>
+      <div class="layer" style="--ly:#5b9dff">
+        <span class="ly-num">08</span><span class="ly-name">Context Builder</span>
+        <span class="ly-desc">Assemble evidence. Cite every claim.</span>
+      </div>
+
+      <div class="layer" style="--ly:#fbbf24">
+        <span class="ly-num">09</span><span class="ly-name">Model Layer</span>
+        <span class="ly-desc">Route by task cost. Stream tokens fast.</span>
+      </div>
+      <div class="layer" style="--ly:#fbbf24">
+        <span class="ly-num">10</span><span class="ly-name">Tools + Actions</span>
+        <span class="ly-desc">Call APIs carefully. Validate side effects.</span>
+      </div>
+      <div class="layer" style="--ly:#fbbf24">
+        <span class="ly-num">11</span><span class="ly-name">Eval Harness</span>
+        <span class="ly-desc">Golden questions. Track regressions.</span>
+      </div>
+      <div class="layer" style="--ly:#fbbf24">
+        <span class="ly-num">12</span><span class="ly-name">Ops Guardrails</span>
+        <span class="ly-desc">Logs, cost, safety. Fail closed, not loud.</span>
+      </div>
+    </div>
+
+    <p class="stack-note">A newer model helps. Better architecture helps more — the useful part is the stack around the model.</p>
   </div>
 
   <div class="footer-note">Recreated architecture map · Frontend → Orchestration → Knowledge / Models / Tools → Data → Observability → Deployment</div>

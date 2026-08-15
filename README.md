@@ -8,14 +8,14 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 
 | Roadmap | Description |
 |---|---|
-| [AI Application Architecture](artifacts/ai-application-architecture.html) | Frontend → Agent Orchestration → Knowledge / Models / Tools → Data Layer → Observability & Evals → Deployment |
-| [How to Build a RAG](artifacts/how-to-build-a-rag.html) | Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Evaluate (and iterate) |
+| [AI Application Architecture](artifacts/ai-application-architecture.html) | Frontend → Agent Orchestration → Knowledge / Models / Tools → Data Layer → Observability & Evals → Deployment, plus the twelve-layer build order |
+| [How to Build a RAG](artifacts/how-to-build-a-rag.html) | Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate, plus the five moves every RAG buzzword belongs to |
 | [RAG vs LoRA vs Full Fine-Tuning](artifacts/rag-vs-lora-vs-fine-tuning.html) | Context, adapters, or every weight — pick by the gap: knowledge → RAG, behavior → train |
-| [Design Your Agent's Control Plane](artifacts/agent-control-plane.html) | CLAUDE.md → Rules → Skills → Agents → Hooks — context tells, skills teach, agents delegate, hooks enforce |
-| [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft |
-| [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — and the four failure modes of long context |
-| [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database — with the two cache shortcuts |
-| [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Golden dataset → four evaluators → offline baseline → CI/CD gate → guardrails → online evals — failures become test cases |
+| [Design Your Agent's Control Plane](artifacts/agent-control-plane.html) | CLAUDE.md → Rules → Skills → Agents → Hooks → Plugin — context tells, skills teach, agents delegate, hooks enforce, plugins ship the set |
+| [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft: discover, plan, execute, verify, iterate |
+| [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — the four memory stores, and the four failure modes of long context |
+| [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database — the two cache shortcuts, and what changes when the service is a model |
+| [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Evals measure, guardrails enforce, monitoring detects — golden dataset → four evaluators → six score dimensions → CI/CD gate → guardrails → online evals — failures become test cases |
 
 ## Structure
 
