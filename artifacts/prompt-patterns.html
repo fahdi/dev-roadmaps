@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 Prompt Patterns &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --shape: #4ade80;
+    --steer: #4f9dff;
+    --shapeout: #fbbf24;
+    --budget: #b18bfa;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 34%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 80%, rgba(177,139,250,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1060px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 26px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 620px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .group{ width:100%; margin-bottom: 22px; }
+  .group > h2{
+    margin: 0 0 4px; text-align:center;
+    font-size: 11.5px; font-weight: 800;
+    letter-spacing: 0.9px; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .group > .lead{ margin: 0 0 13px; text-align:center; font-size: 11.5px; color: var(--text-muted); }
+
+  .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .pat{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 15px 15px;
+    display:flex; flex-direction:column; gap: 7px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .pat:hover{ background: var(--surface-hover); transform: translateY(-2px); }
+  .pat .top{ display:flex; align-items:baseline; gap: 8px; }
+  .pat .num{ font-size: 10px; font-weight: 800; color: var(--accent); opacity:0.85; }
+  .pat .name{ font-size: 13px; font-weight: 800; color: var(--text-primary); letter-spacing:0.3px; }
+  .pat .what{ margin:0; font-size: 11.5px; color: var(--text-secondary); line-height:1.5; }
+  .pat .ask{
+    margin-top: auto;
+    font-size: 10.5px; font-weight: 700;
+    color: color-mix(in srgb, var(--accent) 75%, var(--text-secondary));
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    padding-top: 8px;
+  }
+
+  .verdict{
+    width: 100%; margin-top: 8px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 690px;
+  }
+
+  @media (max-width: 820px){ .grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } .title-block h1{ font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>12 Prompt Patterns</h1>
+    <p>"Write a better prompt" is not advice. These are the actual moves, grouped by what each one changes: how much you show, how you steer the reasoning, how you constrain the output, and what the whole thing costs.</p>
+  </div>
+
+  <div class="group" style="--accent:var(--shape)">
+    <h2>How much you show</h2>
+    <p class="lead">Examples are the cheapest way to communicate a format</p>
+    <div class="grid">
+      <div class="pat">
+        <div class="top"><span class="num">01</span><span class="name">Zero-Shot</span></div>
+        <p class="what">No examples, just the ask. Fine when the task is common and the output shape is obvious.</p>
+        <span class="ask">When is zero-shot enough?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">02</span><span class="name">One-Shot</span></div>
+        <p class="what">A single example sets the shape. Often the largest jump in reliability you will get for the fewest tokens.</p>
+        <span class="ask">Why does one example help so much?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">03</span><span class="name">Few-Shot</span></div>
+        <p class="what">A handful of examples to copy from. Returns flatten quickly, so more is not automatically better.</p>
+        <span class="ask">How many examples before it stops paying?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--steer)">
+    <h2>How you steer the reasoning</h2>
+    <p class="lead">Change how the model gets to the answer, not just what you ask for</p>
+    <div class="grid">
+      <div class="pat">
+        <div class="top"><span class="num">04</span><span class="name">Chain of Thought</span></div>
+        <p class="what">Make it show the steps, reasoning first and answer last. Costs tokens and latency, so it is not free.</p>
+        <span class="ask">When does chain of thought hurt?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">05</span><span class="name">Role Prompting</span></div>
+        <p class="what">Give it a job title. The role mostly picks the vocabulary and level of detail rather than adding knowledge.</p>
+        <span class="ask">Does the persona really help here?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">06</span><span class="name">Self-Reflection</span></div>
+        <p class="what">Draft, critique, revise. A second pass catches format and consistency errors the first pass missed.</p>
+        <span class="ask">Is the second pass worth the cost?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--shapeout)">
+    <h2>How you constrain the output</h2>
+    <p class="lead">The difference between a demo and something a program can consume</p>
+    <div class="grid">
+      <div class="pat">
+        <div class="top"><span class="num">07</span><span class="name">Structured Output</span></div>
+        <p class="what">Ask for something parseable rather than prose, and validate it rather than trusting it.</p>
+        <span class="ask">How do you force valid JSON?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">08</span><span class="name">Delimited Sections</span></div>
+        <p class="what">Wrap each section in explicit tags so the model can see where instructions end and data begins.</p>
+        <span class="ask">Why tags rather than headings?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">09</span><span class="name">Constraints</span></div>
+        <p class="what">State length, tone and what to leave out. Most rambling is an unstated limit, not a model failure.</p>
+        <span class="ask">How do you stop it rambling?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" style="--accent:var(--budget)">
+    <h2>What it costs</h2>
+    <p class="lead">Prompts are code that runs on every request, and gets billed on every request</p>
+    <div class="grid">
+      <div class="pat">
+        <div class="top"><span class="num">10</span><span class="name">Context Selection</span></div>
+        <p class="what">Pick what actually enters the window: gather candidates, rank them, admit only the top few.</p>
+        <span class="ask">What are you leaving out, and why?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">11</span><span class="name">Templates</span></div>
+        <p class="what">One prompt, many inputs, under version control. The same prompt everywhere means one place to fix.</p>
+        <span class="ask">How do you version a prompt?</span>
+      </div>
+      <div class="pat">
+        <div class="top"><span class="num">12</span><span class="name">Prefix Caching</span></div>
+        <p class="what">Keep the stable prefix byte-identical so it can be reused across calls. A single stray character invalidates it.</p>
+        <span class="ask">How much of your prompt is cacheable?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">Patterns compose. Pick the smallest set that works.</div>
+    <div class="sub">
+      Most production prompts are two or three of these, not twelve.<br>
+      Stacking every pattern at once makes the prompt expensive, slow, and impossible to attribute when quality moves.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: start with the fewest examples that work, steer the reasoning only when the task needs it, constrain the output so code can consume it, then make the whole thing cheap to run.<br>
+    Pairs with <a href="context-engineering.html" style="color:#8fb8ff">Context Engineering</a> for what belongs in the window, and <a href="llmops-concepts.html" style="color:#8fb8ff">LLMOps</a> for versioning and evaluating prompts once they ship.
+  </div>
+</div>
+
+</body>
+</html>

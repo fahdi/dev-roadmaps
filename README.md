@@ -16,9 +16,11 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [Design Your Agent's Control Plane](artifacts/agent-control-plane.html) | CLAUDE.md → Rules → Skills → Agents → Hooks → Plugin — context tells, skills teach, agents delegate, hooks enforce, plugins ship the set |
 | [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft: discover, plan, execute, verify, iterate |
 | [The Agentic Loop](artifacts/the-agentic-loop.html) | Gather context → take action → verify → loop. Model reasons, tools act, harness orchestrates, and you can steer mid-run |
+| [12 Prompt Patterns](artifacts/prompt-patterns.html) | Zero/one/few-shot → chain of thought, roles, self-reflection → structured output, delimiters, constraints → context selection, templates, prefix caching |
 | [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — the four memory stores, and the four failure modes of long context |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database — the two cache shortcuts, and what changes when the service is a model |
+| [LLMOps: Build, Prove, Ship, Operate](artifacts/llmops-concepts.html) | Datasets → prompt versions → pinning → eval sets → judge → gate → canary → shadow → rollback → tracing → cost → feedback. Twelve feeds one |
 | [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Evals measure, guardrails enforce, monitoring detects — golden dataset → four evaluators → six score dimensions → CI/CD gate → guardrails → online evals — failures become test cases |
 
 ## Structure
