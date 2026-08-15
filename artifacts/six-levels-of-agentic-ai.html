@@ -216,6 +216,105 @@
     gap: 22px 34px;
   }
 
+  /* ---------- level 6 detail panel ---------- */
+  .loop-panel{
+    --accent: var(--l6);
+    width: 100%;
+    background: color-mix(in srgb, var(--l6) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--l6) 28%, transparent);
+    border-radius: 18px;
+    padding: 20px 22px 22px;
+  }
+  .loop-panel > h2{
+    margin: 0 0 3px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--l6);
+    text-align: center;
+  }
+  .loop-panel > .lead{
+    margin: 0 0 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .loop-steps{
+    display:flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .loop-step{
+    flex: 1 1 120px;
+    min-width: 118px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 12px 12px;
+    text-align: center;
+  }
+  .loop-step .ls-num{
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--l6);
+    opacity: 0.85;
+  }
+  .loop-step .ls-name{
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    color: var(--text-primary);
+    margin: 3px 0 4px;
+  }
+  .loop-step .ls-desc{
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .loop-splits{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .split-box{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 15px 14px;
+  }
+  .split-box h3{
+    margin: 0 0 10px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--l6);
+  }
+  .split-row{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 7px 0;
+    border-top: 1px dashed var(--border);
+  }
+  .split-row:first-of-type{ border-top: none; padding-top: 0; }
+  .split-row .sr-name{
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .split-row .sr-desc{
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
   .footer-note{
     font-size: 11.5px;
     color: var(--text-muted);
@@ -230,6 +329,7 @@
     .level-card{ grid-template-columns: 1fr; }
     .level-info{ border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 12px; }
     .title-block h1{ font-size: 22px; }
+    .loop-splits{ grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -329,7 +429,7 @@
     <div class="flow-wrap"><div class="flow" id="f6">
       <div class="n" id="f6-user" data-icon="user">User</div>
       <div class="group grid2" id="f6-loop">
-        <span class="group-label">orchestration · the loop</span>
+        <span class="group-label">orchestration · loop engineering</span>
         <div class="n" id="f6-plan" data-icon="map">Plan</div>
         <div class="n accent" id="f6-llm" data-icon="brain">LLM</div>
         <div class="n" id="f6-reflect" data-icon="refresh">Reflect</div>
@@ -337,6 +437,64 @@
       </div>
       <div class="n" id="f6-ans" data-icon="chat">Answer</div>
     </div></div>
+  </div>
+
+  <div class="loop-panel">
+    <h2>Inside Level 6 — The Loop Process</h2>
+    <p class="lead">Stop prompting. Design loops that get work done.</p>
+
+    <div class="loop-steps">
+      <div class="loop-step">
+        <div class="ls-num">01</div>
+        <div class="ls-name">Discover</div>
+        <div class="ls-desc">What is needed?</div>
+      </div>
+      <div class="loop-step">
+        <div class="ls-num">02</div>
+        <div class="ls-name">Plan</div>
+        <div class="ls-desc">How to do it?</div>
+      </div>
+      <div class="loop-step">
+        <div class="ls-num">03</div>
+        <div class="ls-name">Execute</div>
+        <div class="ls-desc">Take action.</div>
+      </div>
+      <div class="loop-step">
+        <div class="ls-num">04</div>
+        <div class="ls-name">Verify</div>
+        <div class="ls-desc">Check &amp; evaluate.</div>
+      </div>
+      <div class="loop-step">
+        <div class="ls-num">05</div>
+        <div class="ls-name">Iterate</div>
+        <div class="ls-desc">Improve &amp; repeat until the goal is met.</div>
+      </div>
+    </div>
+
+    <div class="loop-splits">
+      <div class="split-box">
+        <h3>Two sizes</h3>
+        <div class="split-row">
+          <span class="sr-name">Single-agent loop</span>
+          <span class="sr-desc">One agent owns the full cycle.</span>
+        </div>
+        <div class="split-row">
+          <span class="sr-name">Fleet loop (multi-agent)</span>
+          <span class="sr-desc">Orchestrator + specialist agents + subagents.</span>
+        </div>
+      </div>
+      <div class="split-box">
+        <h3>Two types</h3>
+        <div class="split-row">
+          <span class="sr-name">Open loops</span>
+          <span class="sr-desc">Exploratory, flexible, more creative, higher cost.</span>
+        </div>
+        <div class="split-row">
+          <span class="sr-name">Closed loops</span>
+          <span class="sr-desc">Bounded, reliable, predictable, lower cost.</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="footer-note">
