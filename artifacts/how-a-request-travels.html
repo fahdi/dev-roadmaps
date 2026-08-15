@@ -281,6 +281,14 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
   }
+
+  .card-note{
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
   .return-cell{
     text-align:center;
     display:flex;
@@ -449,9 +457,11 @@
     <div class="chip-row">
       <div class="chip"><div class="chip-icon" data-icon="refresh"></div><div class="chip-label">Round Robin</div></div>
       <div class="chip"><div class="chip-icon" data-icon="bars"></div><div class="chip-label">Least Connections</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="split"></div><div class="chip-label">Power of Two</div></div>
       <div class="chip"><div class="chip-icon" data-icon="pulse"></div><div class="chip-label">Health Checks</div></div>
       <div class="chip"><div class="chip-icon" data-icon="copy"></div><div class="chip-label">Failover</div></div>
     </div>
+    <p class="card-note">Picking the least-loaded of two servers sampled at random beats plain round robin at scale, and gets close to scanning the whole fleet without paying for the scan — which is why it is the default in several proxies.</p>
   </div>
 
   <div class="spacer"></div>
@@ -522,7 +532,8 @@
       <div class="return-cell"><span class="r-t">Status Code</span><span class="r-d">2xx / 3xx / 4xx / 5xx — the one-line verdict</span></div>
       <div class="return-cell"><span class="r-t">Compression</span><span class="r-d">gzip / brotli shrink the body in transit</span></div>
       <div class="return-cell"><span class="r-t">Cache Headers</span><span class="r-d">Cache-Control &amp; ETag decide who may remember it</span></div>
-      <div class="return-cell"><span class="r-t">Render</span><span class="r-d">Browser parses, paints, and the user sees it</span></div>
+      <div class="return-cell"><span class="r-t">CORS Check</span><span class="r-d">A 200 the browser still refuses to hand to your JS — granted by the server, never patched in the frontend</span></div>
+      <div class="return-cell"><span class="r-t">Render</span><span class="r-d">Browser parses, paints, and the user sees it — a preload scanner fetches subresources while the parser is blocked</span></div>
     </div>
   </div>
 
@@ -562,7 +573,8 @@
 
   <div class="footer-note">
     Journey: DNS → TCP/TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database → back.
-    Real architectures vary — the gateway and balancer are often combined, and either can come first — but this is the shape to reason from.
+    Real architectures vary — the gateway and balancer are often combined, and either can come first — but this is the shape to reason from.<br>
+    The load-balancing, CORS and preload-scanner notes were prompted by explainers from <a href="https://www.facebook.com/codezup">Codez Up</a>.
   </div>
 </div>
 
