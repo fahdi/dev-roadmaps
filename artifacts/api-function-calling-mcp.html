@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API vs Function Calling vs MCP &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.28);
+
+    --api: #4f9dff;
+    --fn: #fbbf24;
+    --mcp: #4ade80;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 40%, rgba(251,191,36,0.06), transparent 55%),
+      radial-gradient(900px 500px at 8% 82%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 10px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 590px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .strap{
+    margin: 4px 0 26px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-align:center;
+  }
+  .strap b{ color: var(--text-secondary); }
+
+  .layer{
+    width:100%;
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    border-radius: 16px;
+    padding: 18px 20px 20px;
+    margin-bottom: 14px;
+    transition: background .18s ease;
+  }
+  .layer:hover{ background: var(--surface-hover); }
+
+  .lhead{ display:flex; align-items:baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .lhead .num{ font-size: 10.5px; font-weight: 800; color: var(--accent); opacity:0.85; }
+  .lhead h2{ margin:0; font-size: 17px; font-weight: 800; letter-spacing: 0.5px; color: var(--accent); }
+  .lhead .era{ margin-left:auto; font-size: 10px; font-weight: 700; letter-spacing:0.7px; text-transform: uppercase; color: var(--text-muted); }
+  .lsub{ margin: 0 0 14px; font-size: 12px; color: var(--text-secondary); line-height:1.5; }
+
+  .chain{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap: 7px; margin-bottom: 12px; }
+  .box{
+    border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border-radius: 9px;
+    padding: 9px 14px;
+    font-size: 11.5px; font-weight: 700; color: var(--text-primary);
+  }
+  .box.model{ border-style: dashed; }
+  .arr{ color: color-mix(in srgb, var(--accent) 70%, var(--text-muted)); font-weight: 700; }
+
+  .lnote{
+    margin: 0; font-size: 11px; color: var(--text-secondary);
+    line-height:1.55; text-align:center;
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    padding-top: 11px;
+  }
+  .lnote b{ color: var(--text-primary); }
+
+  .caps{ display:flex; justify-content:center; gap: 8px; flex-wrap:wrap; margin-bottom: 12px; }
+  .cap{
+    font-size: 10.5px; font-weight: 700; letter-spacing:0.4px;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 999px; padding: 4px 12px;
+  }
+
+  .verdict{
+    width: 100%; margin-top: 12px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px;
+  }
+  .verdict h3{
+    margin: 0 0 14px; text-align:center;
+    font-size: 13px; font-weight: 800; color: #ffd98a;
+    letter-spacing: 0.4px;
+  }
+  .vrow{ display:grid; grid-template-columns: 150px 1fr; gap: 10px 14px; align-items:baseline; }
+  .vrow .vk{ font-size: 12px; font-weight: 800; text-align:right; }
+  .vrow .vv{ font-size: 12px; color: var(--text-secondary); line-height:1.5; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 660px){
+    .vrow{ grid-template-columns: 1fr; }
+    .vrow .vk{ text-align:left; }
+    .title-block h1{ font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>API vs Function Calling vs MCP</h1>
+    <p>MCP does not replace function calling, and function calling did not replace APIs. They are three layers of the same stack, and the confusion comes from treating them as competing options.</p>
+  </div>
+  <div class="strap"><b>Three layers</b> &middot; not three alternatives</div>
+
+  <div class="layer" style="--accent:var(--api)">
+    <div class="lhead">
+      <span class="num">01</span>
+      <h2>API</h2>
+      <span class="era">Since forever</span>
+    </div>
+    <p class="lsub">Your code calls an endpoint and gets data back. No model is involved anywhere in this loop.</p>
+    <div class="chain">
+      <span class="box">Your code</span><span class="arr">&rarr;</span>
+      <span class="box">API</span><span class="arr">&rarr;</span>
+      <span class="box">Data</span>
+    </div>
+    <p class="lnote">This layer never went away. <b>Everything above it eventually bottoms out here</b>, which is why an API that is slow or unreliable stays slow and unreliable no matter what you wrap around it.</p>
+  </div>
+
+  <div class="layer" style="--accent:var(--fn)">
+    <div class="lhead">
+      <span class="num">02</span>
+      <h2>Function Calling</h2>
+      <span class="era">2023</span>
+    </div>
+    <p class="lsub">You describe your functions with a schema. The model reads it and says which one it wants and with what arguments. Your app is what actually calls it.</p>
+    <div class="chain">
+      <span class="box model">Model</span><span class="arr">&rarr;</span>
+      <span class="box">Schema</span><span class="arr">&rarr;</span>
+      <span class="box">Your app</span><span class="arr">&rarr;</span>
+      <span class="box">API</span>
+    </div>
+    <p class="lnote">The model requests, it does not execute. <b>Every tool needs its own integration written by you</b>, so ten tools across three apps is thirty pieces of glue.</p>
+  </div>
+
+  <div class="layer" style="--accent:var(--mcp)">
+    <div class="lhead">
+      <span class="num">03</span>
+      <h2>MCP</h2>
+      <span class="era">2024</span>
+    </div>
+    <p class="lsub">A standard interface between a model and a capability. Write the server once and any compatible client can use it, instead of rebuilding the same integration per app.</p>
+    <div class="chain">
+      <span class="box model">Model</span><span class="arr">&rarr;</span>
+      <span class="box">MCP client</span><span class="arr">&rarr;</span>
+      <span class="box">MCP server</span><span class="arr">&rarr;</span>
+      <span class="box">GitHub, database, files</span>
+    </div>
+    <div class="caps">
+      <span class="cap">Tools</span>
+      <span class="cap">Resources</span>
+      <span class="cap">Prompts</span>
+    </div>
+    <p class="lnote">It exposes more than functions. <b>Tools do things, resources supply context, prompts ship reusable instructions</b>, and underneath it is still calling an API.</p>
+  </div>
+
+  <div class="verdict">
+    <h3>Same task, different abstraction layer</h3>
+    <div class="vrow">
+      <span class="vk" style="color:var(--api)">API</span>
+      <span class="vv">Executes the work.</span>
+      <span class="vk" style="color:var(--fn)">Function calling</span>
+      <span class="vv">Lets the model ask for a tool, in a shape your code can act on.</span>
+      <span class="vk" style="color:var(--mcp)">MCP</span>
+      <span class="vv">Standardises access to tools, resources and prompts, so integrations stop being per-app work.</span>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: the API does the work, function calling lets a model request it, MCP makes that request portable across clients.<br>
+    Pairs with <a href="six-levels-of-agentic-ai.html" style="color:#8fb8ff">6 Levels of Agentic AI</a>, where tool calling is level 3, and <a href="agent-control-plane.html" style="color:#8fb8ff">Design Your Agent's Control Plane</a> for wiring MCP servers into a project.
+  </div>
+</div>
+
+</body>
+</html>
