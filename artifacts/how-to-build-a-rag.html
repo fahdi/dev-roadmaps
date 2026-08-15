@@ -564,9 +564,15 @@
     </div>
 
     <p class="moves-note">Index first — everything above the query line happens before a user ever asks. Then retrieve → augment → generate → verify.</p>
+    <p class="moves-note" style="border-top:1px dashed var(--border); padding-top:14px; margin-top:16px">
+      <b>One trap worth knowing:</b> combining a metadata filter with an approximate index is not free. If the filter is applied
+      <i>after</i> the index returns its candidate list, a restrictive filter can throw away nearly all of them and you get far fewer
+      results than the limit you asked for — even when plenty of rows would have matched. Either push the filter into the search,
+      or widen the candidate list until the post-filter result is full.
+    </p>
   </div>
 
-  <div class="footer-note">Roadmap: Load → Chunk → Embed & Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate (and iterate)</div>
+  <div class="footer-note">Roadmap: Load → Chunk → Embed &amp; Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate (and iterate)<br>The filtered-search caveat was prompted by an explainer from <a href="https://www.facebook.com/codezup">Codez Up</a>.</div>
 </div>
 
 <script>
