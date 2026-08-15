@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLMOps: Build, Prove, Ship, Operate &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --build: #4ade80;
+    --prove: #4f9dff;
+    --ship: #fbbf24;
+    --operate: #fb7185;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 32%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 80%, rgba(251,113,133,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1060px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 12px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 610px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .cycle{
+    display:flex; align-items:center; justify-content:center; gap: 10px;
+    flex-wrap: wrap; margin: 6px 0 26px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .cycle span.s{ color: var(--c); }
+  .cycle span.a{ color: var(--text-muted); }
+
+  .phase{ width:100%; margin-bottom: 22px; }
+  .phase > h2{
+    margin: 0 0 4px; text-align:center;
+    font-size: 11.5px; font-weight: 800;
+    letter-spacing: 0.9px; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .phase > .lead{ margin: 0 0 13px; text-align:center; font-size: 11.5px; color: var(--text-muted); }
+
+  .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 15px 15px;
+    display:flex; flex-direction:column; gap: 7px;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .card:hover{ background: var(--surface-hover); transform: translateY(-2px); }
+  .card .top{ display:flex; align-items:baseline; gap: 8px; }
+  .card .num{ font-size: 10px; font-weight: 800; color: var(--accent); opacity:0.85; }
+  .card .name{ font-size: 13.5px; font-weight: 800; color: var(--text-primary); letter-spacing:0.2px; }
+  .card .rule{ font-size: 11.5px; color: var(--text-secondary); line-height:1.5; margin: 0; }
+  .card .ask{
+    margin-top: auto;
+    font-size: 10.5px; font-weight: 700;
+    color: color-mix(in srgb, var(--accent) 75%, var(--text-secondary));
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    padding-top: 8px;
+  }
+
+  .verdict{
+    width: 100%; margin-top: 8px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 690px;
+  }
+
+  @media (max-width: 820px){ .grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } .title-block h1{ font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>LLMOps: Build, Prove, Ship, Operate</h1>
+    <p>Your model is not the hard part. Everything around it is. Twelve practices that decide whether an LLM feature survives contact with real traffic, and the question each one answers.</p>
+  </div>
+
+  <div class="cycle">
+    <span class="s" style="--c:var(--build)">Build</span><span class="a">&rarr;</span>
+    <span class="s" style="--c:var(--prove)">Prove</span><span class="a">&rarr;</span>
+    <span class="s" style="--c:var(--ship)">Ship</span><span class="a">&rarr;</span>
+    <span class="s" style="--c:var(--operate)">Operate</span><span class="a">&rarr;</span>
+    <span class="s" style="--c:var(--build)">Repeat</span>
+  </div>
+
+  <div class="phase" style="--accent:var(--build)">
+    <h2>Build</h2>
+    <p class="lead">Make the inputs reproducible before you make anything else</p>
+    <div class="grid">
+      <div class="card">
+        <div class="top"><span class="num">01</span><span class="name">Datasets</span></div>
+        <p class="rule">Curate, version, hold out. Score on data you never trained on, and keep the holdout genuinely sealed.</p>
+        <span class="ask">How do you stop leakage?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">02</span><span class="name">Prompt Versions</span></div>
+        <p class="rule">A prompt is code, not config. If you cannot diff it, you cannot debug it, and you cannot say what changed.</p>
+        <span class="ask">Who approved that prompt?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">03</span><span class="name">Model Pinning</span></div>
+        <p class="rule">Pin the version, never ship against "latest". Providers deprecate on their schedule, not yours.</p>
+        <span class="ask">What happens when it is deprecated?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase" style="--accent:var(--prove)">
+    <h2>Prove</h2>
+    <p class="lead">Turn opinion into a number that can block a release</p>
+    <div class="grid">
+      <div class="card">
+        <div class="top"><span class="num">04</span><span class="name">Eval Sets</span></div>
+        <p class="rule">Golden cases you must pass, with expected behaviour written down rather than remembered.</p>
+        <span class="ask">How big is your eval set?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">05</span><span class="name">LLM as Judge</span></div>
+        <p class="rule">Score at scale, then audit the scorer against human labels. An uncalibrated judge is just a vibe with a number attached.</p>
+        <span class="ask">Do you trust the judge?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">06</span><span class="name">Regression Gate</span></div>
+        <p class="rule">A regression blocks the ship. No green run, no release, and the eval suite owns that decision rather than a person.</p>
+        <span class="ask">What score blocks a ship?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase" style="--accent:var(--ship)">
+    <h2>Ship</h2>
+    <p class="lead">Roll it out in a way you can undo</p>
+    <div class="grid">
+      <div class="card">
+        <div class="top"><span class="num">07</span><span class="name">Canary</span></div>
+        <p class="rule">A small slice of traffic, watched hard. Pick the abort metric before you start, not while it is burning.</p>
+        <span class="ask">What metric aborts it?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">08</span><span class="name">Shadow</span></div>
+        <p class="rule">Run the new version silently on real traffic and compare after. The shadow answer never reaches a user.</p>
+        <span class="ask">Who pays for the shadow calls?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">09</span><span class="name">Rollback</span></div>
+        <p class="rule">Undo in seconds, not hours. Rollback is a button you have already tested, not a plan you will write later.</p>
+        <span class="ask">How fast can you actually revert?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase" style="--accent:var(--operate)">
+    <h2>Operate</h2>
+    <p class="lead">See what production is doing, and feed it back</p>
+    <div class="grid">
+      <div class="card">
+        <div class="top"><span class="num">10</span><span class="name">Tracing</span></div>
+        <p class="rule">One request, end to end, under a single id. Logs alone will not find the slow hop in a multi-step chain.</p>
+        <span class="ask">Can you replay one call?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">11</span><span class="name">Cost Tracking</span></div>
+        <p class="rule">Tokens are the invoice. Measure price per resolved outcome rather than per call, since agents burn far more than chat.</p>
+        <span class="ask">What is your cost per resolved ticket?</span>
+      </div>
+      <div class="card">
+        <div class="top"><span class="num">12</span><span class="name">Feedback Loop</span></div>
+        <p class="rule">Today's bad output is tomorrow's eval case. A thumbs-down that goes nowhere is a defect you have agreed to keep.</p>
+        <span class="ask">Where do thumbs-downs go?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">Twelve feeds one, and the loop closes.</div>
+    <div class="sub">
+      Every production failure captured at step 12 becomes a golden case at step 1.<br>
+      That single link is what turns a pile of practices into a system that gets better instead of just busier.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: build reproducible inputs, prove quality with gates, ship behind canary and shadow with rollback ready, then trace, cost and feed failures back.<br>
+    Pairs with <a href="evaluating-llm-apps.html" style="color:#8fb8ff">How to Evaluate an LLM App</a> for the evaluation half in depth, and <a href="fine-tune-an-llm.html" style="color:#8fb8ff">Fine-Tune an LLM</a> for the training side of the same lifecycle.
+  </div>
+</div>
+
+</body>
+</html>
