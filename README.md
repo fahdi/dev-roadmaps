@@ -15,6 +15,7 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [Fine-Tune an LLM, End to End](artifacts/fine-tune-an-llm.html) | Curate examples → training data → full or adapter → SFT loop → gate on unseen splits → version, canary, monitor. Teach behaviour, retrieve facts |
 | [Design Your Agent's Control Plane](artifacts/agent-control-plane.html) | CLAUDE.md → Rules → Skills → Agents → Hooks → Plugin — context tells, skills teach, agents delegate, hooks enforce, plugins ship the set |
 | [6 Levels of Agentic AI](artifacts/six-levels-of-agentic-ai.html) | Basic → Router → Tool Calling → Multi-agent → Autonomous → Loop Engineering — levels 1–5 are capabilities, level 6 is the craft: discover, plan, execute, verify, iterate |
+| [API vs Function Calling vs MCP](artifacts/api-function-calling-mcp.html) | Three layers of one stack, not competing options. API executes, function calling lets the model request, MCP standardises access |
 | [The Agentic Loop](artifacts/the-agentic-loop.html) | Gather context → take action → verify → loop. Model reasons, tools act, harness orchestrates, and you can steer mid-run |
 | [12 Prompt Patterns](artifacts/prompt-patterns.html) | Zero/one/few-shot → chain of thought, roles, self-reflection → structured output, delimiters, constraints → context selection, templates, prefix caching |
 | [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate — the four memory stores, and the four failure modes of long context |
