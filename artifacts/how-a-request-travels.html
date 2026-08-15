@@ -290,10 +290,87 @@
   .return-cell .r-t{ font-size: 11.5px; font-weight: 700; color: var(--text-primary); }
   .return-cell .r-d{ font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
 
+  /* ---------- AI request variant ---------- */
+  .variant-card{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px 22px;
+  }
+  .variant-card > h3{
+    margin: 0 0 3px;
+    text-align:center;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .variant-card > .lead{
+    margin: 0 0 18px;
+    text-align:center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .phase-row{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .phase{
+    border: 1px solid color-mix(in srgb, var(--ph) 28%, transparent);
+    background: color-mix(in srgb, var(--ph) 6%, transparent);
+    border-radius: 12px;
+    padding: 12px 13px 13px;
+  }
+  .phase .ph-name{
+    display:block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--ph);
+    margin-bottom: 7px;
+  }
+  .phase .ph-item{
+    display:block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding-left: 11px;
+    position: relative;
+  }
+  .phase .ph-item::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--ph);
+    opacity: 0.75;
+  }
+  .phase .ph-item b{ color: var(--text-primary); font-weight: 700; }
+  .variant-note{
+    margin: 0;
+    text-align:center;
+    font-size: 11.5px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    border-top: 1px dashed var(--border);
+    padding-top: 14px;
+  }
+
   .footer-note{
     position: relative;
     z-index: 2;
-    margin-top: 40px;
+    margin-top: 28px;
     font-size: 11.5px;
     color: var(--text-muted);
     text-align: center;
@@ -304,6 +381,7 @@
   @media (max-width: 720px){
     .title-block h1{ font-size: 24px; }
     .return-grid{ grid-template-columns: 1fr 1fr; }
+    .phase-row{ grid-template-columns: 1fr 1fr; }
     .shortcut-label{ display:none; }
     svg.lines path.shortcut{ display:none; }
   }
@@ -446,6 +524,40 @@
       <div class="return-cell"><span class="r-t">Cache Headers</span><span class="r-d">Cache-Control &amp; ETag decide who may remember it</span></div>
       <div class="return-cell"><span class="r-t">Render</span><span class="r-d">Browser parses, paints, and the user sees it</span></div>
     </div>
+  </div>
+
+  <div class="variant-card">
+    <h3>When the Service is a Model</h3>
+    <p class="lead">The first half of the journey is unchanged — DNS, TLS, CDN, balancer, gateway all still happen. What changes is everything behind the gateway: the reply is generated token by token rather than fetched, so the work splits into four phases.</p>
+
+    <div class="phase-row">
+      <div class="phase" style="--ph:var(--dns)">
+        <span class="ph-name">Request</span>
+        <span class="ph-item"><b>Edge routing</b> to the nearest point of presence</span>
+        <span class="ph-item"><b>Authentication</b> before anything runs</span>
+        <span class="ph-item"><b>Rate limits</b> so no one caller floods the system</span>
+      </div>
+      <div class="phase" style="--ph:var(--gw)">
+        <span class="ph-name">Context</span>
+        <span class="ph-item"><b>Conversation state</b> loaded from the history store</span>
+        <span class="ph-item"><b>Context assembly</b> packs prompt plus evidence</span>
+        <span class="ph-item"><b>Policy checks</b> screen against safety rules</span>
+      </div>
+      <div class="phase" style="--ph:var(--svc)">
+        <span class="ph-name">Infer</span>
+        <span class="ph-item"><b>Model routing</b> picks the right model for the job</span>
+        <span class="ph-item"><b>GPU scheduling</b> batches the work efficiently</span>
+        <span class="ph-item"><b>Hot cache</b> serves session and prompt reuse</span>
+      </div>
+      <div class="phase" style="--ph:var(--resp)">
+        <span class="ph-name">Stream</span>
+        <span class="ph-item"><b>Token streaming</b> as the answer generates</span>
+        <span class="ph-item"><b>Billing &amp; metering</b> counts tokens in real time</span>
+        <span class="ph-item"><b>Logging &amp; evals</b> record and score every call</span>
+      </div>
+    </div>
+
+    <p class="variant-note">Two things have no equivalent in the plain web request: the reply starts arriving before it is finished, and the call has to be <b>retry-safe</b> — a dropped connection must not bill the user twice. Storage and observability keep running after the last token ships.</p>
   </div>
 
   <div class="footer-note">
