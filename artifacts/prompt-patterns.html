@@ -209,9 +209,19 @@
     </div>
   </div>
 
+  <div class="verdict" style="border-color:rgba(251,113,133,0.45); background:rgba(251,113,133,0.05); margin-top:14px">
+    <div class="punch" style="color:#fb7185">Some tasks no prompt pattern will fix.</div>
+    <div class="sub">
+      A model reads text as tokens, which are chunks of characters rather than the characters themselves. Inside a token the individual letters are not separately visible, so counting letters, spelling a word backwards or manipulating text character by character is unreliable no matter how you phrase the request.<br>
+      That is a property of the input representation, not a prompting failure. Hand those jobs to code and let the model orchestrate the call.
+    </div>
+  </div>
+
   <div class="footer-note">
     Roadmap: start with the fewest examples that work, steer the reasoning only when the task needs it, constrain the output so code can consume it, then make the whole thing cheap to run.<br>
     Pairs with <a href="context-engineering.html" style="color:#8fb8ff">Context Engineering</a> for what belongs in the window, and <a href="llmops-concepts.html" style="color:#8fb8ff">LLMOps</a> for versioning and evaluating prompts once they ship.
+    <br>
+    The token-level note was prompted by an explainer from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
   </div>
 </div>
 
