@@ -28,6 +28,7 @@ Visual, interactive developer roadmaps: step-by-step guides for building modern 
 | [12 System Design Patterns](artifacts/system-design-patterns.html) | Timeout, retry, circuit breaker, rate limiter, bulkhead, pub/sub, caching, event sourcing, CQRS, saga, strangler fig. Every one is about failure |
 | [API Key vs JWT vs OAuth 2.0](artifacts/api-key-jwt-oauth.html) | App to app, user to app, user to third party. One product usually runs all three for different hops |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
+| [Demo to Production](artifacts/demo-to-production.html) | Interactive. Retrieval, agents, context, evals, failure, cost and trust, each shown as the demo version and what it takes to survive real users |
 | [DevSecOps and GitOps, End to End](artifacts/devsecops-gitops.html) | Interactive. Secure CI → build and sign → GitOps handoff → pull-based deploy → observe, with the gates that can actually block a release |
 | [Load Balancing, Watched Live](artifacts/load-balancing-live.html) | Interactive. Round robin, weighted, least connections, power of two and hashing, simulated against four uneven servers |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database. The two cache shortcuts, and what changes when the service is a model |
