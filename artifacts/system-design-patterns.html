@@ -136,8 +136,8 @@
       <div class="pat">
         <div class="top"><span class="num">02</span><span class="name">Retry</span></div>
         <p class="one">Try again, but politely.</p>
-        <p class="what">Back off exponentially and add jitter, or every client retries in lockstep and you rebuild the spike you were recovering from.</p>
-        <span class="ask">Why jitter the backoff?</span>
+        <p class="what">Back off exponentially and add jitter, or every client retries in lockstep and rebuilds the spike you were recovering from. That fixes the herd but not the side effects: a retried write needs an idempotency key so the second attempt is recognised as the same request rather than performed again.</p>
+        <span class="ask">Is this operation safe to repeat?</span>
       </div>
       <div class="pat">
         <div class="top"><span class="num">03</span><span class="name">Circuit Breaker</span></div>
@@ -234,6 +234,8 @@
   <div class="footer-note">
     Roadmap: bound every call, retry politely, break the circuit, shed and isolate, then choose your data and evolution patterns deliberately.<br>
     Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a> for the designs these patterns appear inside, and <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for where they sit on the path.
+    <br>
+    The idempotency note was prompted by an explainer from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
   </div>
 </div>
 
