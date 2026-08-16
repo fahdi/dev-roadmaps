@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Evaluate an LLM App — Roadmap</title>
+<title>How to Evaluate an LLM App &middot; Roadmap</title>
 <style>
   :root{
     color-scheme: dark;
@@ -446,7 +446,7 @@
   <div class="section-card" id="n-golden" style="--card-accent:var(--golden)">
     <span class="step-badge">1</span>
     <div class="section-head"><span class="icon-wrap" data-icon="star"></span><span class="t">Golden Dataset</span></div>
-    <p class="section-sub">The foundation — a curated set where quality beats size.</p>
+    <p class="section-sub">The foundation, a curated set where quality beats size.</p>
     <div class="chip-row">
       <div class="chip"><div class="chip-icon" data-icon="check"></div><div class="chip-label">Normal Cases</div></div>
       <div class="chip"><div class="chip-icon" data-icon="zigzag"></div><div class="chip-label">Edge Cases</div></div>
@@ -460,7 +460,7 @@
   <div class="section-card" id="n-methods" style="--card-accent:var(--methods)">
     <span class="step-badge">2</span>
     <div class="section-head"><span class="icon-wrap" data-icon="scale"></span><span class="t">The Four Evaluators</span></div>
-    <p class="section-sub">Pick per check — cheap &amp; deterministic first, expensive &amp; human last.</p>
+    <p class="section-sub">Pick per check: cheap and deterministic first, expensive &amp; human last.</p>
     <div class="method-grid">
       <div class="method">
         <div class="m-name"><span data-icon="code"></span>Code-based Checks</div>
@@ -468,15 +468,15 @@
       </div>
       <div class="method">
         <div class="m-name"><span data-icon="target"></span>Ground Truth</div>
-        <div class="m-desc">Compare against trusted reference answers — great for classification &amp; extraction where a known correct state exists.</div>
+        <div class="m-desc">Compare against trusted reference answers, which suit classification &amp; extraction where a known correct state exists.</div>
       </div>
       <div class="method">
         <div class="m-name"><span data-icon="gavel"></span>LLM-as-Judge</div>
-        <div class="m-desc">A model scores outputs against a written rubric — correctness, groundedness, tone. Calibrate the judge against human labels before trusting it.</div>
+        <div class="m-desc">A model scores outputs against a written rubric: correctness, groundedness, tone. Calibrate the judge against human labels before trusting it.</div>
       </div>
       <div class="method">
         <div class="m-name"><span data-icon="user"></span>Human Review</div>
-        <div class="m-desc">Experts on ambiguous, high-risk cases — and the calibration source for everything automated. Expensive, so spend it where it matters.</div>
+        <div class="m-desc">Experts on ambiguous, high-risk cases, and the calibration source for everything automated. Expensive, so spend it where it matters.</div>
       </div>
     </div>
   </div>
@@ -486,14 +486,14 @@
   <div class="section-card" id="n-offline" style="--card-accent:var(--offline)">
     <span class="step-badge">3</span>
     <div class="section-head"><span class="icon-wrap" data-icon="flask"></span><span class="t">Offline Evals</span></div>
-    <p class="section-sub">Pre-release, on the golden set — define coverage, calibrate judges, set the baseline.</p>
+    <p class="section-sub">Pre-release, on the golden set: define coverage, calibrate judges, set the baseline.</p>
     <div class="chip-row">
       <div class="chip"><div class="chip-icon" data-icon="map"></div><div class="chip-label">Task Coverage</div></div>
       <div class="chip"><div class="chip-icon" data-icon="sliders"></div><div class="chip-label">Judge Calibration</div></div>
       <div class="chip"><div class="chip-icon" data-icon="bars"></div><div class="chip-label">Baseline Scores</div></div>
     </div>
 
-    <p class="section-sub" style="margin-top:16px">Score on six dimensions, not one number — an average hides the one that broke.</p>
+    <p class="section-sub" style="margin-top:16px">Score on six dimensions, not one number, because an average hides the one that broke.</p>
     <div class="score-grid">
       <div class="score-dim"><b>Correctness</b> did it get the answer right</div>
       <div class="score-dim"><b>Groundedness</b> is every claim supported</div>
@@ -502,7 +502,7 @@
       <div class="score-dim"><b>Latency p95</b> the slow tail, not the mean</div>
       <div class="score-dim"><b>Cost per run</b> what one answer costs you</div>
     </div>
-    <p class="section-sub" style="text-align:center">Then diagnose — bucket the failures, fix the biggest bucket, rerun only the failed cases.</p>
+    <p class="section-sub" style="text-align:center">Then diagnose: bucket the failures, fix the biggest bucket, rerun only the failed cases.</p>
     <div class="bucket-row">
       <span class="bucket">Retrieval</span>
       <span class="bucket">Prompt</span>
@@ -527,7 +527,7 @@
       <div class="chip"><div class="chip-icon" data-icon="shuffle"></div><div class="chip-label">Shadow Runs</div></div>
       <div class="chip"><div class="chip-icon" data-icon="zigzag"></div><div class="chip-label">Rollback</div></div>
     </div>
-    <p class="section-sub" style="margin-top:14px">A regression blocks the ship — no green run, no release. Pin the model version rather than tracking "latest", canary a slice of traffic with the abort metric picked up front, run the new version in shadow where its answers never reach a user, and keep rollback a button rather than a plan.</p>
+    <p class="section-sub" style="margin-top:14px">A regression blocks the ship. No green run, no release. Pin the model version rather than tracking "latest", canary a slice of traffic with the abort metric picked up front, run the new version in shadow where its answers never reach a user, and keep rollback a button rather than a plan.</p>
   </div>
 
   <div class="spacer"></div>
@@ -535,7 +535,7 @@
   <div class="section-card" id="n-guard" style="--card-accent:var(--guard)">
     <span class="step-badge">5</span>
     <div class="section-head"><span class="icon-wrap" data-icon="shield"></span><span class="t">Guardrails</span></div>
-    <p class="section-sub">Inline and blocking — the only evals that stop a bad response before the user sees it.</p>
+    <p class="section-sub">Inline and blocking, the only evals that stop a bad response before the user sees it.</p>
     <div class="chip-row">
       <div class="chip"><div class="chip-icon" data-icon="filter"></div><div class="chip-label">Input Filtering</div></div>
       <div class="chip"><div class="chip-icon" data-icon="lock"></div><div class="chip-label">PII / Policy Blocks</div></div>
@@ -548,7 +548,7 @@
   <div class="section-card" id="n-online" style="--card-accent:var(--online)">
     <span class="step-badge">6</span>
     <div class="section-head"><span class="icon-wrap" data-icon="pulse"></span><span class="t">Online Evals &amp; Monitoring</span></div>
-    <p class="section-sub">Async, on sampled production traffic — real usage finds what your dataset missed.</p>
+    <p class="section-sub">Async, on sampled production traffic, because real usage finds what your dataset missed.</p>
     <div class="chip-row">
       <div class="chip"><div class="chip-icon" data-icon="shuffle"></div><div class="chip-label">Sampled Traffic</div></div>
       <div class="chip"><div class="chip-icon" data-icon="eye"></div><div class="chip-label">Drift Detection</div></div>
@@ -561,14 +561,15 @@
 
   <div class="verdict-card" id="n-verdict">
     <div class="punch">
-      Don't ask <strong>"does it look good?"</strong> — ask <strong>"what's the score on the cases that used to fail?"</strong><br>
-      Vibes don't scale. Every production failure that reaches step 6 gets promoted into the golden dataset at step 1 — that loop is the whole system.
+      Don't ask <strong>"does it look good?"</strong>. Ask <strong>"what's the score on the cases that used to fail?"</strong><br>
+      Vibes don't scale. Every production failure that reaches step 6 gets promoted into the golden dataset at step 1, and that loop is the whole system.
     </div>
   </div>
 
   <div class="footer-note">
     Roadmap: golden dataset → four evaluators → offline baseline → CI/CD gate → guardrails inline → online evals → failures feed back.<br>
-    Terminology follows Arize's LLM evaluation guide (offline/online evals, LLM-as-judge calibration, golden datasets, guardrails vs async evals).
+    Terminology follows Arize's LLM evaluation guide (offline/online evals, LLM-as-judge calibration, golden datasets, guardrails vs async evals).<br>
+    Pairs with <a href="llmops-concepts.html" style="color:#8fb8ff">LLMOps</a>, <a href="fine-tune-an-llm.html" style="color:#8fb8ff">Fine-Tune an LLM</a> and <a href="how-to-build-a-rag.html" style="color:#8fb8ff">How to Build a RAG</a>.
   </div>
 </div>
 

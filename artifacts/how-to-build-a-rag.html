@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Build a RAG — Roadmap</title>
+<title>How to Build a RAG &middot; Roadmap</title>
 <style>
   :root{
     color-scheme: dark;
@@ -401,7 +401,7 @@
   <div class="title-block" id="title-block">
     <div class="title-icon"></div>
     <h1>How to Build a RAG</h1>
-    <p>A developer roadmap from raw documents to grounded, cited answers — the indexing pipeline that prepares your data, and the retrieval pipeline that answers with it.</p>
+    <p>A developer roadmap from raw documents to grounded, cited answers: the indexing pipeline that prepares your data, and the retrieval pipeline that answers with it.</p>
   </div>
 
   <div class="spacer tall"></div>
@@ -462,7 +462,7 @@
 
   <div class="pill-node accent" id="n-userquery" style="--pill-accent:var(--vectorstore)">
     <span class="icon-wrap"></span>
-    <span>Meanwhile — User Query</span>
+    <span>Meanwhile: User Query</span>
   </div>
 
   <div class="spacer"></div>
@@ -516,7 +516,7 @@
 
   <div class="moves-card">
     <h3>The Same Pipeline, as Five Moves</h3>
-    <p class="lead">RAG sounds like fifteen scary buzzwords. Every one of them is part of one of five moves — learn the patterns, not the jargon.</p>
+    <p class="lead">RAG sounds like fifteen scary buzzwords. Every one of them is part of one of five moves, so learn the patterns, not the jargon.</p>
 
     <div class="move-row" style="--mv:var(--chunking)">
       <div class="move-label"><span class="mv-name">Split</span><span class="mv-sub">one → many</span></div>
@@ -563,16 +563,18 @@
       </div>
     </div>
 
-    <p class="moves-note">Index first — everything above the query line happens before a user ever asks. Then retrieve → augment → generate → verify.</p>
+    <p class="moves-note">Index first, because everything above the query line happens before a user ever asks. Then retrieve → augment → generate → verify.</p>
     <p class="moves-note" style="border-top:1px dashed var(--border); padding-top:14px; margin-top:16px">
       <b>One trap worth knowing:</b> combining a metadata filter with an approximate index is not free. If the filter is applied
       <i>after</i> the index returns its candidate list, a restrictive filter can throw away nearly all of them and you get far fewer
-      results than the limit you asked for — even when plenty of rows would have matched. Either push the filter into the search,
+      results than the limit you asked for, even when plenty of rows would have matched. Either push the filter into the search,
       or widen the candidate list until the post-filter result is full.
     </p>
   </div>
 
-  <div class="footer-note">Roadmap: Load → Chunk → Embed &amp; Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate (and iterate)<br>The filtered-search caveat was prompted by an explainer from <a href="https://www.facebook.com/codezup">Codez Up</a>.</div>
+  <div class="footer-note">Roadmap: Load → Chunk → Embed &amp; Tag → Index → Retrieve → Augment → Generate → Verify → Evaluate (and iterate)<br>The filtered-search caveat was prompted by an explainer from <a href="https://www.facebook.com/codezup">Codez Up</a>.<br>
+    Pairs with <a href="rag-vs-lora-vs-fine-tuning.html" style="color:#8fb8ff">RAG vs LoRA vs Full Fine-Tuning</a>, <a href="ai-application-architecture.html" style="color:#8fb8ff">AI Application Architecture</a> and <a href="evaluating-llm-apps.html" style="color:#8fb8ff">How to Evaluate an LLM App</a>.
+  </div>
 </div>
 
 <script>
