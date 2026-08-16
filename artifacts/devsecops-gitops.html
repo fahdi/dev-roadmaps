@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevSecOps and GitOps, End to End &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --ci:    #4f9dff;
+    --gate:  #fbbf24;
+    --supply:#b18bfa;
+    --gitops:#4ade80;
+    --obs:   #34d2e0;
+    --fail:  #fb7185;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.09), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1040px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 20px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 640px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .controls{ display:flex; gap:9px; justify-content:center; flex-wrap:wrap; margin-bottom: 16px; }
+  .ctl{
+    font: inherit; font-size: 11.5px; font-weight: 700; letter-spacing:0.3px;
+    color: var(--text-secondary); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 15px; cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .ctl:hover{ background: var(--surface-hover); color: var(--text-primary); }
+  .ctl.primary{ color: var(--gitops); border-color: color-mix(in srgb, var(--gitops) 50%, transparent); background: color-mix(in srgb, var(--gitops) 12%, transparent); }
+  .ctl.danger{ color: var(--fail); border-color: color-mix(in srgb, var(--fail) 45%, transparent); }
+
+  .pipe{ width:100%; display:flex; flex-direction:column; gap: 12px; }
+
+  .phase{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    border-left: 3px solid var(--c);
+    border-radius: 14px;
+    padding: 14px 16px 15px;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .phase.active{ background: color-mix(in srgb, var(--c) 7%, var(--surface)); border-color: color-mix(in srgb, var(--c) 55%, transparent); }
+  .phase .ph{ display:flex; align-items:baseline; gap:10px; margin-bottom: 11px; flex-wrap:wrap; }
+  .phase .pn{ font-size: 9.5px; font-weight: 800; letter-spacing:0.7px; color: var(--c); opacity:.9; }
+  .phase h2{ margin:0; font-size: 14px; font-weight: 800; letter-spacing:0.3px; color: var(--text-primary); }
+  .phase .pw{ margin-left:auto; font-size: 10.5px; color: var(--text-muted); }
+
+  .steps{ display:flex; flex-wrap:wrap; gap: 7px; }
+  .step{
+    display:flex; flex-direction:column; gap:3px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    padding: 8px 11px 9px;
+    min-width: 118px; flex: 1 1 118px;
+    position: relative;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .step .tool{ font-size: 11.5px; font-weight: 700; color: var(--text-primary); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .step .does{ font-size: 10px; color: var(--text-muted); line-height:1.35; }
+  .step .pill{
+    position:absolute; top:-7px; right:9px;
+    font-size: 8.5px; font-weight: 800; letter-spacing:0.5px; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 999px;
+    background: var(--page); border: 1px solid var(--border); color: var(--text-muted);
+    opacity: 0; transition: opacity .18s ease;
+  }
+  .step.run{ border-color: color-mix(in srgb, var(--c) 65%, transparent); background: color-mix(in srgb, var(--c) 10%, transparent); transform: translateY(-2px); }
+  .step.run .pill{ opacity:1; color: var(--c); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+  .step.ok{ border-color: color-mix(in srgb, var(--gitops) 45%, transparent); }
+  .step.ok .pill{ opacity:1; color: var(--gitops); border-color: color-mix(in srgb, var(--gitops) 40%, transparent); }
+  .step.bad{ border-color: color-mix(in srgb, var(--fail) 60%, transparent); background: color-mix(in srgb, var(--fail) 10%, transparent); }
+  .step.bad .pill{ opacity:1; color: var(--fail); border-color: color-mix(in srgb, var(--fail) 45%, transparent); }
+  .step.skip{ opacity: .32; }
+  .step.added{ border-style: dashed; }
+  .step.added .tool::after{ content:" +"; color: var(--supply); font-weight:800; }
+
+  .statusbar{
+    width:100%; margin: 14px 0 0;
+    border: 1px solid var(--border); background: var(--surface);
+    border-radius: 12px; padding: 12px 15px;
+    font-size: 12.5px; color: var(--text-secondary); line-height:1.55;
+    min-height: 62px;
+  }
+  .statusbar b{ color: var(--text-primary); }
+  .statusbar .tag{ font-weight:800; letter-spacing:.4px; }
+  .statusbar .tag.ok{ color: var(--gitops); }
+  .statusbar .tag.bad{ color: var(--fail); }
+
+  /* answers + gaps */
+  .qa{ width:100%; margin-top: 24px; display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card{
+    background: var(--surface); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    border-top: 3px solid var(--c); border-radius: 12px; padding: 14px 16px 15px;
+  }
+  .card h3{ margin:0 0 6px; font-size: 13px; font-weight:800; color: var(--c); letter-spacing:.3px; }
+  .card p{ margin:0 0 7px; font-size: 11.5px; color: var(--text-secondary); line-height:1.55; }
+  .card p:last-child{ margin-bottom:0; }
+  .card b{ color: var(--text-primary); }
+  .verdictline{ font-size: 11px; font-weight:700; color: var(--c); border-top:1px dashed color-mix(in srgb, var(--c) 25%, transparent); padding-top:8px; margin-top:9px; }
+
+  .gaps{ width:100%; margin-top: 12px; }
+  .gaps h3{
+    margin: 0 0 10px; text-align:center; font-size: 11.5px; font-weight:800;
+    letter-spacing:.9px; text-transform:uppercase; color: var(--supply);
+  }
+  .gapgrid{ display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
+  .gap{
+    border:1px solid color-mix(in srgb, var(--supply) 26%, transparent);
+    background: color-mix(in srgb, var(--supply) 5%, transparent);
+    border-radius:11px; padding:11px 12px 12px;
+  }
+  .gap .gt{ display:block; font-size:11.5px; font-weight:800; color: var(--text-primary); }
+  .gap .gd{ display:block; font-size:10.5px; color: var(--text-secondary); line-height:1.45; margin-top:4px; }
+
+  .verdict-card{
+    width:100%; margin-top: 22px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 700px;
+  }
+
+  @media (max-width: 780px){
+    .qa{ grid-template-columns: 1fr; }
+    .gapgrid{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .step, .phase{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>DevSecOps and GitOps, End to End</h1>
+    <p>Code to production in four phases, with the security gates that can actually stop a release. Every tool here is open source. Press run and watch a commit travel, or fail a gate and watch it stop.</p>
+  </div>
+
+  <div class="controls">
+    <button class="ctl primary" id="run" type="button">Run pipeline</button>
+    <button class="ctl danger" id="breakit" type="button">Inject a CVE</button>
+    <button class="ctl" id="drift" type="button">Cause cluster drift</button>
+  </div>
+
+  <div class="pipe" id="pipe"></div>
+
+  <div class="statusbar" id="status">Idle. Press <b>Run pipeline</b> to send a commit through.</div>
+
+  <div class="qa">
+    <div class="card" style="--c:var(--gate)">
+      <h3>Do you need SonarQube?</h3>
+      <p>Probably not. It wants its own server and database to do something <b>Semgrep does in seconds</b> with rules as code and no infrastructure to run. In CI, that difference is minutes per build and one less stateful service to operate.</p>
+      <p>Its real draw is the quality-gate dashboard and the historical trend line, which genuinely matters if your organisation reports on code quality over time. For catching bugs, native linters plus Semgrep are faster and sharper.</p>
+      <p class="verdictline">Keep it for the dashboard and the org chart. Drop it for speed.</p>
+    </div>
+    <div class="card" style="--c:var(--gitops)">
+      <h3>Do you need Argo CD?</h3>
+      <p>The tool is replaceable. The pattern is not, and for one reason that rarely gets said out loud: with pull-based GitOps <b>your CI never holds cluster credentials</b>. The cluster reaches out to Git instead. That removes the most dangerous secret in the whole pipeline from the system most exposed to untrusted code.</p>
+      <p>You also get continuous drift correction and Git as the audit log. Flux is the lighter alternative, a set of focused controllers with no bundled UI.</p>
+      <p class="verdictline">Not on Kubernetes, or one cluster and one environment? Deploying from CI is fine.</p>
+    </div>
+  </div>
+
+  <div class="gaps">
+    <h3>What the common stack leaves out</h3>
+    <div class="gapgrid">
+      <div class="gap"><span class="gt">Secret scanning</span><span class="gd">Nothing checks whether a key was committed. Gitleaks costs seconds and catches the incident you cannot revoke by rebuilding.</span></div>
+      <div class="gap"><span class="gt">Signing and provenance</span><span class="gd">Scanning proves an image was clean once. Signing with Cosign proves the thing running is the thing you built.</span></div>
+      <div class="gap"><span class="gt">SBOM</span><span class="gd">Without a component inventory from Syft, the next big CVE starts with a week of guessing whether you are affected.</span></div>
+      <div class="gap"><span class="gt">Admission policy</span><span class="gd">Signing means nothing if the cluster runs unsigned images anyway. Kyverno verifies the signature at admission.</span></div>
+      <div class="gap"><span class="gt">Progressive delivery</span><span class="gd">Syncing to Git state is not a release strategy. Flagger shifts traffic gradually and rolls back on metrics.</span></div>
+      <div class="gap"><span class="gt">Logs and traces</span><span class="gd">Metrics tell you something broke. Loki and Tempo tell you what happened, through OpenTelemetry.</span></div>
+    </div>
+  </div>
+
+  <div class="verdict-card">
+    <div class="punch">A gate that cannot fail the build is decoration.</div>
+    <div class="sub">
+      The measure of a DevSecOps pipeline is not how many scanners are in the diagram. It is what happens when one of them finds something.<br>
+      Signing without admission policy, scanning without a blocking threshold, and dashboards nobody is paged from all look identical on an architecture slide and do nothing at three in the morning.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: scan the source, build reproducibly, sign what you ship, hand off through Git, let the cluster pull, then verify at admission and watch it converge.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for what happens once it is running, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for surviving the failures.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const PHASES = [
+    { key:'ci', name:'Secure CI', c:'--ci', when:'on every push',
+      steps:[
+        { tool:'git push',   does:'developer commits to the app repo' },
+        { tool:'CI runner',  does:'Actions or GitLab CI, ephemeral and stateless' },
+        { tool:'Gitleaks',   does:'secret scan, blocks committed credentials', gate:true, added:true },
+        { tool:'Semgrep',    does:'SAST, rules as code, no server to run', gate:true },
+        { tool:'Trivy fs',   does:'dependency CVEs across languages', gate:true }
+      ]},
+    { key:'build', name:'Build and Sign', c:'--supply', when:'supply chain',
+      steps:[
+        { tool:'Buildah',    does:'rootless image build, no daemon in CI' },
+        { tool:'Syft',       does:'generate the SBOM', added:true },
+        { tool:'Trivy image',does:'scan the built layers', gate:true },
+        { tool:'Cosign',     does:'sign image, attach SBOM attestation', added:true },
+        { tool:'Harbor',     does:'push to registry' }
+      ]},
+    { key:'handoff', name:'GitOps Handoff', c:'--gate', when:'CI writes, never deploys',
+      steps:[
+        { tool:'digest pin', does:'update manifest by digest, not tag', added:true },
+        { tool:'config repo',does:'commit to a separate deployment repo' }
+      ]},
+    { key:'deploy', name:'GitOps Deploy', c:'--gitops', when:'cluster pulls',
+      steps:[
+        { tool:'Flux',       does:'reconciler watches Git and pulls' },
+        { tool:'Kyverno',    does:'admission check, verify signature', gate:true, added:true },
+        { tool:'Flagger',    does:'canary shift, auto rollback on metrics', added:true },
+        { tool:'Kubernetes', does:'cluster converges to declared state' }
+      ]},
+    { key:'obs', name:'Observe and Correct', c:'--obs', when:'continuously',
+      steps:[
+        { tool:'Prometheus', does:'metrics from cluster and app' },
+        { tool:'Loki',       does:'logs, correlated by trace id', added:true },
+        { tool:'Tempo',      does:'distributed traces via OpenTelemetry', added:true },
+        { tool:'Grafana',    does:'dashboards over all three' },
+        { tool:'Alertmanager',does:'routes the page to a human' }
+      ]}
+  ];
+
+  const pipe = document.getElementById('pipe');
+  const statusEl = document.getElementById('status');
+  const nodes = [];
+
+  PHASES.forEach((p, pi) => {
+    const d = document.createElement('div');
+    d.className = 'phase';
+    d.style.setProperty('--c', 'var(' + p.c + ')');
+    d.innerHTML = '<div class="ph"><span class="pn">Phase ' + (pi+1) + '</span>' +
+                  '<h2>' + p.name + '</h2><span class="pw">' + p.when + '</span></div>' +
+                  '<div class="steps"></div>';
+    const holder = d.querySelector('.steps');
+    p.steps.forEach(s => {
+      const e = document.createElement('div');
+      e.className = 'step' + (s.added ? ' added' : '');
+      e.innerHTML = '<span class="pill"></span><span class="tool">' + s.tool + '</span>' +
+                    '<span class="does">' + s.does + '</span>';
+      holder.appendChild(e);
+      nodes.push({ el:e, phase:d, def:s, phaseKey:p.key });
+    });
+    pipe.appendChild(d);
+  });
+
+  let timer = null, injectCVE = false;
+
+  function clearAll(){
+    nodes.forEach(n => { n.el.className = 'step' + (n.def.added ? ' added' : ''); n.el.querySelector('.pill').textContent = ''; });
+    PHASES.forEach((_, i) => pipe.children[i].classList.remove('active'));
+  }
+
+  function say(html){ statusEl.innerHTML = html; }
+
+  function run(opts){
+    opts = opts || {};
+    if (timer) { clearTimeout(timer); timer = null; }
+    clearAll();
+    let i = 0;
+    const failAt = opts.cve
+      ? nodes.findIndex(n => n.def.tool === 'Trivy image')
+      : -1;
+
+    function stepOn(){
+      if (i > 0){
+        const prev = nodes[i-1];
+        prev.el.classList.remove('run');
+        prev.el.classList.add('ok');
+        prev.el.querySelector('.pill').textContent = 'pass';
+      }
+      if (i >= nodes.length){
+        say('<span class="tag ok">Converged.</span> Image signed, signature verified at admission, canary promoted, cluster matches Git. ' +
+            'Every gate had the power to stop this and none needed to.');
+        return;
+      }
+      const n = nodes[i];
+      nodes.forEach(x => x.phase.classList.toggle('active', x.phase === n.phase));
+      n.el.classList.add('run');
+      n.el.querySelector('.pill').textContent = 'run';
+
+      if (i === failAt){
+        n.el.classList.remove('run');
+        n.el.classList.add('bad');
+        n.el.querySelector('.pill').textContent = 'fail';
+        for (let k = i+1; k < nodes.length; k++) nodes[k].el.classList.add('skip');
+        say('<span class="tag bad">Blocked at Trivy image.</span> A critical CVE was found in a base layer, so the build never reaches ' +
+            '<b>Cosign</b> and nothing is signed. With no signature, <b>Kyverno</b> would refuse it at admission even if someone pushed it by hand. ' +
+            'That is the difference between a scanner and a gate.');
+        return;
+      }
+      i++;
+      timer = setTimeout(stepOn, 520);
+    }
+    say('<span class="tag">Running.</span> Commit entering the pipeline.');
+    stepOn();
+  }
+
+  function driftDemo(){
+    if (timer) { clearTimeout(timer); timer = null; }
+    clearAll();
+    const fluxIdx = nodes.findIndex(n => n.def.tool === 'Flux');
+    const k8sIdx  = nodes.findIndex(n => n.def.tool === 'Kubernetes');
+    nodes[k8sIdx].phase.classList.add('active');
+    nodes[k8sIdx].el.classList.add('bad');
+    nodes[k8sIdx].el.querySelector('.pill').textContent = 'drift';
+    say('<span class="tag bad">Drift detected.</span> Someone ran a manual edit against the cluster, so live state no longer matches Git.');
+    timer = setTimeout(function(){
+      nodes[fluxIdx].el.classList.add('run');
+      nodes[fluxIdx].el.querySelector('.pill').textContent = 'sync';
+      say('<span class="tag">Reconciling.</span> <b>Flux</b> compares live state against the repo on its own schedule. Nobody triggered this.');
+      timer = setTimeout(function(){
+        nodes[fluxIdx].el.classList.remove('run'); nodes[fluxIdx].el.classList.add('ok');
+        nodes[fluxIdx].el.querySelector('.pill').textContent = 'pass';
+        nodes[k8sIdx].el.classList.remove('bad'); nodes[k8sIdx].el.classList.add('ok');
+        nodes[k8sIdx].el.querySelector('.pill').textContent = 'ok';
+        say('<span class="tag ok">Reverted.</span> The manual change is gone and the cluster matches Git again. ' +
+            'This is the property you actually buy with GitOps: the repo is not a record of what you deployed, it is what is running.');
+      }, 1500);
+    }, 1200);
+  }
+
+  document.getElementById('run').addEventListener('click', function(){ injectCVE = false; run({}); });
+  document.getElementById('breakit').addEventListener('click', function(){ injectCVE = true; run({cve:true}); });
+  document.getElementById('drift').addEventListener('click', driftDemo);
+
+  // gentle autostart
+  setTimeout(function(){ run({}); }, 600);
+})();
+</script>
+
+</body>
+</html>
