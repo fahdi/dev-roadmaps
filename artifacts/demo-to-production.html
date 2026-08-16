@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo to Production &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --demo: #fb923c;
+    --prod: #4ade80;
+    --break: #fb7185;
+    --accent: #4f9dff;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 20px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 630px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  /* ---------- switch ---------- */
+  .switch{
+    display:inline-flex; padding: 4px; gap: 4px; margin-bottom: 6px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+  }
+  .sw{
+    font: inherit; font-size: 12px; font-weight: 800; letter-spacing:0.4px;
+    color: var(--text-muted); background: transparent; border: 0;
+    border-radius: 999px; padding: 8px 20px; cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+  .sw[aria-pressed="true"]{ color: var(--page); }
+  .sw.demo[aria-pressed="true"]{ background: var(--demo); }
+  .sw.prod[aria-pressed="true"]{ background: var(--prod); }
+
+  .modeline{
+    font-size: 12px; color: var(--text-secondary); margin: 8px 0 20px;
+    text-align:center; min-height: 20px; max-width: 600px; line-height:1.5;
+  }
+  .modeline b{ color: var(--text-primary); }
+
+  /* ---------- rows ---------- */
+  .rows{ width:100%; display:flex; flex-direction:column; gap: 10px; }
+
+  .row{
+    display:grid; grid-template-columns: 150px 1fr;
+    gap: 14px; align-items:stretch;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--st);
+    border-radius: 13px;
+    padding: 13px 15px 14px;
+    transition: border-color .35s ease, background .35s ease;
+  }
+  .row .what{
+    display:flex; flex-direction:column; justify-content:center; gap: 3px;
+    border-right: 1px solid var(--border); padding-right: 12px;
+  }
+  .row .wn{ font-size: 13px; font-weight: 800; color: var(--text-primary); letter-spacing:0.2px; }
+  .row .ws{ font-size: 10px; color: var(--text-muted); line-height:1.35; }
+
+  .row .body{ display:flex; flex-direction:column; justify-content:center; gap: 6px; min-width: 0; }
+  .row .line{ font-size: 12px; line-height:1.55; color: var(--text-secondary); }
+  .row .line b{ color: var(--text-primary); }
+  .row .tagline{
+    font-size: 10.5px; font-weight: 700; letter-spacing:0.4px;
+    color: var(--st);
+  }
+  .row .breaks{
+    font-size: 11px; color: var(--break); line-height:1.5;
+    border-top: 1px dashed color-mix(in srgb, var(--break) 30%, transparent);
+    padding-top: 7px; margin-top: 2px;
+  }
+
+  /* ---------- verdict ---------- */
+  .verdict-card{
+    width:100%; margin-top: 22px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 700px;
+  }
+
+  @media (max-width: 720px){
+    .row{ grid-template-columns: 1fr; gap: 10px; }
+    .row .what{ border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 9px; }
+    .title-block h1{ font-size: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .row{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Demo to Production</h1>
+    <p>The same seven capabilities, built two ways. The demo version works on your machine and in a screenshot. The production version survives real users, and the difference is almost never the model.</p>
+  </div>
+
+  <div class="switch" role="group" aria-label="View mode">
+    <button class="sw demo" id="sw-demo" type="button" aria-pressed="true">Demo</button>
+    <button class="sw prod" id="sw-prod" type="button" aria-pressed="false">Production</button>
+  </div>
+  <p class="modeline" id="modeline"></p>
+
+  <div class="rows" id="rows"></div>
+
+  <div class="verdict-card">
+    <div class="punch">Every one of these ships as a demo. That is the trap.</div>
+    <div class="sub">
+      The demo column is not wrong, it is unfinished, and it looks identical in a screenshot.<br>
+      The work that separates the two is unglamorous: measuring retrieval instead of assuming it, bounding an agent instead of trusting it, and being able to prove a change helped instead of feeling that it did.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: measure retrieval, bound the agent, curate the context, gate on evals, plan for failure, budget the cost, and treat every input as hostile.<br>
+    Pairs with <a href="how-to-build-a-rag.html" style="color:#8fb8ff">How to Build a RAG</a>, <a href="six-levels-of-agentic-ai.html" style="color:#8fb8ff">6 Levels of Agentic AI</a>, <a href="evaluating-llm-apps.html" style="color:#8fb8ff">How to Evaluate an LLM App</a> and <a href="context-engineering.html" style="color:#8fb8ff">Context Engineering</a>.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const ROWS = [
+    {
+      name: 'Retrieval',
+      sub: 'getting the right chunks',
+      demo: 'Chunk the docs, embed them, push them into a vector store, take the top few by similarity. It answers questions, so it looks finished.',
+      demoTag: 'Similarity search, top-k, done',
+      breaks: 'Similarity is not relevance. Exact names, acronyms and numbers fall straight through embeddings, and nothing tells you the right chunk was never retrieved. The model then answers confidently from whatever it did get.',
+      prod: 'Rewrite the query before it reaches the index, run keyword and vector search together, rerank the candidates, and <b>measure recall against a labelled set</b> so you know retrieval works before you trust a single answer.',
+      prodTag: 'Rewrite, hybrid, rerank, measured'
+    },
+    {
+      name: 'Agents',
+      sub: 'letting it act',
+      demo: 'A model in a loop with a pile of tools, left to work out the sequence itself. It solves the happy path on the first try, which is convincing.',
+      demoTag: 'Loop, tools, hope',
+      breaks: 'Unbounded loops burn tokens and invent work. With no step limit it retries forever, with no scoped tools it reaches somewhere it should not, and with no trace you cannot answer what it actually did.',
+      prod: 'Scope the tools to the task, hold state explicitly so each step is inspectable, cap steps and spend, and <b>trace every run end to end</b> so a bad outcome is something you can replay rather than guess at.',
+      prodTag: 'Scoped, stateful, bounded, traced'
+    },
+    {
+      name: 'Context',
+      sub: 'what the model sees',
+      demo: 'Concatenate everything that might be relevant and let the long window sort it out. More context feels safer.',
+      demoTag: 'Stuff the window',
+      breaks: 'Long context degrades attention and cost scales with every token on every call. Contradictory documents get equal weight, and a single hallucination in the history is treated as fact by every turn after it.',
+      prod: 'Select just-in-time for this turn, compress old history, isolate noisy work in a subagent, and <b>keep the stable prefix byte-identical</b> so it can be cached instead of re-billed.',
+      prodTag: 'Curated, compressed, cacheable'
+    },
+    {
+      name: 'Evaluation',
+      sub: 'knowing it works',
+      demo: 'Try a few prompts by hand after each change. If the answers read well, ship it.',
+      demoTag: 'Looks good to me',
+      breaks: 'Vibes do not regress-test. You cannot tell whether the change helped, hurt, or moved the failure somewhere you did not check, and every fix silently risks breaking a case that used to pass.',
+      prod: 'A golden set that grows from real failures, scores across several dimensions rather than one number, and <b>a threshold in CI that can block the release</b>. Production incidents become test cases.',
+      prodTag: 'Golden set, scored, gated'
+    },
+    {
+      name: 'Failure',
+      sub: 'when something breaks',
+      demo: 'Assume the model call succeeds. There is one path through the code and it is the good one.',
+      demoTag: 'Happy path only',
+      breaks: 'Providers rate limit, time out and deprecate. Without a timeout one slow call holds a request open, without a retry a blip becomes an error, and without a fallback a provider incident is your incident.',
+      prod: 'Timeouts on every call, retries with backoff and an idempotency key, a circuit breaker, a smaller fallback model, and <b>a degraded answer that is better than an error page</b>.',
+      prodTag: 'Bounded, retried, degraded'
+    },
+    {
+      name: 'Cost and latency',
+      sub: 'what it costs to run',
+      demo: 'Nobody is measuring. It is fast enough with one user and the bill is a rounding error.',
+      demoTag: 'Unmeasured',
+      breaks: 'Cost per request only becomes visible at scale, and agents burn several times what chat does. A prompt change that quietly doubles tokens shows up as a surprise invoice rather than a failed check.',
+      prod: 'Track cost per resolved outcome rather than per call, stream the first token so latency is perceived as lower, cache the reusable prefix, and <b>route easy work to a cheaper model</b>.',
+      prodTag: 'Measured, streamed, routed'
+    },
+    {
+      name: 'Trust boundary',
+      sub: 'treating input as hostile',
+      demo: 'User text goes into the prompt. Retrieved documents go into the prompt. Tool output goes back into the prompt.',
+      demoTag: 'Everything is trusted',
+      breaks: 'Any text reaching the context can carry instructions, including a document you indexed months ago. If a tool can write, delete or spend, a successful injection does that with your credentials.',
+      prod: 'Treat retrieved and tool text as data rather than instructions, give tools least privilege and human approval for destructive actions, validate output against a schema, and <b>never put a secret where the model can read it</b>.',
+      prodTag: 'Least privilege, validated'
+    }
+  ];
+
+  const rowsEl = document.getElementById('rows');
+  const modeEl = document.getElementById('modeline');
+  const bDemo = document.getElementById('sw-demo');
+  const bProd = document.getElementById('sw-prod');
+
+  const MODE = {
+    demo: 'Showing what a working demo looks like. <b>Each row also lists what breaks once real users arrive.</b>',
+    prod: 'Showing what the same capability needs before it can be trusted in front of users.'
+  };
+
+  ROWS.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'row';
+    d.innerHTML =
+      '<div class="what"><span class="wn">' + r.name + '</span><span class="ws">' + r.sub + '</span></div>' +
+      '<div class="body">' +
+        '<span class="tagline"></span>' +
+        '<span class="line"></span>' +
+        '<span class="breaks"></span>' +
+      '</div>';
+    rowsEl.appendChild(d);
+    r.el = d;
+  });
+
+  function paint(mode){
+    const isDemo = mode === 'demo';
+    bDemo.setAttribute('aria-pressed', String(isDemo));
+    bProd.setAttribute('aria-pressed', String(!isDemo));
+    modeEl.innerHTML = isDemo ? MODE.demo : MODE.prod;
+
+    ROWS.forEach((r, i) => {
+      const el = r.el;
+      el.style.setProperty('--st', isDemo ? 'var(--demo)' : 'var(--prod)');
+      const tag = el.querySelector('.tagline');
+      const line = el.querySelector('.line');
+      const br = el.querySelector('.breaks');
+      // stagger so the change reads as a sweep rather than a flash
+      setTimeout(function(){
+        tag.textContent = isDemo ? r.demoTag : r.prodTag;
+        line.innerHTML = isDemo ? r.demo : r.prod;
+        br.innerHTML = isDemo ? ('<b>Breaks because:</b> ' + r.breaks) : '';
+        br.style.display = isDemo ? '' : 'none';
+      }, i * 55);
+    });
+  }
+
+  bDemo.addEventListener('click', function(){ paint('demo'); });
+  bProd.addEventListener('click', function(){ paint('prod'); });
+
+  paint('demo');
+  // one automatic sweep so the contrast is visible without interaction
+  setTimeout(function(){ paint('prod'); }, 2600);
+  setTimeout(function(){ paint('demo'); }, 5600);
+})();
+</script>
+
+</body>
+</html>
