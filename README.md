@@ -27,6 +27,7 @@ Visual, interactive developer roadmaps: step-by-step guides for building modern 
 | [Kafka in 12 Concepts](artifacts/kafka-concepts.html) | Producer → topic → partition → broker → consumer, plus offsets, replication, retention, schemas and Connect. The partition is the whole idea |
 | [Distributing Data Across Nodes](artifacts/distributing-data.html) | Why modulo hashing breaks, the hash ring, virtual nodes, replication and quorums, then what CAP actually costs during a partition |
 | [12 System Design Patterns](artifacts/system-design-patterns.html) | Timeout, retry, circuit breaker, rate limiter, bulkhead, pub/sub, caching, event sourcing, CQRS, saga, strangler fig. Every one is about failure |
+| [HTTPS and TLS, Watched Live](artifacts/https-tls.html) | Interactive. An eavesdropper captures the same packets either way, plus key exchange, certificates, metadata leakage and where the tunnel ends |
 | [API Key vs JWT vs OAuth 2.0](artifacts/api-key-jwt-oauth.html) | App to app, user to app, user to third party. One product usually runs all three for different hops |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
 | [Demo to Production](artifacts/demo-to-production.html) | Interactive. Retrieval, agents, context, evals, failure, cost and trust, each shown as the demo version and what it takes to survive real users |
