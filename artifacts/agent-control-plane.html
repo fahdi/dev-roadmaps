@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Design Your Agent's Control Plane — Roadmap</title>
+<title>Design Your Agent's Control Plane &middot; Roadmap</title>
 <style>
   :root{
     color-scheme: dark;
@@ -340,7 +340,7 @@
   <div class="title-block">
     <div class="title-icon" id="title-icon"></div>
     <h1>Design Your Agent's<br>Control Plane</h1>
-    <p>Your coding agent doesn't need a bigger prompt — it needs a better control plane. Put every instruction in the layer where it belongs.</p>
+    <p>Your coding agent doesn't need a bigger prompt. It needs a better control plane. Put every instruction in the layer where it belongs.</p>
   </div>
 
   <div class="main">
@@ -388,7 +388,7 @@
 
       <div class="layer-card" id="c-rules" style="--accent:var(--rules)">
         <div class="layer-head"><span class="icon-wrap" data-icon="funnel"></span><span class="num">02</span><h2>Rules</h2><span class="mode">Load by scope</span></div>
-        <p class="desc">Context by scope: framework patterns, API contracts, database conventions — loaded only when relevant.</p>
+        <p class="desc">Context by scope: framework patterns, API contracts, database conventions, loaded only when relevant.</p>
         <div class="example"><b>Example:</b> frontend rules only for src/ui/**</div>
       </div>
 
@@ -400,19 +400,19 @@
 
       <div class="layer-card" id="c-agents" style="--accent:var(--agents)">
         <div class="layer-head"><span class="icon-wrap" data-icon="user"></span><span class="num">04</span><h2>Agents</h2><span class="mode">Isolated specialists</span></div>
-        <p class="desc">Code review, security audits and research — separate context that doesn't pollute the main thread.</p>
+        <p class="desc">Code review, security audits and research, in separate context that doesn't pollute the main thread.</p>
         <div class="example"><b>Use when</b> noisy work should not pollute main context</div>
       </div>
 
       <div class="layer-card" id="c-hooks" style="--accent:var(--hooks)">
         <div class="layer-head"><span class="icon-wrap" data-icon="shield"></span><span class="num">05</span><h2>Hooks</h2><span class="mode">Deterministic control</span></div>
-        <p class="desc">Format after edits, block secrets, run tests, log actions — enforced every time, not suggested.</p>
+        <p class="desc">Format after edits, block secrets, run tests, log actions, enforced every time rather than suggested.</p>
         <div class="example"><b>Wired through</b> settings.json</div>
       </div>
 
       <div class="layer-card" id="c-plugin" style="--accent:var(--plugin)">
         <div class="layer-head"><span class="icon-wrap" data-icon="package"></span><span class="num">06</span><h2>Plugin</h2><span class="mode">One crate you install</span></div>
-        <p class="desc">Not a sixth kind of instruction — the way you ship the other five. Skills, hooks, agents and MCP servers bundled together, so the whole team gets the same control plane.</p>
+        <p class="desc">Not a sixth kind of instruction. It is how you ship the other five. Skills, hooks, agents and MCP servers bundled together, so the whole team gets the same control plane.</p>
         <div class="example"><b>Manifest:</b> .claude-plugin/plugin.json</div>
       </div>
     </div>
@@ -433,7 +433,9 @@
     </div>
   </div>
 
-  <div class="footer-note">Roadmap: keep CLAUDE.md short · scope rules · package repeatable work as skills · delegate noisy work to agents · enforce with hooks · ship the set as a plugin</div>
+  <div class="footer-note">Roadmap: keep CLAUDE.md short · scope rules · package repeatable work as skills · delegate noisy work to agents · enforce with hooks · ship the set as a plugin<br>
+    Pairs with <a href="six-levels-of-agentic-ai.html" style="color:#8fb8ff">6 Levels of Agentic AI</a>, <a href="the-agentic-loop.html" style="color:#8fb8ff">The Agentic Loop</a> and <a href="api-function-calling-mcp.html" style="color:#8fb8ff">API vs Function Calling vs MCP</a>.
+  </div>
 </div>
 
 <script>
@@ -480,7 +482,7 @@ function draw(){
     if(!fromEl || !toEl) return;
     const f = fromEl.getBoundingClientRect();
     const t = toEl.getBoundingClientRect();
-    if(t.left <= f.right) return; // stacked layout — skip
+    if(t.left <= f.right) return; // stacked layout, skip
     const color = styles.getPropertyValue(varName).trim() || '#888';
     const p1 = { x: f.right - c.left + 8, y: f.top - c.top + f.height/2 };
     const p2 = { x: t.left - c.left - 2, y: t.top - c.top + t.height/2 };

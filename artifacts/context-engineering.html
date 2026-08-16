@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Context Engineering — Roadmap</title>
+<title>Context Engineering &middot; Roadmap</title>
 <style>
   :root{
     color-scheme: dark;
@@ -395,7 +395,7 @@
   <div class="title-block">
     <div class="title-icon" id="title-icon"></div>
     <h1>Context Engineering</h1>
-    <p>Prompt engineering asked "how do I phrase it?" Context engineering asks "what belongs in the window at all?" The window is a budget — spend it deliberately.</p>
+    <p>Prompt engineering asked "how do I phrase it?" Context engineering asks "what belongs in the window at all?" The window is a budget, so spend it deliberately.</p>
   </div>
 
   <div class="main">
@@ -408,7 +408,7 @@
         <span class="seg-icon" data-icon="filetext"></span>
         <div class="seg-body">
           <div class="seg-name">System Prompt</div>
-          <div class="seg-desc">Stable identity &amp; rules — keep it short, keep it cacheable</div>
+          <div class="seg-desc">Stable identity &amp; rules, kept short, keep it cacheable</div>
         </div>
         <span class="seg-pct">~5%</span>
       </div>
@@ -416,7 +416,7 @@
         <span class="seg-icon" data-icon="wrench"></span>
         <div class="seg-body">
           <div class="seg-name">Tool Definitions</div>
-          <div class="seg-desc">Only the tools this task needs — not the whole catalog</div>
+          <div class="seg-desc">Only the tools this task needs, not the whole catalog</div>
         </div>
         <span class="seg-pct">~10%</span>
       </div>
@@ -424,7 +424,7 @@
         <span class="seg-icon" data-icon="search"></span>
         <div class="seg-body">
           <div class="seg-name">Retrieved Knowledge</div>
-          <div class="seg-desc">Top-k, reranked, deduplicated — relevance beats volume</div>
+          <div class="seg-desc">Top-k, reranked, deduplicated. Relevance beats volume</div>
         </div>
         <span class="seg-pct">~25%</span>
       </div>
@@ -448,11 +448,11 @@
         <span class="seg-icon" data-icon="spark"></span>
         <div class="seg-body">
           <div class="seg-name">Current Request + Headroom</div>
-          <div class="seg-desc">The actual task — plus room left for the model to think &amp; answer</div>
+          <div class="seg-desc">The actual task, plus room left for the model to think &amp; answer</div>
         </div>
         <span class="seg-pct">~15%</span>
       </div>
-      <div class="window-note">Percentages are a discipline, not a law — the point is that every token in is a token someone chose.</div>
+      <div class="window-note">Percentages are a discipline, not a law. The point is that every token in is a token someone chose.</div>
     </div>
 
     <div class="ops">
@@ -469,26 +469,26 @@
       <div class="op-card" style="--accent:var(--hist)">
         <div class="op-head"><span class="icon-wrap" data-icon="compress"></span><h3>Compress</h3></div>
         <p>Summarize old history, trim tool outputs, compact aggressively as the session grows. Recent stays verbatim; ancient becomes a summary.</p>
-        <div class="ex"><b>Example:</b> compact turns 1–40 into one paragraph, keep 41–50 raw</div>
+        <div class="ex"><b>Example:</b> compact turns 1-40 into one paragraph, keep 41-50 raw</div>
       </div>
       <div class="op-card" style="--accent:var(--mem)">
         <div class="op-head"><span class="icon-wrap" data-icon="users"></span><h3>Isolate</h3></div>
         <p>Delegate noisy work to subagents with their own windows. The searcher reads 100 files; the main thread gets one clean answer back.</p>
         <div class="ex"><b>Example:</b> research subagent returns findings, not transcripts</div>
       </div>
-      <div class="ops-note">The four operations — write, select, compress, isolate — are how you spend the budget on purpose.</div>
+      <div class="ops-note">The four operations (write, select, compress, isolate) are how you spend the budget on purpose.</div>
     </div>
   </div>
 
   <div class="memory-panel">
     <h3>What "Memory" Actually Holds</h3>
-    <p class="lead">Memory is not a bigger window — it's a read and write system. The model forgets; the system remembers.</p>
+    <p class="lead">Memory is not a bigger window. It is a read and write system. The model forgets; the system remembers.</p>
 
     <div class="store-grid">
       <div class="store" style="--st:var(--tools)">
         <div class="st-name">Working</div>
         <div class="st-holds">current task</div>
-        <div class="st-desc">This turn only — the request in flight and the state around it. Temporary state never becomes a memory.</div>
+        <div class="st-desc">This turn only: the request in flight and the state around it. Temporary state never becomes a memory.</div>
       </div>
       <div class="store" style="--st:var(--mem)">
         <div class="st-name">Episodic</div>
@@ -503,7 +503,7 @@
       <div class="store" style="--st:var(--hist)">
         <div class="st-name">Procedural</div>
         <div class="st-holds">rules &amp; skills</div>
-        <div class="st-desc">The policies and playbooks the agent follows — how work gets done here.</div>
+        <div class="st-desc">The policies and playbooks the agent follows. How work gets done here.</div>
       </div>
     </div>
 
@@ -520,7 +520,7 @@
       <span class="rw-arrow">→</span>
       <span class="rw-step">Write back</span>
     </div>
-    <p class="memory-note">Only a slice of each store reaches the window — the reader searches, the rest stays out.<br><strong>Read before acting. Write after learning.</strong></p>
+    <p class="memory-note">Only a slice of each store reaches the window. The reader searches, the rest stays out.<br><strong>Read before acting. Write after learning.</strong></p>
   </div>
 
   <div class="verdict-card">
@@ -544,12 +544,14 @@
       </div>
     </div>
     <div class="verdict-punchline">
-      Don't ask <strong>"how much can I fit?"</strong> — ask <strong>"what does this turn actually need?"</strong><br>
+      Don't ask <strong>"how much can I fit?"</strong>. Ask <strong>"what does this turn actually need?"</strong><br>
       Curate, don't cram. The best context window is the smallest one that still wins.
     </div>
   </div>
 
-  <div class="footer-note">Roadmap: budget the window · write outside it · select just-in-time · compress history · isolate noisy work<br>Frameworks: write / select / compress / isolate (LangChain, 2025) · failure modes (Drew Breunig, "How Long Contexts Fail", 2025)</div>
+  <div class="footer-note">Roadmap: budget the window · write outside it · select just-in-time · compress history · isolate noisy work<br>Frameworks: write / select / compress / isolate (LangChain, 2025) · failure modes (Drew Breunig, "How Long Contexts Fail", 2025)<br>
+    Pairs with <a href="prompt-patterns.html" style="color:#8fb8ff">12 Prompt Patterns</a>, <a href="the-agentic-loop.html" style="color:#8fb8ff">The Agentic Loop</a> and <a href="how-to-build-a-rag.html" style="color:#8fb8ff">How to Build a RAG</a>.
+  </div>
 </div>
 
 <script>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How a Request Travels — Roadmap</title>
+<title>How a Request Travels &middot; Roadmap</title>
 <style>
   :root{
     color-scheme: dark;
@@ -405,7 +405,7 @@
   <div class="title-block" id="title-block">
     <div class="title-icon" id="title-icon"></div>
     <h1>How a Request Travels</h1>
-    <p>From the click to the response — the classic journey through DNS, the edge, the balancer, the gateway, and the data layer. The system design interview diagram, drawn properly.</p>
+    <p>From the click to the response: the classic journey through DNS, the edge, the balancer, the gateway, and the data layer. The system design interview diagram, drawn properly.</p>
   </div>
 
   <div class="spacer tall"></div>
@@ -433,7 +433,7 @@
 
   <div class="pill-node small" id="n-tls">
     <span class="icon-wrap" data-icon="lock"></span>
-    <span>TCP 3-way handshake + TLS — often terminated at the edge or balancer</span>
+    <span>TCP 3-way handshake + TLS, often terminated at the edge or balancer</span>
   </div>
 
   <div class="spacer short"></div>
@@ -461,7 +461,7 @@
       <div class="chip"><div class="chip-icon" data-icon="pulse"></div><div class="chip-label">Health Checks</div></div>
       <div class="chip"><div class="chip-icon" data-icon="copy"></div><div class="chip-label">Failover</div></div>
     </div>
-    <p class="card-note">Picking the least-loaded of two servers sampled at random beats plain round robin at scale, and gets close to scanning the whole fleet without paying for the scan — which is why it is the default in several proxies.</p>
+    <p class="card-note">Picking the least-loaded of two servers sampled at random beats plain round robin at scale, and gets close to scanning the whole fleet without paying for the scan, which is why it is the default in several proxies.</p>
   </div>
 
   <div class="spacer"></div>
@@ -529,17 +529,17 @@
   <div class="return-card" id="n-return">
     <h3>On the way back</h3>
     <div class="return-grid">
-      <div class="return-cell"><span class="r-t">Status Code</span><span class="r-d">2xx / 3xx / 4xx / 5xx — the one-line verdict</span></div>
+      <div class="return-cell"><span class="r-t">Status Code</span><span class="r-d">2xx / 3xx / 4xx / 5xx, the one-line verdict</span></div>
       <div class="return-cell"><span class="r-t">Compression</span><span class="r-d">gzip / brotli shrink the body in transit</span></div>
       <div class="return-cell"><span class="r-t">Cache Headers</span><span class="r-d">Cache-Control &amp; ETag decide who may remember it</span></div>
-      <div class="return-cell"><span class="r-t">CORS Check</span><span class="r-d">A 200 the browser still refuses to hand to your JS — granted by the server, never patched in the frontend</span></div>
-      <div class="return-cell"><span class="r-t">Render</span><span class="r-d">Browser parses, paints, and the user sees it — a preload scanner fetches subresources while the parser is blocked</span></div>
+      <div class="return-cell"><span class="r-t">CORS Check</span><span class="r-d">A 200 the browser still refuses to hand to your JS. Granted by the server, never patched in the frontend</span></div>
+      <div class="return-cell"><span class="r-t">Render</span><span class="r-d">Browser parses, paints, and the user sees it, while a preload scanner fetches subresources while the parser is blocked</span></div>
     </div>
   </div>
 
   <div class="variant-card">
     <h3>When the Service is a Model</h3>
-    <p class="lead">The first half of the journey is unchanged — DNS, TLS, CDN, balancer, gateway all still happen. What changes is everything behind the gateway: the reply is generated token by token rather than fetched, so the work splits into four phases.</p>
+    <p class="lead">The first half of the journey is unchanged: DNS, TLS, CDN, balancer, gateway all still happen. What changes is everything behind the gateway: the reply is generated token by token rather than fetched, so the work splits into four phases.</p>
 
     <div class="phase-row">
       <div class="phase" style="--ph:var(--dns)">
@@ -568,13 +568,14 @@
       </div>
     </div>
 
-    <p class="variant-note">Two things have no equivalent in the plain web request: the reply starts arriving before it is finished, and the call has to be <b>retry-safe</b> — a dropped connection must not bill the user twice. Storage and observability keep running after the last token ships.</p>
+    <p class="variant-note">Two things have no equivalent in the plain web request: the reply starts arriving before it is finished, and the call has to be <b>retry-safe</b>, since a dropped connection must not bill the user twice. Storage and observability keep running after the last token ships.</p>
   </div>
 
   <div class="footer-note">
     Journey: DNS → TCP/TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database → back.
-    Real architectures vary — the gateway and balancer are often combined, and either can come first — but this is the shape to reason from.<br>
-    The load-balancing, CORS and preload-scanner notes were prompted by explainers from <a href="https://www.facebook.com/codezup">Codez Up</a>.
+    Real architectures vary, because the gateway and balancer are often combined, and either can come first, but this is the shape to reason from.<br>
+    The load-balancing, CORS and preload-scanner notes were prompted by explainers from <a href="https://www.facebook.com/codezup">Codez Up</a>.<br>
+    Pairs with <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a>, <a href="distributing-data.html" style="color:#8fb8ff">Distributing Data Across Nodes</a> and <a href="api-key-jwt-oauth.html" style="color:#8fb8ff">API Key vs JWT vs OAuth 2.0</a>.
   </div>
 </div>
 
