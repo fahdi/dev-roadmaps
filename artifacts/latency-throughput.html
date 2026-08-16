@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latency, Throughput, Bandwidth, Jitter &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --lat:  #4f9dff;
+    --thr:  #4ade80;
+    --bw:   #fbbf24;
+    --jit:  #b18bfa;
+    --bad:  #fb7185;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12); border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 20px; }
+  .title-block h1{ margin:0; font-size: 26px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 640px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .lab{
+    width:100%; background: var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding: 18px 20px 20px; margin-bottom: 18px;
+  }
+  .ctrls{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+  .ctrl label{ display:flex; justify-content:space-between; align-items:baseline; font-size: 11px; margin-bottom: 6px; }
+  .ctrl .cn{ font-weight:800; letter-spacing:.5px; text-transform:uppercase; color: var(--k); font-size: 10px; }
+  .ctrl .cv{ font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-primary); font-weight:700; }
+  input[type=range]{ width:100%; accent-color: var(--k); }
+
+  .pipe{ position:relative; height: 66px; margin: 6px 0 10px; }
+  .node{
+    position:absolute; top:50%; transform:translateY(-50%);
+    font-size: 10px; font-weight:800; letter-spacing:.5px; text-transform:uppercase;
+    color: var(--text-secondary);
+    border:1px solid var(--border); background: rgba(255,255,255,0.04);
+    border-radius:7px; padding: 7px 11px;
+  }
+  .node.l{ left:0; } .node.r{ right:0; }
+  .lane{
+    position:absolute; left: 78px; right: 78px; top:50%; transform:translateY(-50%);
+    height: var(--h); border-radius: 999px;
+    background: color-mix(in srgb, var(--bw) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--bw) 32%, transparent);
+    transition: height .25s ease;
+  }
+  .dot{
+    position:absolute; width:7px; height:7px; border-radius:50%;
+    background: var(--thr); transform: translate(-50%,-50%); pointer-events:none;
+  }
+
+  .out{ display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .stat{
+    border:1px solid color-mix(in srgb, var(--k) 28%, transparent);
+    background: color-mix(in srgb, var(--k) 6%, transparent);
+    border-radius:11px; padding: 10px 12px 11px; text-align:center;
+  }
+  .stat .sk{ display:block; font-size:9px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; color: var(--k); }
+  .stat .sv{ display:block; font-size:19px; font-weight:800; margin-top:3px; font-variant-numeric: tabular-nums; }
+  .stat .sn{ display:block; font-size:10px; color: var(--text-muted); margin-top:3px; line-height:1.35; }
+
+  .insight{
+    margin-top: 13px; padding-top: 11px; border-top:1px dashed var(--border);
+    font-size: 12.5px; color: var(--text-secondary); line-height:1.55; min-height: 40px;
+  }
+  .insight b{ color: var(--text-primary); }
+
+  .four{ width:100%; display:grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+  .card{
+    background: var(--surface); border:1px solid color-mix(in srgb, var(--k) 26%, transparent);
+    border-top: 3px solid var(--k); border-radius:12px; padding: 14px 16px 15px;
+  }
+  .card h3{ margin:0 0 3px; font-size:13.5px; font-weight:800; color:var(--k); letter-spacing:.2px; }
+  .card .u{ display:block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color: var(--text-muted); margin-bottom:7px; }
+  .card p{ margin:0 0 7px; font-size:11.5px; color:var(--text-secondary); line-height:1.55; }
+  .card p:last-child{ margin:0; }
+  .card b{ color: var(--text-primary); }
+
+  .verdict-card{
+    width:100%; margin-top: 20px; border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05); border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+  .footer-note{ margin-top: 26px; font-size: 11.5px; color: var(--text-muted); text-align:center; line-height:1.6; max-width: 700px; }
+
+  @media (max-width: 760px){
+    .ctrls{ grid-template-columns: 1fr; }
+    .out{ grid-template-columns: 1fr; }
+    .four{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce){ .dot{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Latency, Throughput, Bandwidth, Jitter</h1>
+    <p>Four different measurements that get called "speed". Move the sliders: widening the pipe does nothing to the round trip, and shortening the round trip does nothing to capacity. They are independent, which is why the wrong fix is so common.</p>
+  </div>
+
+  <div class="lab">
+    <div class="ctrls">
+      <div class="ctrl" style="--k:var(--lat)">
+        <label><span class="cn">Latency, one way</span><span class="cv" id="v-lat">30 ms</span></label>
+        <input type="range" id="s-lat" min="5" max="300" value="30" step="5">
+      </div>
+      <div class="ctrl" style="--k:var(--bw)">
+        <label><span class="cn">Bandwidth</span><span class="cv" id="v-bw">10 lanes</span></label>
+        <input type="range" id="s-bw" min="1" max="20" value="10" step="1">
+      </div>
+    </div>
+
+    <div class="pipe" id="pipe">
+      <span class="node l">You</span>
+      <div class="lane" id="lane"></div>
+      <span class="node r">Server</span>
+    </div>
+
+    <div class="out">
+      <div class="stat" style="--k:var(--lat)">
+        <span class="sk">Round trip</span><span class="sv" id="o-rtt">60 ms</span>
+        <span class="sn">unchanged by bandwidth</span>
+      </div>
+      <div class="stat" style="--k:var(--thr)">
+        <span class="sk">Throughput</span><span class="sv" id="o-thr">0</span>
+        <span class="sn">what you actually achieve</span>
+      </div>
+      <div class="stat" style="--k:var(--bw)">
+        <span class="sk">Capacity</span><span class="sv" id="o-cap">0</span>
+        <span class="sn">the ceiling, rarely reached</span>
+      </div>
+    </div>
+
+    <p class="insight" id="insight"></p>
+  </div>
+
+  <div class="four">
+    <div class="card" style="--k:var(--lat)">
+      <h3>Latency</h3><span class="u">Milliseconds</span>
+      <p>How long one round trip takes. Distance and the speed of light set a floor you cannot buy your way under.</p>
+      <p><b>Adding bandwidth never reduces it.</b> A wider road does not shorten the journey, which is why a fast connection can still feel sluggish on a chatty protocol.</p>
+    </div>
+    <div class="card" style="--k:var(--thr)">
+      <h3>Throughput</h3><span class="u">Requests or bytes per second</span>
+      <p>What you actually get, as opposed to what the link could theoretically carry.</p>
+      <p>Bounded by whichever is worse: the link, the server, or the round trips your protocol insists on. <b>It is a result, not a setting.</b></p>
+    </div>
+    <div class="card" style="--k:var(--bw)">
+      <h3>Bandwidth</h3><span class="u">Bits per second</span>
+      <p>The maximum the link can carry. The number sold to you, and a ceiling rather than a promise.</p>
+      <p><b>Capacity is not delivery.</b> One connection with small windows and long round trips leaves most of a fat pipe idle.</p>
+    </div>
+    <div class="card" style="--k:var(--jit)">
+      <h3>Jitter</h3><span class="u">Variation in latency</span>
+      <p>How much the delay wobbles between consecutive packets. Averages hide it completely.</p>
+      <p>Irrelevant to a file download, decisive for voice, video and games, <b>where arriving late and arriving unevenly are different problems</b>.</p>
+    </div>
+  </div>
+
+  <div class="verdict-card">
+    <div class="punch">Upgrading the connection is the usual answer and the usual mistake.</div>
+    <div class="sub">
+      If pages feel slow because of round trips, more bandwidth changes nothing. If transfers are slow because the pipe is full, lower latency changes nothing.<br>
+      Measure which one is actually binding before paying to fix the other.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: separate the four, find the binding constraint, then fix that one.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for where each round trip is spent, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for bounding the slow ones.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const el = {
+    lat: document.getElementById('s-lat'), bw: document.getElementById('s-bw'),
+    vlat: document.getElementById('v-lat'), vbw: document.getElementById('v-bw'),
+    rtt: document.getElementById('o-rtt'), thr: document.getElementById('o-thr'), cap: document.getElementById('o-cap'),
+    lane: document.getElementById('lane'), pipe: document.getElementById('pipe'), ins: document.getElementById('insight')
+  };
+  let dots = [], acc = 0, last = performance.now();
+
+  function state(){
+    return { lat: +el.lat.value, bw: +el.bw.value };
+  }
+
+  function render(){
+    const s = state();
+    const rtt = s.lat * 2;
+    // in-flight limit: capacity is the ceiling, round trips gate how fast you refill it
+    const capacity = s.bw * 10;                       // arbitrary units per second
+    const perTrip  = s.bw;                            // units deliverable per round trip
+    const achieved = Math.round(perTrip * (1000 / rtt) * 10) / 10;
+    const thr = Math.min(capacity, achieved);
+
+    el.vlat.textContent = s.lat + ' ms';
+    el.vbw.textContent  = s.bw + (s.bw === 1 ? ' lane' : ' lanes');
+    el.rtt.textContent  = rtt + ' ms';
+    el.thr.textContent  = thr;
+    el.cap.textContent  = capacity;
+    el.lane.style.setProperty('--h', (4 + s.bw * 1.6) + 'px');
+
+    const usage = thr / capacity;
+    let msg;
+    if (usage > 0.92){
+      msg = '<b>The link is the constraint.</b> You are using nearly all the capacity, so more bandwidth would genuinely help here and lower latency would not.';
+    } else if (usage < 0.45){
+      msg = '<b>Round trips are the constraint.</b> Most of the pipe is sitting idle because each exchange has to wait for the previous one. Buying more bandwidth changes nothing; removing round trips does.';
+    } else {
+      msg = 'Both are contributing. Watch what happens to throughput when you move each slider on its own, and notice that <b>round trip time never moves when you change bandwidth</b>.';
+    }
+    el.ins.innerHTML = msg;
+    return { rtt: rtt, rate: Math.max(1, thr / 6) };
+  }
+
+  function tick(now){
+    let dt = (now - last) / 1000; last = now;
+    if (!(dt > 0) || dt > 0.05) dt = 0.016;
+    const r = render();
+
+    acc += dt * r.rate;
+    while (acc >= 1 && dots.length < 40){
+      acc -= 1;
+      const n = document.createElement('span');
+      n.className = 'dot';
+      el.pipe.appendChild(n);
+      dots.push({ node:n, t:0, lane:(Math.random()*2-1) });
+    }
+    if (acc > 3) acc = 3;
+
+    const w = el.pipe.clientWidth || 600;
+    const x0 = 78, x1 = w - 78;
+    const speed = 1 / (state().lat / 60);   // travel time scales with latency
+
+    for (let i = dots.length - 1; i >= 0; i--){
+      const d = dots[i];
+      d.t += dt * speed * 0.5;
+      if (d.t >= 1){ d.node.remove(); dots.splice(i,1); continue; }
+      d.node.style.left = (x0 + (x1-x0)*d.t) + 'px';
+      d.node.style.top  = (33 + d.lane * (2 + state().bw * 0.7)) + 'px';
+    }
+    requestAnimationFrame(tick);
+  }
+
+  el.lat.addEventListener('input', render);
+  el.bw.addEventListener('input', render);
+  render();
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

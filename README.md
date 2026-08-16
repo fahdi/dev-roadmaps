@@ -35,6 +35,7 @@ Visual, interactive developer roadmaps: step-by-step guides for building modern 
 | [DevSecOps and GitOps, End to End](artifacts/devsecops-gitops.html) | Interactive. Secure CI → build and sign → GitOps handoff → pull-based deploy → observe, with the gates that can actually block a release |
 | [Load Balancing, Watched Live](artifacts/load-balancing-live.html) | Interactive. Round robin, weighted, least connections, power of two and hashing, simulated against four uneven servers |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database. The two cache shortcuts, and what changes when the service is a model |
+| [Latency, Throughput, Bandwidth, Jitter](artifacts/latency-throughput.html) | Interactive. Four measurements routinely called "speed". Move latency and bandwidth independently and watch which constraint is actually binding, plus where jitter matters and where it does not |
 | [LLMOps: Build, Prove, Ship, Operate](artifacts/llmops-concepts.html) | Datasets → prompt versions → pinning → eval sets → judge → gate → canary → shadow → rollback → tracing → cost → feedback. Twelve feeds one |
 | [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Evals measure, guardrails enforce, monitoring detects: golden dataset → four evaluators → six score dimensions → CI/CD gate → guardrails → online evals. Failures become test cases |
 
