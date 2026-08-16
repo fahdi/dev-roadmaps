@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distributing Data Across Nodes &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.26);
+
+    --problem: #fb7185;
+    --ring: #4ade80;
+    --replica: #4f9dff;
+    --tradeoff: #fbbf24;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(251,113,133,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 38%, rgba(74,222,128,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 82%, rgba(251,191,36,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 8px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 610px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .connector{ width:2px; height: 26px; background: var(--line); }
+
+  .step{
+    width:100%;
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 15px;
+    padding: 18px 20px 19px;
+    position: relative;
+    transition: background .18s ease;
+  }
+  .step:hover{ background: var(--surface-hover); }
+  .step .badge{
+    position:absolute; top:-11px; left:20px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color:#06070a;
+    font-size: 10.5px; font-weight: 800;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 0 4px var(--page);
+  }
+  .step h2{
+    margin: 0 0 4px; font-size: 15px; font-weight: 800;
+    letter-spacing:0.3px; color: var(--accent);
+  }
+  .step .body{ margin: 0; font-size: 12.5px; color: var(--text-secondary); line-height:1.6; }
+  .step .body b{ color: var(--text-primary); }
+
+  .keynote{
+    margin: 13px 0 0;
+    font-size: 11.5px; line-height:1.55;
+    color: color-mix(in srgb, var(--accent) 72%, var(--text-secondary));
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 26%, transparent);
+    padding-top: 11px;
+  }
+  .keynote b{ color: var(--text-primary); }
+
+  .trio{ display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 13px; }
+  .cell{
+    border: 1px solid color-mix(in srgb, var(--cc) 30%, transparent);
+    background: color-mix(in srgb, var(--cc) 6%, transparent);
+    border-radius: 10px; padding: 11px 12px 12px;
+  }
+  .cell .ck{ display:block; font-size: 11.5px; font-weight: 800; color: var(--cc); letter-spacing:0.3px; }
+  .cell .cv{ display:block; font-size: 10.5px; color: var(--text-secondary); line-height:1.45; margin-top: 4px; }
+
+  .verdict{
+    width: 100%; margin-top: 26px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 700px){
+    .trio{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Distributing Data Across Nodes</h1>
+    <p>What actually happens when one machine stops being enough. Consistent hashing and CAP get name-dropped constantly and explained rarely, so here they are in the order the problem forces on you.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--problem)">
+    <span class="badge">1</span>
+    <h2>The problem: one machine runs out</h2>
+    <p class="body">Traffic, storage or both outgrow a single node, so data has to be split across several. The instant you do that, you need a rule for <b>which node owns which key</b>, and every node needs to agree on that rule.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--problem)">
+    <span class="badge">2</span>
+    <h2>The naive answer, and why it breaks</h2>
+    <p class="body">Hash the key and take it modulo the node count. It distributes evenly and it is one line of code. It also fails the moment the node count changes, because <b>the divisor is part of the formula</b>.</p>
+    <p class="keynote">Go from four nodes to five and almost every key maps somewhere new. <b>That is a near-total reshuffle triggered by adding one machine</b>, which is exactly when your system is already under stress.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--ring)">
+    <span class="badge">3</span>
+    <h2>Consistent hashing: arrange it on a ring</h2>
+    <p class="body">Hash both keys and nodes onto the same circular space. A key belongs to the first node it meets going clockwise, which means <b>each node owns only the arc behind it</b>.</p>
+    <p class="keynote">Now adding a node splits one arc instead of rewriting the map. <b>Only the keys in that slice move, and the rest never notice.</b> Removing a node hands its arc to the next one along, and the blast radius is again a single slice.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--ring)">
+    <span class="badge">4</span>
+    <h2>Virtual nodes: fixing the lumpy ring</h2>
+    <p class="body">With a handful of nodes, random placement leaves wildly uneven arcs, so one machine gets far more than its share. The fix is to give each physical node <b>many positions on the ring</b> rather than one.</p>
+    <p class="keynote">More positions means the arcs average out and load evens up. It also spreads the recovery work: when a node dies, its many small slices are absorbed by <b>many different neighbours</b> instead of dumping everything onto one.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--replica)">
+    <span class="badge">5</span>
+    <h2>Replication: more than one copy</h2>
+    <p class="body">Owning a slice is not enough, because a node loss would take its data with it. Each key is stored on the next several nodes around the ring, so <b>a copy always survives</b>.</p>
+    <p class="keynote">This is where read and write quorums come in. If you require enough overlap between the nodes you write to and the nodes you read from, <b>a read is guaranteed to see the latest write</b>. Loosen that and reads get faster but may return stale data.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--tradeoff)">
+    <span class="badge">6</span>
+    <h2>CAP: what you give up when the network splits</h2>
+    <p class="body">Consistency, availability and partition tolerance. The framing says pick two, but that undersells it: <b>networks fail whether you plan for it or not</b>, so partition tolerance is not optional in a distributed system.</p>
+    <div class="trio">
+      <div class="cell" style="--cc:var(--tradeoff)">
+        <span class="ck">CP</span>
+        <span class="cv">Refuse the request rather than risk a wrong answer. Choose this when correctness matters more than uptime.</span>
+      </div>
+      <div class="cell" style="--cc:var(--ring)">
+        <span class="ck">AP</span>
+        <span class="cv">Answer anyway and reconcile afterwards. Choose this when being down is worse than being briefly stale.</span>
+      </div>
+      <div class="cell" style="--cc:var(--replica)">
+        <span class="ck">CA</span>
+        <span class="cv">Only coherent on a single node. A classic relational database on one machine, which is a real and often correct choice.</span>
+      </div>
+    </div>
+    <p class="keynote">Treat these as tendencies rather than labels. <b>Most modern databases let you tune the quorum per query</b>, so the same system can behave closer to CP for a payment and closer to AP for a page view.</p>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">The real question is what happens during a partition.</div>
+    <div class="sub">
+      Consistent hashing decides where data lives and keeps rebalancing cheap. Replication decides how many copies survive.<br>
+      CAP is not a menu you pick from once. It is the behaviour you have already chosen, whether deliberately or by accepting a default.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: split the data, place it on a ring, even it out with virtual nodes, replicate for survival, then decide what a partition does to you.<br>
+    Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a>, where the key-value store and cache designs assume all of this, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for surviving the failures it implies.
+  </div>
+</div>
+
+</body>
+</html>
