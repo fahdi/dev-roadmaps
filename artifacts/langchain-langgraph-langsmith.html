@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build, Orchestrate, Observe &mdash; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --line: rgba(255,255,255,0.26);
+
+    --build: #4ade80;
+    --orch: #4f9dff;
+    --obs: #fbbf24;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(74,222,128,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 36%, rgba(79,157,255,0.07), transparent 55%),
+      radial-gradient(900px 500px at 8% 80%, rgba(251,191,36,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 28px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 26px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 600px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .layer{
+    width:100%;
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-left: 4px solid var(--accent);
+    border-radius: 14px;
+    padding: 17px 20px 18px;
+    margin-bottom: 13px;
+    transition: background .18s ease;
+  }
+  .layer:hover{ background: var(--surface-hover); }
+
+  .lhead{ display:flex; align-items:baseline; gap: 11px; margin-bottom: 5px; flex-wrap:wrap; }
+  .lhead .role{
+    font-size: 10px; font-weight: 800; letter-spacing:0.7px;
+    text-transform: uppercase; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 999px; padding: 3px 10px;
+  }
+  .lhead h2{ margin:0; font-size: 16px; font-weight: 800; letter-spacing:0.3px; color: var(--text-primary); }
+  .lsub{ margin: 0 0 13px; font-size: 12.5px; color: var(--text-secondary); line-height:1.55; }
+
+  .pieces{ display:flex; flex-wrap:wrap; gap: 7px; margin-bottom: 12px; }
+  .piece{
+    font-size: 11px; font-weight: 600; color: var(--text-primary);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    border-radius: 999px; padding: 5px 12px;
+  }
+
+  .lnote{
+    margin: 0; font-size: 11px; color: var(--text-secondary); line-height:1.55;
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    padding-top: 10px;
+  }
+  .lnote b{ color: var(--text-primary); }
+
+  .verdict{
+    width: 100%; margin-top: 12px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px;
+    padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 28px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 680px;
+  }
+
+  @media (max-width: 660px){ .title-block h1{ font-size: 21px; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Build, Orchestrate, Observe</h1>
+    <p>Three tools from the same family get treated as competing choices when they answer different questions. The names blur together, so here is the split by what each one is actually responsible for.</p>
+  </div>
+
+  <div class="layer" style="--accent:var(--build)">
+    <div class="lhead">
+      <span class="role">Build</span>
+      <h2>The component layer</h2>
+    </div>
+    <p class="lsub">Standard interfaces over the pieces an AI feature is assembled from, so swapping a model or a vector store does not mean rewriting the surrounding code.</p>
+    <div class="pieces">
+      <span class="piece">Model calls</span>
+      <span class="piece">Prompt templates</span>
+      <span class="piece">Tool definitions</span>
+      <span class="piece">Memory</span>
+      <span class="piece">Retrievers</span>
+    </div>
+    <p class="lnote">Answers <b>"what are the parts made of?"</b> Useful early, and worth knowing what each abstraction hides, because debugging through a wrapper you do not understand is slower than writing the call yourself.</p>
+  </div>
+
+  <div class="layer" style="--accent:var(--orch)">
+    <div class="lhead">
+      <span class="role">Orchestrate</span>
+      <h2>The control flow layer</h2>
+    </div>
+    <p class="lsub">Decides what runs next. A chain goes one way through fixed steps; a graph can branch, loop, retry and hold state between turns, which is what an agent actually needs.</p>
+    <div class="pieces">
+      <span class="piece">Decide</span>
+      <span class="piece">Act</span>
+      <span class="piece">Loop</span>
+      <span class="piece">Answer</span>
+      <span class="piece">Persist state</span>
+    </div>
+    <p class="lnote">Answers <b>"what happens next, and when do we stop?"</b> This is the layer that separates a linear pipeline from something that can recover from its own mistakes.</p>
+  </div>
+
+  <div class="layer" style="--accent:var(--obs)">
+    <div class="lhead">
+      <span class="role">Observe</span>
+      <h2>The visibility layer</h2>
+    </div>
+    <p class="lsub">Records every run so you can see what the model actually received, which step was slow, and whether a change made things better or just different.</p>
+    <div class="pieces">
+      <span class="piece">Trace</span>
+      <span class="piece">Debug</span>
+      <span class="piece">Evaluate</span>
+      <span class="piece">Compare runs</span>
+      <span class="piece">Latency and cost</span>
+    </div>
+    <p class="lnote">Answers <b>"why did it do that?"</b> Usually added last, after a mystery failure nobody can reproduce. It is far cheaper to add before that happens.</p>
+  </div>
+
+  <div class="verdict">
+    <div class="punch">Not alternatives. Different questions.</div>
+    <div class="sub">
+      Build asks what the parts are, orchestrate asks what runs next, observe asks why it behaved that way.<br>
+      You can adopt any one without the others, and the specific vendor matters far less than recognising that all three jobs exist and something has to do each of them.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: assemble components, decide control flow, then make every run inspectable.<br>
+    Pairs with <a href="the-agentic-loop.html" style="color:#8fb8ff">The Agentic Loop</a> for what the orchestration layer runs, <a href="six-levels-of-agentic-ai.html" style="color:#8fb8ff">6 Levels of Agentic AI</a> for how much control flow you need, and <a href="llmops-concepts.html" style="color:#8fb8ff">LLMOps</a> for the observability half in production.
+  </div>
+</div>
+
+</body>
+</html>
