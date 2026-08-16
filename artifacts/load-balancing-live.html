@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Load Balancing, Watched Live &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --rr:   #4f9dff;
+    --wrr:  #34d2e0;
+    --lc:   #4ade80;
+    --p2c:  #b18bfa;
+    --hash: #fbbf24;
+    --hot:  #fb7185;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(79,157,255,0.09), transparent 60%),
+      radial-gradient(900px 500px at 88% 40%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 22px; }
+  .title-block h1{ margin:0; font-size: 28px; font-weight: 800; letter-spacing:0.4px; line-height:1.2; }
+  .title-block p{ margin:0; max-width: 620px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  /* ---------- algorithm picker ---------- */
+  .picker{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom: 18px; }
+  .algo{
+    font: inherit;
+    font-size: 11.5px; font-weight: 700; letter-spacing:0.3px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 15px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .algo:hover{ background: var(--surface-hover); color: var(--text-primary); }
+  .algo[aria-pressed="true"]{
+    color: var(--c);
+    border-color: color-mix(in srgb, var(--c) 55%, transparent);
+    background: color-mix(in srgb, var(--c) 13%, transparent);
+  }
+
+  /* ---------- stage ---------- */
+  .stage{
+    position: relative;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px 20px 22px;
+    overflow: hidden;
+  }
+
+  .readout{ display:flex; justify-content:space-between; align-items:flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+  .metric .mk{
+    display:block; font-size: 9.5px; font-weight: 800;
+    letter-spacing:0.7px; text-transform: uppercase; color: var(--text-muted);
+  }
+  .metric .mv{ display:block; font-size: 22px; font-weight: 800; line-height:1.15; font-variant-numeric: tabular-nums; }
+  .metric.right{ text-align: right; }
+  .mv.ok{ color: var(--lc); }
+  .mv.bad{ color: var(--hot); }
+  .mv.neutral{ color: var(--text-primary); }
+
+  .track{ position: relative; height: 96px; margin: 2px 0 4px; }
+  .dot{
+    position:absolute; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 8px 1px color-mix(in srgb, var(--c) 60%, transparent);
+    transform: translate(-50%,-50%); pointer-events:none;
+  }
+  .dot.drop{ background: var(--hot); box-shadow: 0 0 8px 1px rgba(251,113,133,0.6); }
+
+  .balancer{
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+    background: color-mix(in srgb, var(--c) 8%, transparent);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display:flex; align-items:center; justify-content:space-between; gap: 12px;
+    margin-bottom: 6px;
+  }
+  .balancer .bl{ font-size: 11.5px; font-weight: 800; letter-spacing:0.7px; text-transform: uppercase; color: var(--c); }
+  .balancer .br{ font-size: 11px; color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .servers{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  .srv{
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    padding: 10px 11px 11px;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .srv.stress{ border-color: color-mix(in srgb, var(--hot) 55%, transparent); background: color-mix(in srgb, var(--hot) 8%, transparent); }
+  .srv .sh{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 7px; }
+  .srv .sn{ font-size: 11.5px; font-weight: 700; font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-primary); }
+  .srv .sq{ font-size: 11px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .srv.stress .sq{ color: var(--hot); font-weight: 700; }
+  .slots{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 7px; }
+  .slot{ height: 12px; border-radius: 3px; background: rgba(255,255,255,0.05); transition: background .18s ease; }
+  .slot.on{ background: var(--c); }
+  .srv.stress .slot.on{ background: var(--hot); }
+  .rate{ font-size: 9.5px; color: var(--text-muted); letter-spacing:0.3px; }
+  .rate b{ color: var(--text-secondary); font-weight: 600; }
+
+  .explain{
+    margin-top: 14px;
+    border-top: 1px dashed var(--border);
+    padding-top: 13px;
+    font-size: 12px; color: var(--text-secondary); line-height:1.55;
+    min-height: 56px;
+  }
+  .explain b{ color: var(--text-primary); }
+  .explain .verdict{ color: var(--c); font-weight: 700; }
+
+  .controls{ display:flex; gap:10px; justify-content:center; margin-top: 14px; }
+  .ctl{
+    font: inherit; font-size: 11px; font-weight: 700; letter-spacing:0.4px;
+    color: var(--text-secondary); background: transparent;
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 14px; cursor: pointer;
+  }
+  .ctl:hover{ color: var(--text-primary); border-color: var(--text-muted); }
+
+  /* ---------- static roadmap ---------- */
+  .roadmap{ width:100%; margin-top: 26px; display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .rw{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    border-left: 3px solid var(--c);
+    border-radius: 12px;
+    padding: 13px 15px 14px;
+  }
+  .rw .rn{ font-size: 13px; font-weight: 800; color: var(--c); letter-spacing:0.3px; }
+  .rw .rd{ display:block; font-size: 11.5px; color: var(--text-secondary); line-height:1.5; margin-top: 5px; }
+  .rw .rc{ display:block; font-size: 10.5px; color: var(--text-muted); margin-top: 7px; line-height:1.45; }
+  .rw .rc b{ color: var(--text-secondary); font-weight: 600; }
+
+  .verdict-card{
+    width: 100%; margin-top: 20px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius: 16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight: 800; color: #ffd98a; }
+  .verdict-card .sub{ margin-top: 8px; font-size: 12.5px; color: var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 690px;
+  }
+
+  @media (max-width: 760px){
+    .servers{ grid-template-columns: repeat(2, 1fr); }
+    .roadmap{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .dot{ display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Load Balancing, Watched Live</h1>
+    <p>Four servers, one of them slower than the rest. Every algorithm below spreads the same traffic differently, and the difference only shows up when the backends are not identical. Pick one and watch the queues.</p>
+  </div>
+
+  <div class="picker" id="picker"></div>
+
+  <div class="stage" id="stage">
+    <div class="readout">
+      <div class="metric">
+        <span class="mk">Dropped</span>
+        <span class="mv" id="m-drop">0</span>
+      </div>
+      <div class="metric" style="text-align:center">
+        <span class="mk">Served</span>
+        <span class="mv neutral" id="m-served">0</span>
+      </div>
+      <div class="metric right">
+        <span class="mk">Deepest queue</span>
+        <span class="mv" id="m-max">0</span>
+      </div>
+    </div>
+
+    <div class="balancer" id="balancer">
+      <span class="bl" id="b-name">Round Robin</span>
+      <span class="br" id="b-how">counts turns, ignores load</span>
+    </div>
+
+    <div class="track" id="track"></div>
+
+    <div class="servers" id="servers"></div>
+
+    <p class="explain" id="explain"></p>
+
+    <div class="controls">
+      <button class="ctl" id="reset" type="button">Reset counters</button>
+      <button class="ctl" id="pause" type="button">Pause</button>
+    </div>
+  </div>
+
+  <div class="roadmap" id="roadmap"></div>
+
+  <div class="verdict-card">
+    <div class="punch">Every algorithm is a guess about what the servers are doing.</div>
+    <div class="sub">
+      Round robin guesses they are identical. Weighted guesses you know the ratio in advance. Least connections and power of two stop guessing and look.<br>
+      When every backend really is identical and healthy, they all behave the same. The choice only starts to matter on the day one of them is slow, which is the day you need it to.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: rotate blindly, weight by known capacity, read live depth, sample two, or pin by key. Add health checks to all of them.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for where the balancer sits, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for what to do when a backend misbehaves.<br>
+    Topic prompted by an explainer from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // web-3 is deliberately slower. That single fact is what separates the algorithms.
+  const SERVERS = [
+    { name: 'web-1', rate: 1.00 },
+    { name: 'web-2', rate: 0.90 },
+    { name: 'web-3', rate: 0.32 },
+    { name: 'web-4', rate: 1.00 },
+  ];
+  const CAP = 8;              // queue slots per server
+  const ARRIVE_PER_SEC = 7.5; // inbound request rate
+  const BASE_SERVICE = 2.6;   // requests/sec a rate-1.0 server clears
+
+  const ALGOS = {
+    rr: {
+      label: 'Round Robin', how: 'counts turns, ignores load', varName: '--rr',
+      pick(s, st){ st.cursor = (st.cursor + 1) % s.length; return st.cursor; },
+      note: 'Strict rotation. Every server gets an equal <b>number</b> of requests, which is only fair if they have equal <b>capacity</b>. The slow one receives just as many as the fast ones, so its queue climbs until it starts refusing work while the others sit idle.',
+      verdict: 'Fair by count, not by load.'
+    },
+    wrr: {
+      label: 'Weighted', how: 'rotates in proportion to capacity', varName: '--wrr',
+      pick(s, st){
+        // walk a precomputed weighted rotation
+        st.cursor = (st.cursor + 1) % st.weighted.length;
+        return st.weighted[st.cursor];
+      },
+      note: 'Same rotation, but each server appears in it proportionally to its capacity. Much better, and it depends on you knowing the ratio up front and keeping it correct. <b>A weight configured last year does not know the machine is degraded today.</b>',
+      verdict: 'Only as good as the weights you set.'
+    },
+    lc: {
+      label: 'Least Connections', how: 'reads live queue depth', varName: '--lc',
+      pick(s, st){
+        let best = 0;
+        for (let i = 1; i < s.length; i++) if (st.q[i] < st.q[best]) best = i;
+        return best;
+      },
+      note: 'Stops guessing and looks at what each server is actually holding, then sends to the shallowest queue. The slow server fills up, stops being the shallowest, and traffic routes around it <b>without anyone configuring anything</b>.',
+      verdict: 'Adapts on its own. Needs a live view of every backend.'
+    },
+    p2c: {
+      label: 'Power of Two', how: 'samples two at random, picks the shallower', varName: '--p2c',
+      pick(s, st){
+        const a = (Math.random() * s.length) | 0;
+        let b = (Math.random() * s.length) | 0;
+        if (b === a) b = (b + 1) % s.length;
+        return st.q[a] <= st.q[b] ? a : b;
+      },
+      note: 'Picks two servers at random and sends to the shallower of the pair. Almost all the benefit of scanning every backend, at a fraction of the coordination cost, which is why it scales to fleets where <b>checking all of them on every request is not practical</b>.',
+      verdict: 'Nearly as good as looking everywhere, far cheaper.'
+    },
+    hash: {
+      label: 'Hash / Sticky', how: 'same key always lands on the same server', varName: '--hash',
+      pick(s, st){
+        st.key = (st.key + 1) % 12;                 // pretend stream of client keys
+        return st.key % s.length;
+      },
+      note: 'Routes by a hash of something stable such as a session or user id, so the same client keeps hitting the same server and any local cache stays warm. It is the only option here that <b>deliberately ignores load</b>, so a hot key or a slow server is yours to deal with.',
+      verdict: 'Buys locality, pays for it in balance.'
+    }
+  };
+
+  const ORDER = ['rr','wrr','lc','p2c','hash'];
+
+  const el = {
+    picker:   document.getElementById('picker'),
+    stage:    document.getElementById('stage'),
+    servers:  document.getElementById('servers'),
+    track:    document.getElementById('track'),
+    roadmap:  document.getElementById('roadmap'),
+    bName:    document.getElementById('b-name'),
+    bHow:     document.getElementById('b-how'),
+    explain:  document.getElementById('explain'),
+    mDrop:    document.getElementById('m-drop'),
+    mServed:  document.getElementById('m-served'),
+    mMax:     document.getElementById('m-max'),
+    reset:    document.getElementById('reset'),
+    pause:    document.getElementById('pause'),
+  };
+
+  let current = 'rr';
+  let running = true;
+
+  const st = {
+    q: SERVERS.map(() => 0),   // queue depth
+    work: SERVERS.map(() => 0),// partial service progress
+    cursor: -1,
+    key: 0,
+    weighted: [],
+    dropped: 0,
+    served: 0,
+    deepest: 0,
+    dots: [],
+    arriveAcc: 0,
+  };
+
+  // weighted rotation: repeat each index roughly in proportion to its rate
+  (function buildWeighted(){
+    const out = [];
+    const units = SERVERS.map(s => Math.max(1, Math.round(s.rate * 3)));
+    const max = Math.max.apply(null, units);
+    for (let pass = 0; pass < max; pass++)
+      for (let i = 0; i < units.length; i++)
+        if (pass < units[i]) out.push(i);
+    st.weighted = out;
+  })();
+
+  // ---- build DOM ----
+  ORDER.forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'algo';
+    b.type = 'button';
+    b.textContent = ALGOS[k].label;
+    b.style.setProperty('--c', 'var(' + ALGOS[k].varName + ')');
+    b.setAttribute('aria-pressed', String(k === current));
+    b.addEventListener('click', () => select(k));
+    el.picker.appendChild(b);
+  });
+
+  SERVERS.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'srv';
+    d.innerHTML =
+      '<div class="sh"><span class="sn">' + s.name + '</span><span class="sq" id="q' + i + '">0/' + CAP + '</span></div>' +
+      '<div class="slots" id="s' + i + '">' + Array.from({length: CAP}, () => '<span class="slot"></span>').join('') + '</div>' +
+      '<div class="rate">capacity <b>' + Math.round(s.rate * 100) + '%</b></div>';
+    el.servers.appendChild(d);
+  });
+
+  ORDER.forEach(k => {
+    const a = ALGOS[k];
+    const d = document.createElement('div');
+    d.className = 'rw';
+    d.style.setProperty('--c', 'var(' + a.varName + ')');
+    d.innerHTML = '<span class="rn">' + a.label + '</span>' +
+                  '<span class="rd">' + a.note.replace(/<\/?b>/g,'') + '</span>' +
+                  '<span class="rc"><b>Verdict:</b> ' + a.verdict + '</span>';
+    el.roadmap.appendChild(d);
+  });
+
+  const slotEls = SERVERS.map((_, i) => Array.from(document.querySelectorAll('#s' + i + ' .slot')));
+  const qEls    = SERVERS.map((_, i) => document.getElementById('q' + i));
+  const srvEls  = Array.from(el.servers.children);
+
+  function select(k){
+    current = k;
+    Array.from(el.picker.children).forEach((b, i) =>
+      b.setAttribute('aria-pressed', String(ORDER[i] === k)));
+    const a = ALGOS[k];
+    el.stage.style.setProperty('--c', 'var(' + a.varName + ')');
+    el.bName.textContent = a.label;
+    el.bHow.textContent = a.how;
+    el.explain.innerHTML = a.note + ' <span class="verdict">' + a.verdict + '</span>';
+    resetCounters();
+  }
+
+  function resetCounters(){
+    st.dropped = 0; st.served = 0; st.deepest = 0;
+    st.q = SERVERS.map(() => 0);
+    st.work = SERVERS.map(() => 0);
+    st.cursor = -1; st.key = 0;
+    st.dots.forEach(d => d.node.remove());
+    st.dots = [];
+  }
+
+  el.reset.addEventListener('click', resetCounters);
+  el.pause.addEventListener('click', () => {
+    running = !running;
+    el.pause.textContent = running ? 'Pause' : 'Resume';
+    if (running) { last = performance.now(); requestAnimationFrame(tick); }
+  });
+
+  function spawn(target, dropped){
+    if (st.dots.length > 90) return;               // keep the DOM light
+    const n = document.createElement('span');
+    n.className = 'dot' + (dropped ? ' drop' : '');
+    el.track.appendChild(n);
+    const w = el.track.clientWidth || 600;
+    const lane = (target + 0.5) / SERVERS.length;
+    st.dots.push({ node: n, t: 0, x0: w / 2, x1: w * lane, dropped: dropped });
+  }
+
+  let last = performance.now();
+
+  function tick(now){
+    if (!running) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    // arrivals
+    st.arriveAcc += dt * ARRIVE_PER_SEC;
+    while (st.arriveAcc >= 1){
+      st.arriveAcc -= 1;
+      const target = ALGOS[current].pick(SERVERS, st);
+      const full = st.q[target] >= CAP;
+      if (full){ st.dropped++; } else { st.q[target]++; }
+      spawn(target, full);
+    }
+
+    // service
+    for (let i = 0; i < SERVERS.length; i++){
+      st.work[i] += dt * BASE_SERVICE * SERVERS[i].rate;
+      while (st.work[i] >= 1 && st.q[i] > 0){ st.work[i] -= 1; st.q[i]--; st.served++; }
+      if (st.q[i] === 0) st.work[i] = 0;
+      if (st.q[i] > st.deepest) st.deepest = st.q[i];
+    }
+
+    // dots
+    const h = el.track.clientHeight || 96;
+    for (let i = st.dots.length - 1; i >= 0; i--){
+      const d = st.dots[i];
+      d.t += dt * 1.7;
+      if (d.t >= 1){ d.node.remove(); st.dots.splice(i, 1); continue; }
+      const e = d.t * d.t * (3 - 2 * d.t);          // ease
+      d.node.style.left = (d.x0 + (d.x1 - d.x0) * e) + 'px';
+      d.node.style.top  = (h * d.t) + 'px';
+      d.node.style.opacity = d.dropped && d.t > 0.75 ? String((1 - d.t) * 4) : '1';
+    }
+
+    render();
+    requestAnimationFrame(tick);
+  }
+
+  function render(){
+    for (let i = 0; i < SERVERS.length; i++){
+      const q = st.q[i];
+      qEls[i].textContent = q + '/' + CAP;
+      srvEls[i].classList.toggle('stress', q >= CAP - 1);
+      const slots = slotEls[i];
+      for (let s = 0; s < CAP; s++) slots[s].classList.toggle('on', s < q);
+    }
+    el.mDrop.textContent = st.dropped;
+    el.mDrop.className = 'mv ' + (st.dropped > 0 ? 'bad' : 'ok');
+    el.mServed.textContent = st.served;
+    el.mMax.textContent = st.deepest + '/' + CAP;
+    el.mMax.className = 'mv ' + (st.deepest >= CAP ? 'bad' : st.deepest > CAP / 2 ? 'neutral' : 'ok');
+  }
+
+  select('rr');
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

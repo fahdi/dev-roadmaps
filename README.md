@@ -28,6 +28,7 @@ Visual, interactive developer roadmaps: step-by-step guides for building modern 
 | [12 System Design Patterns](artifacts/system-design-patterns.html) | Timeout, retry, circuit breaker, rate limiter, bulkhead, pub/sub, caching, event sourcing, CQRS, saga, strangler fig. Every one is about failure |
 | [API Key vs JWT vs OAuth 2.0](artifacts/api-key-jwt-oauth.html) | App to app, user to app, user to third party. One product usually runs all three for different hops |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
+| [Load Balancing, Watched Live](artifacts/load-balancing-live.html) | Interactive. Round robin, weighted, least connections, power of two and hashing, simulated against four uneven servers |
 | [How a Request Travels](artifacts/how-a-request-travels.html) | DNS → TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database. The two cache shortcuts, and what changes when the service is a model |
 | [LLMOps: Build, Prove, Ship, Operate](artifacts/llmops-concepts.html) | Datasets → prompt versions → pinning → eval sets → judge → gate → canary → shadow → rollback → tracing → cost → feedback. Twelve feeds one |
 | [How to Evaluate an LLM App](artifacts/evaluating-llm-apps.html) | Evals measure, guardrails enforce, monitoring detects: golden dataset → four evaluators → six score dimensions → CI/CD gate → guardrails → online evals. Failures become test cases |
