@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 Interview Patterns, Animated &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --arr:  #fbbf24;
+    --win:  #4ade80;
+    --list: #fb7185;
+    --bs:   #4f9dff;
+    --bfs:  #34d2e0;
+    --dfs:  #fb923c;
+    --bt:   #f472b6;
+    --heap: #a3e635;
+    --pre:  #b18bfa;
+    --dp:   #f87171;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(251,191,36,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(79,157,255,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1040px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 22px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 630px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .grid{ width:100%; display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .pat{
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    border-radius: 13px;
+    padding: 13px 15px 14px;
+    display:flex; flex-direction:column; gap: 9px;
+    transition: background .18s ease, border-color .18s ease;
+  }
+  .pat:hover{ background: var(--surface-hover); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+
+  .ph{ display:flex; align-items:baseline; gap: 9px; }
+  .ph .num{
+    font-size: 9.5px; font-weight: 800; color: var(--c);
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+    border-radius: 5px; padding: 2px 5px; line-height:1;
+  }
+  .ph h2{ margin:0; font-size: 13.5px; font-weight: 800; color: var(--text-primary); letter-spacing:0.2px; }
+  .ph .on{ margin-left:auto; font-size: 9.5px; font-weight: 700; letter-spacing:0.6px; text-transform: uppercase; color: var(--text-muted); }
+
+  .viz{ height: 64px; display:flex; align-items:center; justify-content:center; position:relative; }
+
+  .cells{ display:flex; gap: 4px; align-items:flex-end; position:relative; padding-top: 12px; }
+  .cell{
+    width: 26px; height: 26px; border-radius: 5px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 10.5px; font-weight: 700;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid transparent;
+    transition: background .16s linear, color .16s linear, border-color .16s linear, transform .16s ease;
+  }
+  .cell.on{ background: color-mix(in srgb, var(--c) 24%, transparent); color: var(--text-primary); border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+  .cell.dim{ opacity: .28; }
+  .cell.mark{ transform: translateY(-4px); }
+
+  .ptr{
+    position:absolute; top: 2px;
+    font-size: 9px; font-weight: 800; color: var(--c);
+    transition: left .22s ease;
+    transform: translateX(-50%);
+  }
+
+  .nodes{ position:relative; width: 190px; height: 58px; }
+  .nd{
+    position:absolute; width: 13px; height: 13px; border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    transform: translate(-50%,-50%);
+    transition: background .2s linear, border-color .2s linear, box-shadow .2s linear;
+  }
+  .nd.on{ background: var(--c); border-color: var(--c); box-shadow: 0 0 8px 1px color-mix(in srgb, var(--c) 50%, transparent); }
+  .nd.bad{ background: var(--list); border-color: var(--list); }
+  .edge{ position:absolute; height:1px; background: rgba(255,255,255,0.12); transform-origin: 0 50%; }
+  .edge.on{ background: color-mix(in srgb, var(--c) 60%, transparent); }
+
+  .track{ position:relative; width: 190px; height: 22px; }
+  .rail{ position:absolute; top:50%; left:0; right:0; height:1px; background: rgba(255,255,255,0.13); }
+  .runner{
+    position:absolute; top:50%; width:11px; height:11px; border-radius:50%;
+    transform: translate(-50%,-50%); transition: left .1s linear;
+  }
+
+  .use{
+    display:flex; gap: 7px; align-items:baseline; flex-wrap:wrap;
+    border-top: 1px dashed color-mix(in srgb, var(--c) 25%, transparent);
+    padding-top: 9px;
+  }
+  .use .k{ font-size: 9.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color: var(--c); flex:none; }
+  .use .v{ font-size: 11px; color: var(--text-secondary); line-height:1.45; }
+
+  .verdict-card{
+    width:100%; margin-top: 20px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 700px;
+  }
+
+  @media (max-width: 780px){
+    .grid{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cell, .nd, .runner, .ptr{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>10 Interview Patterns, Animated</h1>
+    <p>Most interview problems are one of a small number of shapes wearing different words. Each card runs its own mechanic on a loop, and names the signal in the question that should make you reach for it.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="verdict-card">
+    <div class="punch">Recognising the shape is the skill. The code is the easy part.</div>
+    <div class="sub">
+      Nobody solves these by recalling a solution. They read the constraints, spot which of these shapes fits, and then write something they have written many times before.<br>
+      If a problem mentions a sorted array, a contiguous run, a shortest path or a repeated subproblem, it has already told you which one to use.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: learn the mechanic, learn the signal that selects it, then practise mapping unfamiliar wording onto a shape you already know.<br>
+    Pairs with <a href="dsa-roadmap.html" style="color:#8fb8ff">DSA: 24 Nodes in the Right Order</a> for the order to learn the underlying structures in.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const PATTERNS = [
+    { n:'Two Pointers', on:'Sorted array', c:'--arr', kind:'cells',
+      use:'A sorted array and you need a pair, a triplet, or to compare from both ends. Two indices walking inward beat the nested loop.' },
+    { n:'Sliding Window', on:'Array or string', c:'--win', kind:'cells',
+      use:'Anything contiguous: longest, shortest, or a sum over a run. Grow the right edge, shrink the left, never restart.' },
+    { n:'Fast and Slow Pointers', on:'Linked list', c:'--list', kind:'track',
+      use:'Cycle detection, or finding the middle in one pass. Two runners at different speeds meet only if the path loops.' },
+    { n:'Binary Search', on:'Monotonic range', c:'--bs', kind:'cells',
+      use:'Sorted input, or any answer space where a check flips from false to true exactly once. Search the answer, not just the array.' },
+    { n:'Breadth-First Search', on:'Graph or grid', c:'--bfs', kind:'nodes',
+      use:'Shortest path in an unweighted graph, or anything spreading level by level. The first time you reach a node is the closest.' },
+    { n:'Depth-First Search', on:'Graph or tree', c:'--dfs', kind:'nodes',
+      use:'Connected components, cycle checks, or exploring every path. Go deep, then come back and take the next branch.' },
+    { n:'Backtracking', on:'Search space', c:'--bt', kind:'nodes',
+      use:'Permutations, combinations, or constraint puzzles. Make a choice, recurse, and undo it when the branch dies.' },
+    { n:'Heap and Top K', on:'Priority', c:'--heap', kind:'cells',
+      use:'The best K of something, or a running median. A heap keeps the extreme reachable without sorting everything.' },
+    { n:'Prefix Sum', on:'Array', c:'--pre', kind:'cells',
+      use:'Repeated range totals over static data. Precompute once, then answer any range in constant time.' },
+    { n:'Dynamic Programming', on:'Overlapping states', c:'--dp', kind:'cells',
+      use:'The same subproblem keeps reappearing. Recursion plus a place to store answers, which is all DP ever was.' }
+  ];
+
+  const grid = document.getElementById('grid');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  PATTERNS.forEach((p, i) => {
+    const d = document.createElement('div');
+    d.className = 'pat';
+    d.style.setProperty('--c', 'var(' + p.c + ')');
+    d.innerHTML =
+      '<div class="ph"><span class="num">' + String(i+1).padStart(2,'0') + '</span>' +
+      '<h2>' + p.n + '</h2><span class="on">' + p.on + '</span></div>' +
+      '<div class="viz"></div>' +
+      '<div class="use"><span class="k">Use when</span><span class="v">' + p.use + '</span></div>';
+    grid.appendChild(d);
+    p.viz = d.querySelector('.viz');
+  });
+
+  // ---------- builders ----------
+  function cells(viz, n, labels){
+    const wrap = document.createElement('div');
+    wrap.className = 'cells';
+    const out = [];
+    for (let i = 0; i < n; i++){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.textContent = labels ? labels[i] : '';
+      wrap.appendChild(c); out.push(c);
+    }
+    viz.appendChild(wrap);
+    out.wrap = wrap;
+    return out;
+  }
+  function ptr(cellList, text){
+    const s = document.createElement('span');
+    s.className = 'ptr'; s.textContent = text;
+    cellList.wrap.appendChild(s); return s;
+  }
+  function nodeGraph(viz, pts, edges){
+    const holder = document.createElement('div');
+    holder.className = 'nodes';
+    const es = edges.map(([a,b]) => {
+      const e = document.createElement('div'); e.className = 'edge';
+      const A = pts[a], B = pts[b];
+      const dx = B[0]-A[0], dy = B[1]-A[1];
+      e.style.left = A[0]+'px'; e.style.top = A[1]+'px';
+      e.style.width = Math.hypot(dx,dy)+'px';
+      e.style.transform = 'rotate(' + Math.atan2(dy,dx) + 'rad)';
+      holder.appendChild(e); return e;
+    });
+    const ns = pts.map(([x,y]) => {
+      const n = document.createElement('div'); n.className = 'nd';
+      n.style.left = x+'px'; n.style.top = y+'px';
+      holder.appendChild(n); return n;
+    });
+    viz.appendChild(holder);
+    return { ns, es };
+  }
+
+  // ---------- per pattern state ----------
+  const P = PATTERNS;
+  const NCELL = 7;
+
+  // 1 two pointers
+  const tpCells = cells(P[0].viz, NCELL, ['1','3','4','6','8','9','11']);
+  const tp = { cells: tpCells, l: ptr(tpCells,'L'), r: ptr(tpCells,'R') };
+  // 2 sliding window
+  const sw = { cells: cells(P[1].viz, NCELL, ['4','2','7','1','8','3','6']) };
+  // 3 fast slow
+  const fs = (function(){
+    const t = document.createElement('div'); t.className='track';
+    const rail = document.createElement('div'); rail.className='rail'; t.appendChild(rail);
+    const s = document.createElement('div'); s.className='runner'; s.style.background='var(--list)';
+    const f = document.createElement('div'); f.className='runner'; f.style.background='var(--win)';
+    t.appendChild(s); t.appendChild(f); P[2].viz.appendChild(t);
+    return { s:s, f:f };
+  })();
+  // 4 binary search
+  const bs = { cells: cells(P[3].viz, NCELL, ['1','3','5','7','9','11','13']), target: 4 };
+  // 5 BFS / 6 DFS / 7 backtracking share a tree layout
+  const TREE = [[95,8],[48,30],[142,30],[24,52],[72,52],[118,52],[166,52]];
+  const TEDGE = [[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]];
+  const bfs = nodeGraph(P[4].viz, TREE, TEDGE);
+  const dfs = nodeGraph(P[5].viz, TREE, TEDGE);
+  const bt  = nodeGraph(P[6].viz, TREE, TEDGE);
+  // 8 heap
+  const hp = { cells: cells(P[7].viz, 5, ['3','9','5','1','7']) };
+  // 9 prefix
+  const pf = { cells: cells(P[8].viz, 6, ['2','3','1','4','2','5']) };
+  // 10 dp
+  const dp = { cells: cells(P[9].viz, 8, ['','','','','','','','']) };
+
+  const BFS_ORDER = [[0],[1,2],[3,4,5,6]];
+  const DFS_ORDER = [0,1,3,4,2,5,6];
+  const BT_PATH   = [0,1,3];
+
+  function reset(list){ list.forEach(c => { c.className = c.className.replace(/\b(on|dim|mark|bad)\b/g,'').trim(); }); }
+
+  function frame(t){
+    const T = t / 1000;
+
+    // 1 two pointers: converge
+    (function(){
+      const n = tp.cells.length, span = 26+4;
+      const step = Math.floor((T*1.1) % 4);
+      const l = step, r = n-1-step;
+      reset(tp.cells);
+      tp.cells.forEach((c,i)=>{ if(i<l||i>r) c.classList.add('dim'); });
+      if (l < r){ tp.cells[l].classList.add('on'); tp.cells[r].classList.add('on'); }
+      tp.l.style.left = (l*span + 13) + 'px';
+      tp.r.style.left = (r*span + 13) + 'px';
+    })();
+
+    // 2 sliding window: window of 3 slides
+    (function(){
+      const n = sw.cells.length, w = 3;
+      const start = Math.floor((T*1.2) % (n-w+1));
+      reset(sw.cells);
+      sw.cells.forEach((c,i)=>{ if(i>=start && i<start+w) c.classList.add('on'); else c.classList.add('dim'); });
+    })();
+
+    // 3 fast and slow
+    (function(){
+      const cyc = (T*0.45) % 1;
+      fs.s.style.left = (cyc*100) + '%';
+      fs.f.style.left = (((T*0.9) % 1)*100) + '%';
+    })();
+
+    // 4 binary search: halve toward target
+    (function(){
+      const steps = [[0,6],[0,2],[3,6],[4,4]];
+      const k = Math.floor((T*0.8) % steps.length);
+      const [lo,hi] = k===0?[0,6]: k===1?[4,6] : k===2?[4,5] : [4,4];
+      reset(bs.cells);
+      bs.cells.forEach((c,i)=>{ if(i<lo||i>hi) c.classList.add('dim'); });
+      const mid = Math.floor((lo+hi)/2);
+      if (bs.cells[mid]) bs.cells[mid].classList.add('on');
+    })();
+
+    // 5 BFS level by level
+    (function(){
+      const lvl = 1 + Math.floor((T*0.7) % BFS_ORDER.length);
+      bfs.ns.forEach(n=>n.classList.remove('on'));
+      for (let i=0;i<lvl;i++) BFS_ORDER[i].forEach(x=>bfs.ns[x].classList.add('on'));
+    })();
+
+    // 6 DFS deep path
+    (function(){
+      const k = 1 + Math.floor((T*1.3) % DFS_ORDER.length);
+      dfs.ns.forEach(n=>n.classList.remove('on'));
+      for (let i=0;i<k;i++) dfs.ns[DFS_ORDER[i]].classList.add('on');
+    })();
+
+    // 7 backtracking: advance, fail, retreat
+    (function(){
+      const cyc = (T*0.8) % 6;
+      bt.ns.forEach(n=>n.classList.remove('on','bad'));
+      if (cyc < 3){
+        for (let i=0;i<=Math.floor(cyc);i++) if(BT_PATH[i]!==undefined) bt.ns[BT_PATH[i]].classList.add('on');
+        if (cyc >= 2) bt.ns[3].classList.add('bad');
+      } else {
+        const back = Math.floor(cyc)-3;
+        const alt = [0,1,4];
+        for (let i=0;i<=back;i++) if(alt[i]!==undefined) bt.ns[alt[i]].classList.add('on');
+      }
+    })();
+
+    // 8 heap: max rises to front
+    (function(){
+      const k = Math.floor((T*0.9) % 4);
+      reset(hp.cells);
+      hp.cells[1].classList.add('on');            // the 9
+      if (k>=1) hp.cells[1].classList.add('mark');
+      if (k>=2){ hp.cells[0].textContent='9'; hp.cells[1].textContent='3'; hp.cells[0].classList.add('on'); }
+      else { hp.cells[0].textContent='3'; hp.cells[1].textContent='9'; }
+    })();
+
+    // 9 prefix sums fill in
+    (function(){
+      const vals=[2,3,1,4,2,5]; const k = 1 + Math.floor((T*1.1) % (vals.length+1));
+      reset(pf.cells);
+      let run=0;
+      pf.cells.forEach((c,i)=>{
+        if(i<k){ run+= vals[i]; c.textContent = run; c.classList.add('on'); }
+        else { c.textContent = vals[i]; }
+      });
+    })();
+
+    // 10 dp: fill then reuse
+    (function(){
+      const k = 2 + Math.floor((T*1.4) % (dp.cells.length+1));
+      reset(dp.cells);
+      dp.cells.forEach((c,i)=>{
+        if(i<k){ c.classList.add('on'); c.textContent = (i<2?1:''); }
+        else c.textContent='';
+      });
+      if (k>dp.cells.length){ dp.cells.forEach(c=>c.classList.add('on')); }
+    })();
+
+    requestAnimationFrame(frame);
+  }
+
+  if (!reduce) requestAnimationFrame(frame);
+  else frame(0);
+})();
+</script>
+
+</body>
+</html>

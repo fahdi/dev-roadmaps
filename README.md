@@ -20,6 +20,7 @@ Visual, interactive developer roadmaps: step-by-step guides for building modern 
 | [The Agentic Loop](artifacts/the-agentic-loop.html) | Gather context → take action → verify → loop. Model reasons, tools act, harness orchestrates, and you can steer mid-run |
 | [12 Prompt Patterns](artifacts/prompt-patterns.html) | Zero/one/few-shot → chain of thought, roles, self-reflection → structured output, delimiters, constraints → context selection, templates, prefix caching |
 | [Context Engineering](artifacts/context-engineering.html) | The window is a budget: write, select, compress, isolate, the four memory stores, and the four failure modes of long context |
+| [10 Interview Patterns, Animated](artifacts/interview-patterns.html) | Interactive. Two pointers through dynamic programming, each with a live mechanic and the recognition signal that selects it |
 | [DSA: 24 Nodes in the Right Order](artifacts/dsa-roadmap.html) | Fundamentals → DP and graphs → specialised structures. Recursion at node six is the hinge, and DP is node eleven for a reason |
 | [Build, Orchestrate, Observe](artifacts/langchain-langgraph-langsmith.html) | Component layer, control flow layer, visibility layer. Not alternatives, three different questions |
 | [SQL: 24 Nodes to Production](artifacts/sql-roadmap.html) | Fundamentals → joins → window functions → EXPLAIN, indexes and transactions. Window functions are the jump |
