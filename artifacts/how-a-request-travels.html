@@ -446,7 +446,9 @@
       <div class="chip"><div class="chip-icon" data-icon="filetext"></div><div class="chip-label">Static Assets</div></div>
       <div class="chip"><div class="chip-icon" data-icon="sliders"></div><div class="chip-label">Cache Rules</div></div>
       <div class="chip"><div class="chip-icon" data-icon="shield"></div><div class="chip-label">DDoS / WAF</div></div>
+      <div class="chip"><div class="chip-icon" data-icon="globe"></div><div class="chip-label">Anycast Routing</div></div>
     </div>
+    <p class="card-note">"Nearest edge" is not a lookup that hands you a different address. The same IP is announced from every location at once, and the routers between you and it forward toward whichever announcement is closest by network path. You and someone on another continent type the identical address and arrive at different machines, without either of you resolving anything different.</p>
   </div>
 
   <div class="spacer"></div>
@@ -574,7 +576,7 @@
   <div class="footer-note">
     Journey: DNS → TCP/TLS → CDN → Load Balancer → API Gateway → Service → Cache → Database → back.
     Real architectures vary, because the gateway and balancer are often combined, and either can come first, but this is the shape to reason from.<br>
-    The load-balancing, CORS and preload-scanner notes were prompted by explainers from <a href="https://www.facebook.com/codezup">Codez Up</a>.<br>
+    The load-balancing, CORS, preload-scanner and anycast notes were prompted by explainers from <a href="https://www.facebook.com/codezup">Codez Up</a>.<br>
     Pairs with <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a>, <a href="distributing-data.html" style="color:#8fb8ff">Distributing Data Across Nodes</a> and <a href="api-key-jwt-oauth.html" style="color:#8fb8ff">API Key vs JWT vs OAuth 2.0</a>.
   </div>
 </div>
