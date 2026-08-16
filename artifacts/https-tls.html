@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTPS and TLS, Watched Live &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --plain: #fb7185;
+    --enc:   #34d2e0;
+    --key:   #fbbf24;
+    --ident: #b18bfa;
+    --leak:  #fb923c;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(52,210,224,0.08), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(251,113,133,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 18px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 620px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .switch{ display:inline-flex; padding:4px; gap:4px; background: var(--surface); border:1px solid var(--border); border-radius:999px; margin-bottom: 16px; }
+  .sw{
+    font: inherit; font-size: 12px; font-weight: 800; letter-spacing:0.4px;
+    color: var(--text-muted); background: transparent; border:0;
+    border-radius: 999px; padding: 8px 22px; cursor:pointer;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    transition: background .2s ease, color .2s ease;
+  }
+  .sw[aria-pressed="true"]{ color: var(--page); }
+  .sw.http[aria-pressed="true"]{ background: var(--plain); }
+  .sw.https[aria-pressed="true"]{ background: var(--enc); }
+
+  /* ---------- stage ---------- */
+  .stage{
+    width:100%; background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+    border-radius: 16px; padding: 18px 20px 20px;
+    transition: border-color .3s ease;
+  }
+
+  .wire{ position:relative; height: 84px; }
+  .endp{
+    position:absolute; top: 26px; transform: translateY(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+  }
+  .endp .box{
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; font-weight:700; color: var(--c);
+    border: 1.5px solid var(--c); border-radius: 7px; padding: 6px 12px;
+    background: color-mix(in srgb, var(--c) 10%, transparent);
+  }
+  .endp .lbl{ font-size: 9.5px; letter-spacing:0.6px; text-transform:uppercase; color: var(--text-muted); }
+  .endp.left{ left: 0; }
+  .endp.right{ right: 0; }
+
+  .rail{
+    position:absolute; left: 96px; right: 96px; top: 26px; height: 0;
+    border-top: 1px dashed color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .lock{
+    position:absolute; top: 26px; transform: translate(-50%,-50%);
+    font-size: 15px; opacity: 0; transition: opacity .3s ease;
+  }
+  .lock.on{ opacity: 1; }
+
+  .pkt{
+    position:absolute; top: 26px; transform: translate(-50%,-50%);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 8.5px; font-weight: 700;
+    padding: 2px 5px; border-radius: 4px;
+    border: 1px solid var(--c);
+    background: var(--page); color: var(--c);
+    white-space: nowrap;
+  }
+
+  .tap{ position:absolute; left:50%; top: 26px; width:1px; height: 46px; background: color-mix(in srgb, var(--plain) 55%, transparent); }
+  .tapdot{ position:absolute; left:50%; top:26px; width:7px; height:7px; border-radius:50%; background: var(--plain); transform: translate(-50%,-50%); }
+
+  .snoop{
+    margin-top: 4px;
+    border: 1px solid color-mix(in srgb, var(--plain) 45%, transparent);
+    background: color-mix(in srgb, var(--plain) 6%, transparent);
+    border-radius: 12px; padding: 12px 14px 13px;
+  }
+  .snoop .sh{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom: 9px; }
+  .snoop .st{ font-size: 10.5px; font-weight:800; letter-spacing:0.7px; text-transform:uppercase; color: var(--plain); }
+  .snoop .sc{ font-size: 11px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .snoop .sc b{ color: var(--text-primary); }
+  .capture{ display:flex; flex-wrap:wrap; gap:5px; min-height: 52px; align-content:flex-start; }
+  .cap{
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 9px; font-weight:700;
+    padding: 3px 6px; border-radius: 4px;
+    border: 1px solid color-mix(in srgb, var(--cc) 50%, transparent);
+    background: color-mix(in srgb, var(--cc) 12%, transparent);
+    color: var(--cc);
+  }
+
+  .readout{
+    margin-top: 12px; padding-top: 11px;
+    border-top: 1px dashed var(--border);
+    font-size: 12.5px; color: var(--text-secondary); line-height:1.55; min-height: 42px;
+  }
+  .readout b{ color: var(--text-primary); }
+  .readout .flag{ font-weight:800; color: var(--c); }
+
+  /* ---------- deeper cards ---------- */
+  .more{ width:100%; margin-top: 22px; display:grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+  .card{
+    background: var(--surface);
+    border:1px solid color-mix(in srgb, var(--c2) 26%, transparent);
+    border-top: 3px solid var(--c2);
+    border-radius:12px; padding: 14px 16px 15px;
+  }
+  .card h3{ margin:0 0 6px; font-size:13px; font-weight:800; color:var(--c2); letter-spacing:.3px; }
+  .card p{ margin:0 0 7px; font-size:11.5px; color:var(--text-secondary); line-height:1.55; }
+  .card p:last-child{ margin-bottom:0; }
+  .card b{ color: var(--text-primary); }
+
+  .verdict-card{
+    width:100%; margin-top: 20px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 700px;
+  }
+
+  @media (max-width: 760px){
+    .more{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce){ .pkt{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>HTTPS and TLS, Watched Live</h1>
+    <p>Someone on the same network copies every packet you send. Toggle the protocol and watch what they end up holding, because the number they capture never changes.</p>
+  </div>
+
+  <div class="switch" role="group" aria-label="Protocol">
+    <button class="sw http" id="sw-http" type="button" aria-pressed="true">http://</button>
+    <button class="sw https" id="sw-https" type="button" aria-pressed="false">https://</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="wire" id="wire">
+      <div class="endp left"><span class="box" id="proto">http</span><span class="lbl">You</span></div>
+      <div class="rail"></div>
+      <span class="lock" id="lock1" style="left:26%">&#128274;</span>
+      <span class="lock" id="lock2" style="left:74%">&#128274;</span>
+      <div class="tap"></div><div class="tapdot"></div>
+      <div class="endp right"><span class="box">bank</span><span class="lbl">The bank</span></div>
+    </div>
+
+    <div class="snoop">
+      <div class="sh">
+        <span class="st">Someone on the same wifi</span>
+        <span class="sc">captured <b id="n-cap">0</b> &middot; readable <b id="n-read">0</b></span>
+      </div>
+      <div class="capture" id="capture"></div>
+    </div>
+
+    <p class="readout" id="readout"></p>
+  </div>
+
+  <div class="more">
+    <div class="card" style="--c2:var(--key)">
+      <h3>How do they agree a key in the open?</h3>
+      <p>This is the part that sounds impossible. Two machines that have never met need a shared secret, while someone records the entire conversation.</p>
+      <p>They each generate a private value, send only a public half, and combine the other side's half with their own private one. <b>Both arrive at the same result and the eavesdropper cannot derive it</b> from the two public halves alone. Modern TLS also generates fresh values per session, so recording traffic today and stealing the server key later still does not decrypt it.</p>
+    </div>
+    <div class="card" style="--c2:var(--ident)">
+      <h3>Encryption without identity is worthless</h3>
+      <p>An encrypted channel only guarantees that whoever is on the other end can read it. If that is an attacker, you have encrypted your password directly to them.</p>
+      <p>The certificate is what ties the key to a name, checked against authorities your device already trusts. <b>The padlock means private and verified, not safe</b>, since a phishing domain can hold a perfectly valid certificate for its own name.</p>
+    </div>
+    <div class="card" style="--c2:var(--leak)">
+      <h3>What encryption still leaks</h3>
+      <p>The contents are unreadable. Plenty around them is not.</p>
+      <p>The observer still sees <b>which server you connected to and how much you sent and when</b>. Sizes and timing alone can identify a page. The domain is often visible during setup unless the newer encrypted handshake extension is in use, and DNS may have announced where you were going before the connection even opened.</p>
+    </div>
+    <div class="card" style="--c2:var(--enc)">
+      <h3>Where TLS actually ends</h3>
+      <p>People picture one tunnel from browser to application. In practice it usually terminates at the edge, at a CDN or load balancer.</p>
+      <p>From there it is re-encrypted, or occasionally not. <b>Encryption in transit says nothing about the hops after termination</b>, nothing about how it is stored, and nothing about a compromised endpoint. A key logger on the device wins regardless of the protocol.</p>
+    </div>
+  </div>
+
+  <div class="verdict-card">
+    <div class="punch">They copy the same number of packets either way.</div>
+    <div class="sub">
+      Encryption does not stop capture, it removes comprehension, and that distinction is the whole point.<br>
+      An eavesdropper on plain HTTP is quietly assembling a list of credentials. On HTTPS they are assembling a pile of ciphertext, a record of who you talked to, and nothing they can use.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: agree a key in the open, verify who is on the other end, encrypt the contents, then stay aware of the metadata and of where the tunnel stops.<br>
+    Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for where the handshake sits, and <a href="api-key-jwt-oauth.html" style="color:#8fb8ff">API Key vs JWT vs OAuth 2.0</a> for proving who is calling once the channel is secure.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const SECRETS = ['password', 'card', 'pin', 'otp', 'session'];
+  const HEX = '0123456789abcdef';
+
+  const el = {
+    stage:  document.getElementById('stage'),
+    wire:   document.getElementById('wire'),
+    proto:  document.getElementById('proto'),
+    lock1:  document.getElementById('lock1'),
+    lock2:  document.getElementById('lock2'),
+    cap:    document.getElementById('capture'),
+    nCap:   document.getElementById('n-cap'),
+    nRead:  document.getElementById('n-read'),
+    read:   document.getElementById('readout'),
+    bHttp:  document.getElementById('sw-http'),
+    bHttps: document.getElementById('sw-https')
+  };
+
+  let secure = false;
+  let captured = 0, readable = 0;
+  let pkts = [];
+  let acc = 0, last = performance.now();
+
+  const COPY = {
+    http: 'Every field crosses the network as text. <b>The observer is not breaking anything</b>, they are reading what was written in the clear. ' +
+          '<span class="flag">Everything captured is readable.</span>',
+    https:'Identical capture, and now each packet is ciphertext. They still know you talked to the bank, how often, and roughly how much you sent. ' +
+          '<span class="flag">Everything captured, none of it readable.</span>'
+  };
+
+  function cipher(n){
+    let s = '';
+    for (let i = 0; i < n; i++) s += HEX[(Math.random()*16)|0];
+    return s;
+  }
+
+  function setMode(sec){
+    secure = sec;
+    el.bHttp.setAttribute('aria-pressed', String(!sec));
+    el.bHttps.setAttribute('aria-pressed', String(sec));
+    el.stage.style.setProperty('--c', sec ? 'var(--enc)' : 'var(--plain)');
+    el.proto.textContent = sec ? 'https' : 'http';
+    el.lock1.classList.toggle('on', sec);
+    el.lock2.classList.toggle('on', sec);
+    el.read.innerHTML = sec ? COPY.https : COPY.http;
+    captured = 0; readable = 0;
+    el.cap.innerHTML = '';
+    pkts.forEach(p => p.node.remove());
+    pkts = [];
+    // seed so the panel reads as "already been listening" rather than empty
+    for (let i = 0; i < 6; i++) grab(SECRETS[i % SECRETS.length]);
+    paint();
+  }
+
+  function paint(){
+    el.nCap.textContent = captured;
+    el.nRead.textContent = readable;
+  }
+
+  function spawn(){
+    if (pkts.length > 8) return;
+    const secret = SECRETS[(Math.random()*SECRETS.length)|0];
+    const n = document.createElement('span');
+    n.className = 'pkt';
+    n.textContent = secure ? cipher(6) : secret;
+    el.wire.appendChild(n);
+    pkts.push({ node:n, t:0, secret:secret });
+  }
+
+  function grab(secret){
+    captured++;
+    const c = document.createElement('span');
+    c.className = 'cap';
+    if (secure){
+      c.textContent = cipher(8);
+      c.style.setProperty('--cc', 'var(--enc)');
+    } else {
+      readable++;
+      c.textContent = secret;
+      c.style.setProperty('--cc', 'var(--plain)');
+    }
+    el.cap.appendChild(c);
+    while (el.cap.children.length > 22) el.cap.removeChild(el.cap.firstChild);
+    paint();
+  }
+
+  function tick(now){
+    let dt = (now - last) / 1000;
+    last = now;
+    // guard against a clock that does not advance (headless, background tab)
+    if (!(dt > 0) || dt > 0.05) dt = 0.016;
+
+    acc += dt;
+    if (acc > 0.62){ acc = 0; spawn(); }
+
+    const w = el.wire.clientWidth || 700;
+    const x0 = 96, x1 = w - 96;
+
+    for (let i = pkts.length - 1; i >= 0; i--){
+      const p = pkts[i];
+      const was = p.t;
+      p.t += dt * 0.42;
+      p.node.style.left = (x0 + (x1 - x0) * p.t) + 'px';
+      // the tap sits at the midpoint: capture as it passes
+      if (was < 0.5 && p.t >= 0.5) grab(p.secret);
+      if (p.t >= 1){ p.node.remove(); pkts.splice(i,1); }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  el.bHttp.addEventListener('click', function(){ setMode(false); });
+  el.bHttps.addEventListener('click', function(){ setMode(true); });
+
+  setMode(false);
+  requestAnimationFrame(tick);
+  // show the contrast without needing a click
+  setTimeout(function(){ setMode(true); }, 7000);
+})();
+</script>
+
+</body>
+</html>
