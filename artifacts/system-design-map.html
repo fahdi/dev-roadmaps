@@ -188,8 +188,8 @@
       </div>
       <div class="item">
         <div class="head"><span class="num">10</span><span class="name">LLM Inference</span></div>
-        <p class="nail">Dynamic batching to keep GPUs busy, KV cache to avoid recomputation, and cost per request as a first-class metric.</p>
-        <span class="cue">batching, KV cache, GPU scheduling</span>
+        <p class="nail">Dynamic batching to keep GPUs busy, and a KV cache so each new token does not re-read the whole conversation. That cache grows with context and never shrinks mid-generation, so it is a memory ceiling as much as an optimisation.</p>
+        <span class="cue">batching, KV cache growth, GPU scheduling</span>
       </div>
       <div class="item">
         <div class="head"><span class="num">11</span><span class="name">Enterprise RAG</span></div>
@@ -215,6 +215,8 @@
   <div class="footer-note">
     Roadmap: get the core primitives solid, then the delivery patterns built on them, then the AI systems that reuse both.<br>
     Pairs with <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for the path every one of these sits on.
+    <br>
+    The KV cache growth note was prompted by an explainer from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
   </div>
 </div>
 
