@@ -24,6 +24,7 @@ Visual, interactive developer roadmaps — step-by-step guides for building mode
 | [Build, Orchestrate, Observe](artifacts/langchain-langgraph-langsmith.html) | Component layer, control flow layer, visibility layer. Not alternatives, three different questions |
 | [SQL: 24 Nodes to Production](artifacts/sql-roadmap.html) | Fundamentals → joins → window functions → EXPLAIN, indexes and transactions. Window functions are the jump |
 | [Kafka in 12 Concepts](artifacts/kafka-concepts.html) | Producer → topic → partition → broker → consumer, plus offsets, replication, retention, schemas and Connect. The partition is the whole idea |
+| [Distributing Data Across Nodes](artifacts/distributing-data.html) | Why modulo hashing breaks, the hash ring, virtual nodes, replication and quorums, then what CAP actually costs during a partition |
 | [12 System Design Patterns](artifacts/system-design-patterns.html) | Timeout, retry, circuit breaker, rate limiter, bulkhead, pub/sub, caching, event sourcing, CQRS, saga, strangler fig. Every one is about failure |
 | [API Key vs JWT vs OAuth 2.0](artifacts/api-key-jwt-oauth.html) | App to app, user to app, user to third party. One product usually runs all three for different hops |
 | [System Design Map](artifacts/system-design-map.html) | Twelve must-know designs and what each is really testing, from URL shorteners to agentic AI. Far fewer ideas than designs |
