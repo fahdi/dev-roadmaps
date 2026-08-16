@@ -20,6 +20,7 @@
     --ring: #4ade80;
     --replica: #4f9dff;
     --tradeoff: #fbbf24;
+    --consensus: #b18bfa;
   }
 
   *{ box-sizing: border-box; }
@@ -167,6 +168,15 @@
 
   <div class="step" style="--accent:var(--replica)">
     <span class="badge">5</span>
+    <h2>Durability: surviving a crash mid-write</h2>
+    <p class="body">Replication protects you from losing a node. It does nothing about a node that dies <b>part-way through a write</b>, with some changes in memory and some on disk. Writing data pages in place is slow and, interrupted, leaves the file half-updated.</p>
+    <p class="keynote">The fix is to append the change to a log first and force that log to disk, then acknowledge the commit. <b>The commit only has to wait for one sequential append, not for the scattered pages it will eventually touch.</b> Those pages are flushed lazily afterwards, and if the machine dies before that happens, the log is replayed on restart to finish the job.</p>
+  </div>
+
+  <div class="connector"></div>
+
+  <div class="step" style="--accent:var(--replica)">
+    <span class="badge">6</span>
     <h2>Replication: more than one copy</h2>
     <p class="body">Owning a slice is not enough, because a node loss would take its data with it. Each key is stored on the next several nodes around the ring, so <b>a copy always survives</b>.</p>
     <p class="keynote">This is where read and write quorums come in. If you require enough overlap between the nodes you write to and the nodes you read from, <b>a read is guaranteed to see the latest write</b>. Loosen that and reads get faster but may return stale data.</p>
@@ -174,8 +184,17 @@
 
   <div class="connector"></div>
 
+  <div class="step" style="--accent:var(--consensus)">
+    <span class="badge">7</span>
+    <h2>Consensus: agreeing without a boss</h2>
+    <p class="body">Replicas need someone to decide the order writes happen in, and there is no external referee to appoint one. The cluster has to <b>elect a leader from among itself</b>, and keep agreeing even while nodes fail.</p>
+    <p class="keynote">A candidate becomes leader only by winning votes from <b>a majority of the cluster</b>, which is what makes split-brain impossible: two halves of a partition cannot both hold a majority, so at most one side can elect anyone. Each election is stamped with a number that only moves forward, so a leader that was cut off and comes back can tell it has been superseded and step down rather than issuing stale orders. This is also why cluster sizes are odd, since five nodes tolerate two failures and six tolerate the same two.</p>
+  </div>
+
+  <div class="connector"></div>
+
   <div class="step" style="--accent:var(--tradeoff)">
-    <span class="badge">6</span>
+    <span class="badge">8</span>
     <h2>CAP: what you give up when the network splits</h2>
     <p class="body">Consistency, availability and partition tolerance. The framing says pick two, but that undersells it: <b>networks fail whether you plan for it or not</b>, so partition tolerance is not optional in a distributed system.</p>
     <div class="trio">
@@ -204,8 +223,9 @@
   </div>
 
   <div class="footer-note">
-    Roadmap: split the data, place it on a ring, even it out with virtual nodes, replicate for survival, then decide what a partition does to you.<br>
-    Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a>, where the key-value store and cache designs assume all of this, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for surviving the failures it implies.
+    Roadmap: split the data, place it on a ring, even it out with virtual nodes, make each write durable, replicate for survival, elect a leader to order it, then decide what a partition does to you.<br>
+    Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a>, where the key-value store and cache designs assume all of this, and <a href="system-design-patterns.html" style="color:#8fb8ff">12 System Design Patterns</a> for surviving the failures it implies.<br>
+    The durability and leader-election notes were prompted by explainers from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
   </div>
 </div>
 
