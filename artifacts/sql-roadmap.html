@@ -175,9 +175,10 @@
       <div class="node"><span class="n">21</span><span class="k">Offset functions</span><span class="d">LAG, LEAD, NTILE, FIRST_VALUE</span></div>
       <div class="node"><span class="n">22</span><span class="k">CTEs (WITH)</span><span class="d">Name the steps, including recursive ones</span></div>
       <div class="node"><span class="n">23</span><span class="k">Indexes / EXPLAIN</span><span class="d">Read the plan before you tune anything</span></div>
-      <div class="node"><span class="n">24</span><span class="k">Transactions / Views</span><span class="d">ACID guarantees and saved abstractions</span></div>
+      <div class="node"><span class="n">24</span><span class="k">Transactions / Views</span><span class="d">Atomicity is the easy part, isolation is where the bugs are</span></div>
     </div>
     <p class="tiernote"><b>Window functions are the jump.</b> GROUP BY collapses rows to give you an aggregate; OVER gives you the aggregate alongside every row. Once that clicks, running totals, per-group ranking and period comparisons stop needing self-joins.</p>
+    <p class="tiernote"><b>The I in ACID is the one that bites.</b> Everyone learns that a transaction is all-or-nothing, and then meets isolation in production. Under the default level on most databases, each transaction reads a consistent snapshot taken when it started, which is fine alone and not enough concurrently. Two transactions can each read the same snapshot, each check a rule that still holds in that snapshot, each write a different row, and both commit successfully while together breaking the rule neither one broke individually. Nothing conflicted, so nothing was rejected. Fixing it means either raising the isolation level so the database detects the conflict, or taking an explicit lock on what you are about to depend on.</p>
   </div>
 
   <div class="verdict">
@@ -191,6 +192,8 @@
   <div class="footer-note">
     Roadmap: one table well, then joins, then window functions, then the production layer of plans, indexes and transactions.<br>
     Pairs with <a href="system-design-map.html" style="color:#8fb8ff">System Design Map</a> for where the database sits, and <a href="how-a-request-travels.html" style="color:#8fb8ff">How a Request Travels</a> for what surrounds it at request time.
+    <br>
+    The isolation note was prompted by an explainer from <a href="https://www.facebook.com/codezup" style="color:#8fb8ff">Codez Up</a>.
   </div>
 </div>
 
