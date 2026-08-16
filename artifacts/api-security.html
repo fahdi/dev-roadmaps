@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Security, Attack by Attack &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+
+    --bad:  #fb7185;
+    --good: #4ade80;
+    --req:  #4f9dff;
+    --warn: #fbbf24;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(1100px 500px at 50% -10%, rgba(251,113,133,0.07), transparent 60%),
+      radial-gradient(900px 500px at 88% 45%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas{ max-width: 1020px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12);
+    border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 18px; }
+  .title-block h1{ margin:0; font-size: 27px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 640px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .picker{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom: 16px; }
+  .atk{
+    font: inherit; font-size: 11px; font-weight:700; letter-spacing:.3px;
+    color: var(--text-secondary); background: var(--surface);
+    border:1px solid var(--border); border-radius:999px;
+    padding: 6px 13px; cursor:pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .atk:hover{ background: var(--surface-hover); color: var(--text-primary); }
+  .atk[aria-pressed="true"]{
+    color: var(--bad); border-color: color-mix(in srgb, var(--bad) 55%, transparent);
+    background: color-mix(in srgb, var(--bad) 13%, transparent);
+  }
+
+  .stage{ width:100%; background: var(--surface); border:1px solid var(--border); border-radius:16px; padding: 18px 20px 20px; }
+
+  .atkname{ font-size: 15px; font-weight: 800; color: var(--text-primary); letter-spacing:.2px; }
+  .atkwhat{ margin: 6px 0 14px; font-size: 12.5px; color: var(--text-secondary); line-height:1.55; }
+  .atkwhat b{ color: var(--text-primary); }
+
+  .reqbox{
+    border:1px solid color-mix(in srgb, var(--req) 35%, transparent);
+    background: color-mix(in srgb, var(--req) 7%, transparent);
+    border-radius:10px; padding: 10px 12px; margin-bottom: 12px;
+  }
+  .reqlbl{ font-size: 9px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color: var(--req); }
+  .reqline{
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px; color: var(--text-primary); margin-top: 5px;
+    word-break: break-all; line-height:1.5;
+  }
+
+  .pair{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .side{
+    border:1px solid color-mix(in srgb, var(--s) 35%, transparent);
+    background: color-mix(in srgb, var(--s) 6%, transparent);
+    border-radius:11px; padding: 12px 13px 13px;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .side .sl{ font-size:9.5px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; color: var(--s); }
+  .side .code{
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; color: var(--text-primary);
+    background: rgba(0,0,0,0.28); border-radius:6px; padding: 7px 9px;
+    line-height:1.5; white-space: pre-wrap; word-break: break-word;
+  }
+  .side .note{ font-size: 11px; color: var(--text-secondary); line-height:1.5; }
+  .side .note b{ color: var(--text-primary); }
+
+  .fix{
+    margin-top: 13px; padding-top: 11px;
+    border-top: 1px dashed color-mix(in srgb, var(--good) 30%, transparent);
+    font-size: 12px; color: var(--text-secondary); line-height:1.55;
+  }
+  .fix .k{ font-size:9.5px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; color: var(--good); margin-right:7px; }
+  .fix b{ color: var(--text-primary); }
+
+  .verdict-card{
+    width:100%; margin-top: 20px;
+    border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05);
+    border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .verdict-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .verdict-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{
+    margin-top: 26px; font-size: 11.5px; color: var(--text-muted);
+    text-align:center; line-height:1.6; max-width: 700px;
+  }
+
+  @media (max-width: 760px){
+    .pair{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>API Security, Attack by Attack</h1>
+    <p>The same shop API, built twice. Pick an attack and see the request that carries it, what a naive API returns, and what a hardened one does instead. Almost none of these need a clever exploit, just a changed number.</p>
+  </div>
+
+  <div class="picker" id="picker"></div>
+
+  <div class="stage" id="stage">
+    <div class="atkname" id="a-name"></div>
+    <p class="atkwhat" id="a-what"></p>
+
+    <div class="reqbox">
+      <span class="reqlbl">The request</span>
+      <div class="reqline" id="a-req"></div>
+    </div>
+
+    <div class="pair">
+      <div class="side" style="--s:var(--bad)">
+        <span class="sl">Naive API</span>
+        <div class="code" id="a-badcode"></div>
+        <span class="note" id="a-badnote"></span>
+      </div>
+      <div class="side" style="--s:var(--good)">
+        <span class="sl">Hardened API</span>
+        <div class="code" id="a-goodcode"></div>
+        <span class="note" id="a-goodnote"></span>
+      </div>
+    </div>
+
+    <p class="fix"><span class="k">The control</span><span id="a-fix"></span></p>
+  </div>
+
+  <div class="verdict-card">
+    <div class="punch">Most API breaches are authorisation bugs, not broken cryptography.</div>
+    <div class="sub">
+      The attacker is usually a legitimate, logged-in user changing an id, adding a field, or calling an endpoint nobody linked to.<br>
+      Authentication asks who you are. Authorisation asks whether this particular user may touch this particular object, and it has to be checked on every request rather than assumed from the interface.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: check ownership per object, never trust client-supplied fields, gate every function by role, bound consumption, and know which APIs you actually have.<br>
+    Pairs with <a href="api-key-jwt-oauth.html" style="color:#8fb8ff">API Key vs JWT vs OAuth 2.0</a> for proving identity, <a href="https-tls.html" style="color:#8fb8ff">HTTPS and TLS</a> for the channel, and <a href="devsecops-gitops.html" style="color:#8fb8ff">DevSecOps and GitOps</a> for catching these before release.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const ATTACKS = [
+    {
+      key:'bola', tab:'Broken object access',
+      name:'Broken Object Level Authorization',
+      what:'You are logged in as yourself and simply ask for a different id. The API checks that you are <b>someone</b>, and forgets to check that the order is <b>yours</b>.',
+      req:'GET /api/orders/1042   Authorization: Bearer &lt;your own valid token&gt;',
+      badCode:'200 OK\n{ "order": 1042,\n  "customer": "someone else",\n  "address": "...",\n  "card_last4": "4417" }',
+      badNote:'Valid token, valid route, someone else\'s data. Nothing looks anomalous in the logs.',
+      goodCode:'403 Forbidden\n{ "error": "not your order" }',
+      goodNote:'Ownership is checked against the token subject before the record is returned.',
+      fix:'Look the object up <b>scoped to the caller</b>, as in "find order 1042 belonging to this user", rather than fetching by id and hoping. This is the single most common API vulnerability.'
+    },
+    {
+      key:'bfla', tab:'Admin function access',
+      name:'Broken Function Level Authorization',
+      what:'The delete button is hidden in the interface for normal users. The endpoint behind it is not.',
+      req:'DELETE /api/products/77   Authorization: Bearer &lt;ordinary user token&gt;',
+      badCode:'204 No Content\n(product deleted)',
+      badNote:'The interface hid the control, so the API assumed only admins would ever call it.',
+      goodCode:'403 Forbidden\n{ "error": "admin role required" }',
+      goodNote:'Role is enforced server side, on the route, regardless of what the client renders.',
+      fix:'Deny by default and require an explicit role per route. <b>Hiding a button is not access control</b>, it is a hint.'
+    },
+    {
+      key:'mass', tab:'Mass assignment',
+      name:'Broken Object Property Level Authorization',
+      what:'You send one extra field that the form never showed. The API binds the whole body straight onto the record.',
+      req:'PATCH /api/users/me\n{ "name": "Sam", "role": "admin", "credit": 99999 }',
+      badCode:'200 OK\n{ "name": "Sam",\n  "role": "admin",\n  "credit": 99999 }',
+      badNote:'Every field in the body was written, including the two that were never meant to be client controlled.',
+      goodCode:'200 OK\n{ "name": "Sam",\n  "role": "customer" }',
+      goodNote:'Only the fields on the allow list were read. The rest were ignored, not merged.',
+      fix:'Bind to an explicit allow list of writable fields. <b>A deny list ages badly</b>, because the next field someone adds to the model is writable by default.'
+    },
+    {
+      key:'expose', tab:'Over-exposed data',
+      name:'Excessive Data Exposure',
+      what:'The endpoint returns the whole record and trusts the client to display only part of it. The response is the real interface.',
+      req:'GET /api/products/77/reviews',
+      badCode:'200 OK\n[{ "text": "great",\n   "user": { "email": "a@b.com",\n             "phone": "+44...",\n             "hash": "$2b$..." } }]',
+      badNote:'The app shows only the review text. The payload carries the reviewer\'s contact details and password hash.',
+      goodCode:'200 OK\n[{ "text": "great",\n   "user": { "display": "Sam A." } }]',
+      goodNote:'The response is shaped on the server to exactly what the caller is allowed to see.',
+      fix:'Serialise through an explicit view model per endpoint. <b>Filtering in the client is not filtering</b>, since anyone can read the raw response.'
+    },
+    {
+      key:'rate', tab:'Unbounded consumption',
+      name:'Unrestricted Resource Consumption',
+      what:'Nothing stops the same caller repeating a request as fast as they can, so a login form becomes a credential guesser and an expensive endpoint becomes a bill.',
+      req:'POST /api/login  x 50,000   { "email": "...", "password": "guess" }',
+      badCode:'200 OK / 401 ...\n(50,000 attempts served)',
+      badNote:'Also applies to anything costly: report generation, search, or a model call billed per token.',
+      goodCode:'429 Too Many Requests\nRetry-After: 60',
+      goodNote:'Limits are per identity and per endpoint, with the expensive routes bounded separately.',
+      fix:'Rate limit by user and by route, cap page sizes and payload size, and put a hard ceiling on anything with a per-call cost. <b>Cheap for you to serve is not the same as cheap for you to pay for.</b>'
+    },
+    {
+      key:'ssrf', tab:'SSRF',
+      name:'Server Side Request Forgery',
+      what:'The API fetches a URL you supply. You point it inward, and it makes the request from inside the network where it is trusted.',
+      req:'POST /api/import  { "url": "http://169.254.169.254/latest/meta-data/" }',
+      badCode:'200 OK\n{ "imported": "iam credentials..." }',
+      badNote:'The server had network access you do not, and it used that access on your behalf.',
+      goodCode:'400 Bad Request\n{ "error": "host not allowed" }',
+      goodNote:'Only hosts on an allow list are fetchable, and internal ranges are refused outright.',
+      fix:'Allow-list destination hosts, block private and link-local ranges, and <b>re-check after redirects</b>, since a permitted host can redirect inward.'
+    },
+    {
+      key:'inventory', tab:'Forgotten APIs',
+      name:'Improper Inventory Management',
+      what:'The current version is well protected. The old one, still deployed and forgotten, is not.',
+      req:'GET /api/v1/orders/1042   (v2 is the version anyone documents)',
+      badCode:'200 OK\n{ ...full record... }',
+      badNote:'The fix was applied to v2. Staging, v1 and a debug host were never in scope.',
+      goodCode:'410 Gone\n{ "error": "version retired" }',
+      goodNote:'Versions have a published end of life and non-production hosts are not reachable.',
+      fix:'Keep an inventory of every deployed API and environment, retire old versions on a schedule, and <b>treat staging as production if it holds real data</b>.'
+    }
+  ];
+
+  const el = {
+    picker: document.getElementById('picker'),
+    name:   document.getElementById('a-name'),
+    what:   document.getElementById('a-what'),
+    req:    document.getElementById('a-req'),
+    badC:   document.getElementById('a-badcode'),
+    badN:   document.getElementById('a-badnote'),
+    goodC:  document.getElementById('a-goodcode'),
+    goodN:  document.getElementById('a-goodnote'),
+    fix:    document.getElementById('a-fix')
+  };
+
+  let current = ATTACKS[0].key;
+
+  ATTACKS.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'atk'; b.type = 'button';
+    b.textContent = a.tab;
+    b.setAttribute('aria-pressed', String(a.key === current));
+    b.addEventListener('click', function(){ select(a.key); });
+    el.picker.appendChild(b);
+  });
+
+  function select(key){
+    current = key;
+    const a = ATTACKS.find(x => x.key === key);
+    Array.from(el.picker.children).forEach((b, i) =>
+      b.setAttribute('aria-pressed', String(ATTACKS[i].key === key)));
+    el.name.textContent = a.name;
+    el.what.innerHTML = a.what;
+    el.req.innerHTML = a.req;
+    el.badC.textContent = a.badCode;
+    el.badN.innerHTML = a.badNote;
+    el.goodC.textContent = a.goodCode;
+    el.goodN.innerHTML = a.goodNote;
+    el.fix.innerHTML = a.fix;
+  }
+
+  select(current);
+})();
+</script>
+
+</body>
+</html>
