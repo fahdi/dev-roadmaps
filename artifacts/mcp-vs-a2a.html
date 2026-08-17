@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP vs A2A &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --mcp: #4f9dff;
+    --a2a: #f472b6;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(900px 460px at 25% -8%, rgba(79,157,255,0.09), transparent 60%),
+      radial-gradient(900px 460px at 78% -4%, rgba(244,114,182,0.08), transparent 60%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .canvas{ max-width: 1040px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12); border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 18px; }
+  .title-block h1{ margin:0; font-size: 26px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 680px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  /* stepper */
+  .stepper{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background: var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding: 12px 16px; margin-bottom: 14px; flex-wrap:wrap;
+  }
+  .task{ font-size:12.5px; color:var(--text-secondary); }
+  .task b{ color:var(--text-primary); }
+  .btns{ display:flex; align-items:center; gap:8px; }
+  .btns button{
+    cursor:pointer; font-family:inherit; background: rgba(255,255,255,0.05); color: var(--text-primary);
+    border:1px solid var(--border); border-radius:8px; padding: 7px 13px; font-size:12px; font-weight:700;
+    transition: all .15s ease;
+  }
+  .btns button:hover:not(:disabled){ background: rgba(255,255,255,0.1); }
+  .btns button:disabled{ opacity:.35; cursor:default; }
+  .dots{ display:flex; gap:5px; align-items:center; }
+  .dots i{ width:7px; height:7px; border-radius:50%; background: rgba(255,255,255,0.18); display:block; transition: all .2s ease; }
+  .dots i.on{ background:#fff; transform: scale(1.25); }
+
+  .grid{ width:100%; display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .panel{
+    background: var(--surface); border:1px solid color-mix(in srgb, var(--k) 26%, transparent);
+    border-top: 3px solid var(--k); border-radius:14px; padding: 15px 16px 16px;
+  }
+  .panel > h2{ margin:0; font-size:15px; font-weight:800; color:var(--k); letter-spacing:.3px; }
+  .panel > .expand{ display:block; font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--text-muted); margin: 2px 0 4px; }
+  .panel > .stance{ margin:0 0 12px; font-size:11.5px; color:var(--text-secondary); line-height:1.5; }
+
+  .node{
+    border:1px solid var(--border); background: rgba(255,255,255,0.03);
+    border-radius:9px; padding: 8px 11px; margin-bottom:7px; transition: all .25s ease;
+    opacity:.42;
+  }
+  .node .n{ font-size:11.5px; font-weight:800; letter-spacing:.2px; }
+  .node .d{ font-size:10px; color:var(--text-muted); margin-top:1px; }
+  .node.active{
+    opacity:1; border-color: color-mix(in srgb, var(--k) 60%, transparent);
+    background: color-mix(in srgb, var(--k) 12%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--k) 25%, transparent), 0 4px 18px color-mix(in srgb, var(--k) 14%, transparent);
+  }
+  .node.seen{ opacity:.78; }
+  .indent{ margin-left: 18px; }
+
+  .cap{
+    margin-top:11px; padding-top:10px; border-top:1px dashed var(--border);
+    font-size:12px; color:var(--text-secondary); line-height:1.55; min-height: 54px;
+  }
+  .cap b{ color: var(--text-primary); }
+  .cap .none{ color: var(--text-muted); font-style: italic; }
+
+  .traits{ width:100%; display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:14px; }
+  .traits ul{ margin:0; padding-left: 17px; }
+  .traits li{ font-size:11.5px; color:var(--text-secondary); line-height:1.75; }
+  .traits li b{ color:var(--text-primary); }
+
+  .punch-card{
+    width:100%; margin-top: 20px; border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05); border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .punch-card .punch{ font-size: 14px; font-weight:800; color:#ffd98a; }
+  .punch-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{ margin-top: 26px; font-size: 11.5px; color: var(--text-muted); text-align:center; line-height:1.6; max-width: 720px; }
+  .footer-note a{ color:#8fb8ff; }
+
+  @media (max-width: 820px){
+    .grid, .traits{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size: 20px; }
+    .stepper{ justify-content:center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>MCP vs A2A</h1>
+    <p>Two protocols at two different layers of the agent stack, not two ways of doing the same thing. Step one task through both and watch where the decision actually gets made.</p>
+  </div>
+
+  <div class="stepper">
+    <div class="task">Task: <b>"Book me a flight to Bali on May 20 and put it in my calendar."</b></div>
+    <div class="btns">
+      <div class="dots" id="dots"></div>
+      <button id="prev">&larr; Prev</button>
+      <button id="next">Next &rarr;</button>
+      <button id="reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel" style="--k:var(--mcp)">
+      <h2>MCP</h2>
+      <span class="expand">Model Context Protocol</span>
+      <p class="stance">The LLM stays in control. MCP gives it tools to reach for.</p>
+      <div id="mcp-nodes"></div>
+      <p class="cap" id="mcp-cap"></p>
+    </div>
+
+    <div class="panel" style="--k:var(--a2a)">
+      <h2>A2A</h2>
+      <span class="expand">Agent-to-Agent Protocol</span>
+      <p class="stance">Agents collaborate. The orchestrator delegates and never touches a tool itself.</p>
+      <div id="a2a-nodes"></div>
+      <p class="cap" id="a2a-cap"></p>
+    </div>
+  </div>
+
+  <div class="traits">
+    <div class="panel" style="--k:var(--mcp); border-top-width:1px">
+      <ul>
+        <li><b>LLM in control.</b> One model reasons about the whole task.</li>
+        <li><b>Centralised tool access.</b> Every tool arrives through one client.</li>
+        <li><b>Best for single-agent flows</b>, where one reasoner with good tools is enough.</li>
+      </ul>
+    </div>
+    <div class="panel" style="--k:var(--a2a); border-top-width:1px">
+      <ul>
+        <li><b>Agents in control.</b> Each one owns its own reasoning.</li>
+        <li><b>Decentralised execution.</b> Specialists hold their own tools and credentials.</li>
+        <li><b>Built for multi-agent systems</b>, where the work splits across owners.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="punch-card">
+    <div class="punch">They are layers, not rivals. A2A agents very often speak MCP underneath.</div>
+    <div class="sub">
+      MCP answers "how does a model reach a tool". A2A answers "how does an agent hand work to another agent".<br>
+      Reach for A2A when the work has genuinely separate owners. Reaching for it earlier buys you a distributed system you did not need.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: name the layer before picking the protocol, then check whether one reasoner with tools would have done it.<br>
+    Pairs with <a href="api-function-calling-mcp.html">API vs Function Calling vs MCP</a> for the layer below,
+    and <a href="six-levels-of-agentic-ai.html">6 Levels of Agentic AI</a> for when multi-agent starts to earn its cost.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var MCP_NODES = [
+    { id:'u',  n:'User',                 d:'asks for the trip' },
+    { id:'h',  n:'MCP Host',             d:'the app the model runs in' },
+    { id:'l',  n:'LLM',                  d:'decides what to do',        indent:true },
+    { id:'c',  n:'MCP Client',           d:'executes the tool calls',   indent:true },
+    { id:'sf', n:'MCP Server · Flights', d:'exposes flight tools' },
+    { id:'sc', n:'MCP Server · Calendar',d:'exposes calendar tools' }
+  ];
+  var A2A_NODES = [
+    { id:'u',  n:'User',              d:'asks for the trip' },
+    { id:'o',  n:'Orchestrator Agent',d:'delegates, never calls tools' },
+    { id:'fa', n:'Flight Agent',      d:'owns booking',   indent:true },
+    { id:'ca', n:'Calendar Agent',    d:'owns scheduling',indent:true },
+    { id:'fx', n:'Flight Search API', d:'plain API' },
+    { id:'cx', n:'Calendar API',      d:'plain API' }
+  ];
+
+  var STEPS = [
+    {
+      mcp: { on:['u','h'], cap:'<b>The request arrives at the host.</b> The host is the application the model lives in, and it is what holds the connection to every MCP server.' },
+      a2a: { on:['u','o'], cap:'<b>The request arrives at the orchestrator.</b> It is itself an agent, and its job is to work out who should do what.' }
+    },
+    {
+      mcp: { on:['l'], cap:'<b>The LLM decides.</b> It sees the available tools and reasons about which to call and in what order. All of the planning happens in one model.' },
+      a2a: { on:['o','fa','ca'], cap:'<b>The orchestrator delegates.</b> It hands the flight half to one specialist and the calendar half to another, then gets out of the way.' }
+    },
+    {
+      mcp: { on:['c','sf','sc'], cap:'<b>The client executes.</b> The model does not call anything itself; it asks, and the MCP client performs the call against the flight and calendar servers.' },
+      a2a: { on:['fa','fx'], cap:'<b>The flight agent does its own reasoning</b> and calls the flight API directly. The orchestrator has no visibility into how it decides.' }
+    },
+    {
+      mcp: { on:['sf','sc'], cap:'The servers do the work and return results. To the model these are just tools with typed inputs and outputs, wherever they actually run.' },
+      a2a: { on:['ca','cx'], cap:'<b>The calendar agent works in parallel</b>, with its own credentials against its own API. Two agents, two independent tool loops.' }
+    },
+    {
+      mcp: { on:['c','l'], cap:'<b>Results go back to the model</b>, which decides whether it now has enough to answer or needs another call. The loop lives inside the LLM.' },
+      a2a: { on:['fa','ca','o'], cap:'<b>The specialists report back.</b> Each returns a finished result, not a tool output the orchestrator has to interpret.' }
+    },
+    {
+      mcp: { on:['l','h','u'], cap:'<b>One model composed the whole answer.</b> Every decision in this run was made in one place, which is exactly what makes it easy to debug.' },
+      a2a: { on:['o','u'], cap:'<b>The orchestrator assembles the answer</b> from work it did not do and cannot fully see. Distributed, and distributed to debug.' }
+    }
+  ];
+
+  var step = 0;
+
+  function build(container, nodes){
+    container.innerHTML = '';
+    nodes.forEach(function(nd){
+      var d = document.createElement('div');
+      d.className = 'node' + (nd.indent ? ' indent' : '');
+      d.dataset.id = nd.id;
+      d.innerHTML = '<div class="n">' + nd.n + '</div><div class="d">' + nd.d + '</div>';
+      container.appendChild(d);
+    });
+  }
+
+  var mcpBox = document.getElementById('mcp-nodes');
+  var a2aBox = document.getElementById('a2a-nodes');
+  build(mcpBox, MCP_NODES);
+  build(a2aBox, A2A_NODES);
+
+  var dots = document.getElementById('dots');
+  STEPS.forEach(function(){ dots.appendChild(document.createElement('i')); });
+
+  function paint(box, spec, seenSet){
+    Array.prototype.forEach.call(box.querySelectorAll('.node'), function(n){
+      var id = n.dataset.id;
+      n.classList.toggle('active', spec.on.indexOf(id) !== -1);
+      n.classList.toggle('seen', spec.on.indexOf(id) === -1 && seenSet.has(id));
+    });
+  }
+
+  function seenUpTo(which, upto){
+    var s = new Set();
+    for (var i = 0; i <= upto; i++) STEPS[i][which].on.forEach(function(x){ s.add(x); });
+    return s;
+  }
+
+  function render(){
+    var s = STEPS[step];
+    paint(mcpBox, s.mcp, seenUpTo('mcp', step));
+    paint(a2aBox, s.a2a, seenUpTo('a2a', step));
+    document.getElementById('mcp-cap').innerHTML = s.mcp.cap;
+    document.getElementById('a2a-cap').innerHTML = s.a2a.cap;
+    Array.prototype.forEach.call(dots.children, function(d, i){ d.classList.toggle('on', i === step); });
+    document.getElementById('prev').disabled = step === 0;
+    document.getElementById('next').disabled = step === STEPS.length - 1;
+  }
+
+  document.getElementById('next').addEventListener('click', function(){ if (step < STEPS.length - 1){ step++; render(); } });
+  document.getElementById('prev').addEventListener('click', function(){ if (step > 0){ step--; render(); } });
+  document.getElementById('reset').addEventListener('click', function(){ step = 0; render(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' && step < STEPS.length - 1){ step++; render(); }
+    if (e.key === 'ArrowLeft' && step > 0){ step--; render(); }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
