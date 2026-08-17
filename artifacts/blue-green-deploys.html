@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue-Green Deploys &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --blue:  #4f9dff;
+    --green: #4ade80;
+    --db:    #b18bfa;
+    --bad:   #fb7185;
+    --warn:  #fbbf24;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(950px 460px at 26% -8%, rgba(79,157,255,0.08), transparent 60%),
+      radial-gradient(950px 460px at 78% 20%, rgba(74,222,128,0.07), transparent 60%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12); border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 18px; }
+  .title-block h1{ margin:0; font-size: 26px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 690px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .lab{ width:100%; background: var(--surface); border:1px solid var(--border); border-radius:16px; padding: 16px 18px 18px; }
+  .toprow{ display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+  .fieldset > .lbl{ display:block; font-size:10px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--text-muted); margin-bottom:7px; }
+  .seg{ display:flex; gap:6px; flex-wrap:wrap; }
+  .seg button{
+    cursor:pointer; font-family:inherit; background: rgba(255,255,255,0.04); color:var(--text-secondary);
+    border:1px solid var(--border); border-radius:8px; padding: 8px 12px; font-size:11px; font-weight:800;
+    transition: all .15s ease;
+  }
+  .seg button:hover{ background: rgba(255,255,255,0.08); color:var(--text-primary); }
+  .seg button[aria-pressed="true"]{
+    background: color-mix(in srgb, var(--db) 18%, transparent);
+    border-color: color-mix(in srgb, var(--db) 60%, transparent); color:#fff;
+  }
+  .nav{ display:flex; align-items:center; gap:8px; }
+  .nav button{
+    cursor:pointer; font-family:inherit; background: rgba(255,255,255,0.05); color:var(--text-primary);
+    border:1px solid var(--border); border-radius:8px; padding:7px 13px; font-size:12px; font-weight:700;
+  }
+  .nav button:hover:not(:disabled){ background: rgba(255,255,255,0.1); }
+  .nav button:disabled{ opacity:.35; cursor:default; }
+  .stepname{ font-size:11px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; color:var(--text-muted); }
+
+  .router{
+    text-align:center; border:1px solid var(--border); background: rgba(255,255,255,0.04);
+    border-radius:10px; padding: 9px; font-size:11px; font-weight:800; letter-spacing:.4px;
+    margin-bottom: 10px;
+  }
+  .router b{ color: var(--rc); }
+
+  .envs{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .env{
+    border:1px solid color-mix(in srgb, var(--k) 30%, transparent); border-top:3px solid var(--k);
+    border-radius:12px; padding: 13px 14px 14px; background: color-mix(in srgb, var(--k) 5%, transparent);
+    transition: all .25s ease;
+  }
+  .env.dim{ opacity:.45; }
+  .env h3{ margin:0; font-size:14px; font-weight:800; color:var(--k); }
+  .env .ver{ font-size:11px; color:var(--text-secondary); margin-top:1px; }
+  .env .badge{
+    display:inline-block; margin-top:9px; font-size:9.5px; font-weight:800; letter-spacing:.6px;
+    text-transform:uppercase; padding:4px 9px; border-radius:999px;
+    border:1px solid currentColor;
+  }
+  .env .badge.live{ color:#9df0bb; }
+  .env .badge.idle{ color:var(--text-muted); }
+  .env .badge.testing{ color:#ffd98a; }
+  .env .badge.broken{ color:#ffb3c0; }
+
+  .dbbar{
+    margin-top:10px; border:1px solid color-mix(in srgb, var(--db) 35%, transparent);
+    background: color-mix(in srgb, var(--db) 8%, transparent); border-radius:10px;
+    padding: 10px 13px; font-size:11.5px; color:var(--text-secondary); line-height:1.5;
+  }
+  .dbbar b{ color:#d9c6ff; }
+
+  .verdict{
+    margin-top:12px; padding:12px 14px; border-radius:11px; font-size:12.5px; line-height:1.55;
+    border:1px solid var(--border); background: rgba(255,255,255,0.03); color:var(--text-secondary);
+  }
+  .verdict b{ color:var(--text-primary); }
+  .verdict.bad{ border-color: color-mix(in srgb, var(--bad) 45%, transparent); background: color-mix(in srgb, var(--bad) 8%, transparent); }
+  .verdict.good{ border-color: color-mix(in srgb, var(--green) 40%, transparent); background: color-mix(in srgb, var(--green) 7%, transparent); }
+
+  .punch-card{
+    width:100%; margin-top: 20px; border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05); border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .punch-card .punch{ font-size:14px; font-weight:800; color:#ffd98a; }
+  .punch-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{ margin-top:26px; font-size:11.5px; color:var(--text-muted); text-align:center; line-height:1.6; max-width:720px; }
+  .footer-note a{ color:#8fb8ff; }
+
+  @media (max-width: 760px){
+    .envs{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size:20px; }
+    .toprow{ justify-content:center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>Blue-Green Deploys</h1>
+    <p>Two identical environments, one router, and a switch that is genuinely instant. The diagram is easy. What it leaves out is the database they both share, which is the thing that decides whether your rollback is real or imaginary.</p>
+  </div>
+
+  <div class="lab">
+    <div class="toprow">
+      <div class="fieldset">
+        <span class="lbl">What does v2.0 do to the schema?</span>
+        <div class="seg" id="seg-mig">
+          <button data-v="none" aria-pressed="true">No migration</button>
+          <button data-v="additive" aria-pressed="false">Additive</button>
+          <button data-v="destructive" aria-pressed="false">Drops a column</button>
+        </div>
+      </div>
+      <div class="nav">
+        <span class="stepname" id="stepname"></span>
+        <button id="prev">&larr;</button>
+        <button id="next">&rarr;</button>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="router" id="router"></div>
+
+    <div class="envs">
+      <div class="env" id="env-blue" style="--k:var(--blue)">
+        <h3>Blue</h3>
+        <div class="ver">v1.0</div>
+        <span class="badge" id="b-badge"></span>
+      </div>
+      <div class="env" id="env-green" style="--k:var(--green)">
+        <h3>Green</h3>
+        <div class="ver">v2.0</div>
+        <span class="badge" id="g-badge"></span>
+      </div>
+    </div>
+
+    <div class="dbbar" id="dbbar"></div>
+    <p class="verdict" id="verdict"></p>
+  </div>
+
+  <div class="punch-card">
+    <div class="punch">Flipping the router back takes a second. Un-dropping a column does not.</div>
+    <div class="sub">
+      Blue-green gives you an instant rollback for your <i>code</i>, and nothing at all for your <i>data</i>.<br>
+      Ship the schema change and the code that needs it as two separate deploys, and the rollback stays as fast as the diagram promises.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: expand the schema, deploy the code, contract later. Never in one release.<br>
+    Pairs with <a href="devsecops-gitops.html">DevSecOps and GitOps, End to End</a> for how the release gets there,
+    and <a href="demo-to-production.html">Demo to Production</a> for the rest of what changes under real users.<br>
+    <span style="opacity:.75">Topic prompted by a MyLecture reel. Written independently.</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var mig = 'none', step = 0;
+
+  var STEPS = [
+    { name: 'Steady state' },
+    { name: 'Deploy to green' },
+    { name: 'Smoke test green' },
+    { name: 'Flip the router' },
+    { name: 'v2.0 is broken' },
+    { name: 'Roll back' }
+  ];
+
+  var DB = {
+    none:        { label: 'Shared database &middot; <b>no schema change</b>', note: 'Both versions read and write exactly the same columns.' },
+    additive:    { label: 'Shared database &middot; <b>new nullable column added</b>', note: 'v2.0 writes it. v1.0 has never heard of it and does not care.' },
+    destructive: { label: 'Shared database &middot; <b>a column v1.0 uses was dropped</b>', note: 'v2.0 stopped using it, so the migration removed it.' }
+  };
+
+  function state(){
+    var s = { blue: 'live', green: 'idle', route: 'blue', ok: true };
+    if (step === 0){ s.blue = 'live'; s.green = 'idle'; }
+    if (step === 1){ s.blue = 'live'; s.green = 'idle'; }
+    if (step === 2){ s.blue = 'live'; s.green = 'testing'; }
+    if (step >= 3){ s.route = 'green'; s.blue = 'idle'; s.green = 'live'; }
+    if (step === 4){ s.green = 'broken'; }
+    if (step === 5){
+      if (mig === 'destructive'){ s.route = 'green'; s.green = 'broken'; s.blue = 'broken'; s.ok = false; }
+      else { s.route = 'blue'; s.blue = 'live'; s.green = 'idle'; }
+    }
+    return s;
+  }
+
+  function copy(){
+    var d = DB[mig];
+    if (step === 0) return { v: 'Blue is serving every request. Green is running the previous release and taking no traffic, which is the standing cost of this pattern: <b>two environments, all the time</b>.', t: '' };
+    if (step === 1) return { v: 'v2.0 is deployed to green while <b>green takes no traffic at all</b>. Nothing a user can reach has changed yet, which is what makes this step safe to do at any hour.' + (mig !== 'none' ? ' The migration has run against the shared database.' : ''), t: '' };
+    if (step === 2) return { v: 'Green is exercised directly, bypassing the router. Real environment, real database, <b>no real users</b>. This is the step teams skip when they are in a hurry, and it is the only one that catches a bad build before customers do.', t: '' };
+    if (step === 3) return { v: 'The router points at green. <b>Existing connections drain, new ones land on v2.0</b>, and there is no maintenance page because nothing was ever taken down. Blue stays running and untouched, which is the whole point of keeping it.', t: '' };
+    if (step === 4) return { v: 'Something is wrong: errors climb, a metric falls off. <b>Blue is still there, still healthy, still on v1.0.</b> This is the moment blue-green is sold on.', t: '' };
+    // step 5
+    if (mig === 'destructive'){
+      return { t: 'bad', v: '<b>The rollback fails.</b> Blue is v1.0, and v1.0 queries a column your migration dropped. Flipping the router back does not restore it, so blue now crashes on the same schema green is running against. <b>You have two broken environments and no way back</b>, and the only path is forward through a fix.' };
+    }
+    if (mig === 'additive'){
+      return { t: 'good', v: '<b>The rollback works.</b> v1.0 does not know the new column exists, and because it is nullable, nothing v1.0 writes violates it. The router flips back in a second and the extra column sits there harmlessly until you are ready to try again.' };
+    }
+    return { t: 'good', v: '<b>The rollback works, instantly.</b> No schema change means both versions are interchangeable against the same data, so this is the case the diagram assumes and the case where the promise is completely true.' };
+  }
+
+  function render(){
+    var s = state(), c = copy(), d = DB[mig];
+
+    document.getElementById('stepname').textContent = (step + 1) + '/6 ' + STEPS[step].name;
+    var r = document.getElementById('router');
+    r.style.setProperty('--rc', s.route === 'blue' ? 'var(--blue)' : 'var(--green)');
+    r.innerHTML = 'Router &rarr; all traffic to <b>' + (s.route === 'blue' ? 'BLUE v1.0' : 'GREEN v2.0') + '</b>';
+
+    var badges = { live: 'live', idle: 'idle, warm', testing: 'smoke testing', broken: 'failing' };
+    document.getElementById('b-badge').className = 'badge ' + s.blue;
+    document.getElementById('b-badge').textContent = badges[s.blue];
+    document.getElementById('g-badge').className = 'badge ' + s.green;
+    document.getElementById('g-badge').textContent = badges[s.green];
+    document.getElementById('env-blue').classList.toggle('dim', s.route !== 'blue' && s.blue !== 'broken');
+    document.getElementById('env-green').classList.toggle('dim', s.route !== 'green' && s.green !== 'broken');
+
+    document.getElementById('dbbar').innerHTML = d.label + ' &middot; <span style="color:var(--text-muted)">' + d.note + '</span>';
+    var v = document.getElementById('verdict');
+    v.className = 'verdict' + (c.t ? ' ' + c.t : '');
+    v.innerHTML = c.v;
+
+    document.getElementById('prev').disabled = step === 0;
+    document.getElementById('next').disabled = step === STEPS.length - 1;
+  }
+
+  document.getElementById('next').addEventListener('click', function(){ if (step < STEPS.length - 1){ step++; render(); } });
+  document.getElementById('prev').addEventListener('click', function(){ if (step > 0){ step--; render(); } });
+  document.getElementById('reset').addEventListener('click', function(){ step = 0; render(); });
+  document.getElementById('seg-mig').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    mig = b.dataset.v;
+    Array.prototype.forEach.call(this.querySelectorAll('button'), function(x){
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+    render();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' && step < STEPS.length - 1){ step++; render(); }
+    if (e.key === 'ArrowLeft' && step > 0){ step--; render(); }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
