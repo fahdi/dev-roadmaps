@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG vs CAG &middot; Roadmap</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --page: #0b0b0c;
+    --surface: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.09);
+    --text-primary: #f5f5f4;
+    --text-secondary: #b6b4ac;
+    --text-muted: #7a7873;
+    --rag: #fbbf24;
+    --cag: #4ade80;
+    --both:#4f9dff;
+    --bad: #fb7185;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(960px 460px at 28% -8%, rgba(251,191,36,0.07), transparent 60%),
+      radial-gradient(940px 460px at 80% 24%, rgba(74,222,128,0.06), transparent 55%),
+      var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .canvas{ max-width: 1000px; margin: 0 auto; padding: 56px 24px 72px; display:flex; flex-direction:column; align-items:center; }
+  .roadmap-tag{
+    display:flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(91,157,255,0.12); border: 1px solid rgba(91,157,255,0.35);
+    color: #8fb8ff; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .title-block{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; margin: 18px 0 18px; }
+  .title-block h1{ margin:0; font-size: 26px; font-weight: 800; letter-spacing:0.4px; line-height:1.25; }
+  .title-block p{ margin:0; max-width: 690px; color: var(--text-secondary); font-size: 13.5px; line-height:1.55; }
+
+  .lab{ width:100%; background: var(--surface); border:1px solid var(--border); border-radius:16px; padding: 16px 18px 18px; }
+  .ctrls{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-bottom:14px; }
+  .ctrl label{ display:flex; justify-content:space-between; align-items:baseline; font-size:11px; margin-bottom:6px; }
+  .ctrl .cn{ font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--text-muted); font-size:10px; }
+  .ctrl .cv{ font-family: ui-monospace, Menlo, monospace; color:var(--text-primary); font-weight:700; }
+  input[type=range]{ width:100%; accent-color: var(--both); }
+  .fieldset .lbl{ display:block; font-size:10px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--text-muted); margin-bottom:7px; }
+  .seg{ display:flex; gap:6px; flex-wrap:wrap; }
+  .seg button{
+    cursor:pointer; font-family:inherit; background: rgba(255,255,255,0.04); color:var(--text-secondary);
+    border:1px solid var(--border); border-radius:8px; padding: 7px 12px; font-size:11px; font-weight:800;
+    transition: all .15s ease;
+  }
+  .seg button:hover{ background: rgba(255,255,255,0.08); color:var(--text-primary); }
+  .seg button[aria-pressed="true"]{
+    background: color-mix(in srgb, var(--both) 18%, transparent);
+    border-color: color-mix(in srgb, var(--both) 60%, transparent); color:#fff;
+  }
+
+  .fitbar{ margin: 14px 0 12px; }
+  .fitlbl{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-muted); margin-bottom:6px; }
+  .track{ height:22px; border-radius:7px; background: rgba(255,255,255,0.05); position:relative; overflow:hidden; }
+  .fill{ height:100%; transition: width .3s ease; background: color-mix(in srgb, var(--cag) 55%, transparent); }
+  .fill.over{ background: color-mix(in srgb, var(--bad) 55%, transparent); }
+  .limit{ position:absolute; top:0; bottom:0; width:2px; background:#fff; opacity:.5; }
+
+  .two{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px; }
+  .opt{
+    border:1px solid color-mix(in srgb, var(--k) 30%, transparent); border-top:3px solid var(--k);
+    border-radius:11px; padding: 12px 13px 13px; background: color-mix(in srgb, var(--k) 6%, transparent);
+    transition: all .2s ease;
+  }
+  .opt.out{ opacity:.4; }
+  .opt h3{ margin:0 0 1px; font-size:13px; font-weight:800; color:var(--k); }
+  .opt .u{ display:block; font-size:9.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+  .opt .row{ font-size:11px; color:var(--text-secondary); line-height:1.6; }
+  .opt .row b{ color:var(--text-primary); }
+  .opt .tag{
+    display:inline-block; margin-top:8px; font-size:9px; font-weight:800; letter-spacing:.6px;
+    text-transform:uppercase; padding:3px 8px; border-radius:999px; border:1px solid currentColor;
+  }
+  .opt .tag.ok{ color:#9df0bb; } .opt .tag.no{ color:#ffb3c0; }
+
+  .verdict{
+    padding:12px 14px; border-radius:11px; font-size:12.5px; line-height:1.55;
+    border:1px solid var(--border); background: rgba(255,255,255,0.03); color:var(--text-secondary);
+  }
+  .verdict b{ color:var(--text-primary); }
+
+  .punch-card{
+    width:100%; margin-top: 20px; border: 1.5px dashed rgba(255,205,120,0.45);
+    background: rgba(255,205,120,0.05); border-radius:16px; padding: 18px 22px 20px; text-align:center;
+  }
+  .punch-card .punch{ font-size:14px; font-weight:800; color:#ffd98a; }
+  .punch-card .sub{ margin-top:8px; font-size:12.5px; color:var(--text-primary); line-height:1.6; }
+
+  .footer-note{ margin-top:26px; font-size:11.5px; color:var(--text-muted); text-align:center; line-height:1.6; max-width:720px; }
+  .footer-note a{ color:#8fb8ff; }
+
+  @media (max-width: 800px){
+    .ctrls, .two{ grid-template-columns: 1fr; }
+    .title-block h1{ font-size:20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <div class="roadmap-tag">Developer Roadmap</div>
+
+  <div class="title-block">
+    <h1>RAG vs CAG</h1>
+    <p>Retrieval fetches the relevant part of your corpus at question time. Cache-augmented generation skips that by putting the whole corpus in the model's context once and reusing the prefilled cache. Which is available to you is decided almost entirely by one number.</p>
+  </div>
+
+  <div class="lab">
+    <div class="ctrls">
+      <div class="ctrl">
+        <label><span class="cn">Corpus size</span><span class="cv" id="v-corpus"></span></label>
+        <input type="range" id="s-corpus" min="1" max="100" value="18" step="1">
+      </div>
+      <div class="fieldset">
+        <span class="lbl">Model context window</span>
+        <div class="seg" id="seg-ctx">
+          <button data-v="128" aria-pressed="true">128k</button>
+          <button data-v="200" aria-pressed="false">200k</button>
+          <button data-v="1000" aria-pressed="false">1M</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fieldset" style="margin-bottom:4px">
+      <span class="lbl">How often does the corpus change?</span>
+      <div class="seg" id="seg-churn">
+        <button data-v="static" aria-pressed="true">Rarely</button>
+        <button data-v="daily" aria-pressed="false">Daily</button>
+        <button data-v="live" aria-pressed="false">Constantly</button>
+      </div>
+    </div>
+
+    <div class="fitbar">
+      <div class="fitlbl"><span>Corpus against the context window</span><span id="fit-txt"></span></div>
+      <div class="track"><div class="fill" id="fit-fill"></div><div class="limit" style="left:100%"></div></div>
+    </div>
+
+    <div class="two">
+      <div class="opt" id="opt-rag" style="--k:var(--rag)">
+        <h3>RAG</h3><span class="u">Retrieve, then generate</span>
+        <div class="row" id="rag-rows"></div>
+        <span class="tag ok" id="rag-tag"></span>
+      </div>
+      <div class="opt" id="opt-cag" style="--k:var(--cag)">
+        <h3>CAG</h3><span class="u">Preload the cache, then generate</span>
+        <div class="row" id="cag-rows"></div>
+        <span class="tag" id="cag-tag"></span>
+      </div>
+    </div>
+
+    <p class="verdict" id="verdict"></p>
+  </div>
+
+  <div class="punch-card">
+    <div class="punch">CAG removes the retrieval step, and every bug that lives in it.</div>
+    <div class="sub">
+      No chunking, no embedding drift, no top-k that quietly missed the paragraph that mattered. That is a real gain, available only while the whole corpus fits.<br>
+      The moment it does not, you are doing retrieval again, so build knowing which side of that line you are on.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Roadmap: measure the corpus in tokens first. That single number decides whether the choice is even yours to make.<br>
+    Pairs with <a href="how-to-build-a-rag.html">How to Build a RAG</a> for the retrieval path in full,
+    and <a href="context-engineering.html">Context Engineering</a> for what a window is actually holding.<br>
+    <span style="opacity:.75">Topic prompted by a Codez Up reel. Written independently.</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var state = { corpus: 18, ctx: 128, churn: 'static' };
+
+  // slider 1..100 -> 2k .. 4M tokens, log-ish so small corpora get real resolution
+  function corpusTokens(v){ return Math.round(2000 * Math.pow(1.075, v - 1)); }
+  function fmtTok(t){
+    if (t >= 1e6) return (t/1e6).toFixed(2) + 'M tokens';
+    if (t >= 1000) return Math.round(t/1000) + 'k tokens';
+    return t + ' tokens';
+  }
+
+  function wire(id, key, cast){
+    var box = document.getElementById(id);
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      state[key] = cast ? cast(b.dataset.v) : b.dataset.v;
+      Array.prototype.forEach.call(box.querySelectorAll('button'), function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      render();
+    });
+  }
+
+  function render(){
+    state.corpus = +document.getElementById('s-corpus').value;
+    var tok = corpusTokens(state.corpus);
+    var win = state.ctx * 1000;
+    var usable = win * 0.75;               // leave room for the question and the answer
+    var ratio = tok / usable;
+    var fits = ratio <= 1;
+
+    document.getElementById('v-corpus').textContent = fmtTok(tok);
+    document.getElementById('fit-txt').textContent = fits
+      ? Math.round(ratio * 100) + '% of usable window'
+      : ratio.toFixed(1) + '× too large';
+    var fill = document.getElementById('fit-fill');
+    fill.style.width = Math.min(100, ratio * 100) + '%';
+    fill.classList.toggle('over', !fits);
+
+    var churnNote = { static: 'stable, so one prefill lasts', daily: 'one re-prefill per day', live: 'the cache is stale the moment it is built' }[state.churn];
+
+    document.getElementById('rag-rows').innerHTML =
+      '<b>Any corpus size.</b> Only the retrieved chunks enter the window.<br>' +
+      'Per query: embed, search, assemble, generate.<br>' +
+      'Failure mode: <b>the right passage is never retrieved</b>, and the model answers confidently from what it did get.';
+
+    document.getElementById('cag-rows').innerHTML =
+      '<b>' + (fits ? 'Fits: whole corpus preloaded once.' : 'Does not fit at this size.') + '</b><br>' +
+      'Per query: generate against a warm cache, no retrieval hop.<br>' +
+      'Churn: ' + churnNote + '.';
+
+    document.getElementById('opt-cag').classList.toggle('out', !fits);
+    var ct = document.getElementById('cag-tag');
+    ct.className = 'tag ' + (fits ? 'ok' : 'no');
+    ct.textContent = fits ? 'available' : 'not available';
+    document.getElementById('rag-tag').textContent = 'always available';
+
+    var v = document.getElementById('verdict'), msg;
+
+    if (!fits){
+      msg = '<b>The corpus is ' + ratio.toFixed(1) + ' times larger than the window can usefully hold, so CAG is off the table.</b> '
+          + 'This is not a tuning problem, it is arithmetic: there is nowhere to put the documents. '
+          + 'Retrieval is the only option, which makes chunking and ranking quality the thing worth your attention.';
+    } else if (state.churn === 'live'){
+      msg = '<b>It fits, but it will not stay true.</b> A prefilled cache is a snapshot, and a corpus changing constantly means you are either rebuilding it continuously or answering from stale context. '
+          + 'Retrieval reads current data on every query, which is the property you actually need here. <b>Fitting is necessary, not sufficient.</b>';
+    } else if (state.churn === 'daily'){
+      msg = '<b>It fits, and one rebuild a day is a fair price.</b> You get no retrieval step and no chance of missing the relevant passage, at the cost of a scheduled re-prefill and answers that are current as of the last one. '
+          + 'Whether that staleness is acceptable is a product question, not an infrastructure one.';
+    } else {
+      msg = '<b>This is where CAG is genuinely the better tool.</b> The corpus fits at ' + Math.round(ratio * 100) + '% of the usable window and rarely changes, so you prefill once and every query afterwards skips embedding, search and ranking entirely. '
+          + 'No top-k to tune, and no silent retrieval miss, because nothing was left out.';
+    }
+    v.innerHTML = msg;
+  }
+
+  document.getElementById('s-corpus').addEventListener('input', render);
+  wire('seg-ctx', 'ctx', Number);
+  wire('seg-churn', 'churn');
+  render();
+})();
+</script>
+
+</body>
+</html>
